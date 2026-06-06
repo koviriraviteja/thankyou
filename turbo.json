@@ -1,0 +1,22 @@
+{
+  "globalDependencies": ["**/.env"],
+  "pipeline": {
+    "type-check": {
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": ["coverage/**"]
+    },
+    "build": {
+      "dependsOn": ["^build", "type-check", "lint"],
+      "outputs": ["dist/**", ".next/**", ".expo/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

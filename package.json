@@ -1,0 +1,38 @@
+{
+  "name": "olx-clone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OLX classifieds platform - India first",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "db:migrate": "cd packages/db && pnpm prisma migrate dev",
+    "db:seed": "cd packages/db && pnpm prisma db seed",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:reset": "docker-compose down -v && docker-compose up -d"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "turbo": "^1.10.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "prettier": "^3.1.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*"
+  ],
+  "packageManager": "npm@10.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

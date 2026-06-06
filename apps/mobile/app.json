@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "OLX Clone",
+    "slug": "olx-clone",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.olxclone"
+    },
+    "android": {
+      "package": "com.yourcompany.olxclone"
+    },
+    "scheme": "olxclone"
+  }
+}

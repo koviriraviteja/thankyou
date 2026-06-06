@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+
+const COLORS = {
+  primary: '#002f34',
+  secondary: '#00a49f',
+  bg: '#f8f9fa',
+  white: '#ffffff',
+  textLight: '#406367',
+  border: '#d8dfe0',
+};
+
+const MOCK_MY_ADS = [
+  { id: '1', title: 'Royal Enfield Classic 350', price: '₹1,20,000', views: 45, likes: 3, date: 'Posted on 12 May', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=150&q=80', status: 'ACTIVE' },
+];
+
+const MOCK_FAV_ADS = [
+  { id: '3', title: 'Sony Alpha a7III Camera Body', price: '₹1,10,000', location: 'Andheri West, Mumbai', date: 'YESTERDAY', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=150&q=80' },
+];
+
+export default function MyAdsScreen() {
+  const [activeTab, setActiveTab] = useState<'ADS' | 'FAVORITES'>('ADS');
+
+  const renderMyAds = () => (
+    <FlatList
+      data={MOCK_MY_ADS}
+      keyExtractor={item => item.id}
+      contentContainerStyle={styles.listContent}
+      ListEmptyComponent={<Text style={styles.emptyText}>You haven't posted any ads yet.</Text>}
+      renderItem={({ item }) => (
+        <View style={styles.adCard}>
+          <View style={styles.adRow}>
+            <Image source={{ uri: item.image }} style={styles.adImage} />
+            <View style={styles.adInfo}>
+              <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
+              <Text style={styles.adPrice}>{item.price}</Text>
+              <View style={styles.adStats}>
+                <Ionicons name="eye-outline" size={14} color={COLORS.textLight} />
+                <Text style={styles.statText}>{item.views} Views</Text>
+                <Ionicons name="heart-outline" size={14} color={COLORS.textLight} style={{ marginLeft: 12 }} />
+                <Text style={styles.statText}>{item.likes} Likes</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.adFooter}>
+            <Text style={styles.statusText}>{item.status}</Text>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity style={styles.actionBtn}>
+                <Text style={styles.actionBtnText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]}>
+                <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark as Sold</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+    />
+  );
+
+  const renderFavorites = () => (
+    <FlatList
+      data={MOCK_FAV_ADS}
+      keyExtractor={item => item.id}
+      contentContainerStyle={styles.listContent}
+      ListEmptyComponent={<Text style={styles.emptyText}>You haven't liked any ads yet.</Text>}
+      renderItem={({ item }) => (
+        <TouchableOpacity 
+          style={styles.adCard}
+          onPress={() => router.push({ pathname: '/product/[id]', params: { ...item } })}
+        >
+          <View style={styles.adRow}>
+            <Image source={{ uri: item.image }} style={styles.adImage} />
+            <View style={styles.adInfo}>
+              <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
+              <Text style={styles.adPrice}>{item.price}</Text>
+              <Text style={styles.adLocation}>{item.location}</Text>
+            </View>
+            <TouchableOpacity style={styles.favIcon}>
+              <Ionicons name="heart" size={24} color={COLORS.primary} />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  );
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Ads</Text>
+      </View>
+
+      {/* Tabs */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'ADS' && styles.activeTab]}
+          onPress={() => setActiveTab('ADS')}
+        >
+          <Text style={[styles.tabText, activeTab === 'ADS' && styles.activeTabText]}>ADS</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'FAVORITES' && styles.activeTab]}
+          onPress={() => setActiveTab('FAVORITES')}
+        >
+          <Text style={[styles.tabText, activeTab === 'FAVORITES' && styles.activeTabText]}>FAVORITES</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {activeTab === 'ADS' ? renderMyAds() : renderFavorites()}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: COLORS.bg },
+  header: { padding: 16, backgroundColor: COLORS.white },
+  headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.primary },
+  tabContainer: { flexDirection: 'row', backgroundColor: COLORS.white, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  tab: { flex: 1, paddingVertical: 14, alignItems: 'center', borderBottomWidth: 3, borderBottomColor: 'transparent' },
+  activeTab: { borderBottomColor: COLORS.primary },
+  tabText: { fontSize: 14, fontWeight: 'bold', color: COLORS.textLight },
+  activeTabText: { color: COLORS.primary },
+  content: { flex: 1 },
+  listContent: { padding: 16 },
+  emptyText: { textAlign: 'center', color: COLORS.textLight, marginTop: 40, fontSize: 16 },
+  adCard: { backgroundColor: COLORS.white, borderRadius: 8, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: COLORS.border },
+  adRow: { flexDirection: 'row' },
+  adImage: { width: 80, height: 80, borderRadius: 4, backgroundColor: '#e0e0e0', marginRight: 12 },
+  adInfo: { flex: 1, justifyContent: 'center' },
+  adTitle: { fontSize: 14, color: COLORS.textLight, marginBottom: 4 },
+  adPrice: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary, marginBottom: 8 },
+  adLocation: { fontSize: 12, color: COLORS.textLight },
+  adStats: { flexDirection: 'row', alignItems: 'center' },
+  statText: { fontSize: 12, color: COLORS.textLight, marginLeft: 4 },
+  favIcon: { padding: 4 },
+  adFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: COLORS.border },
+  statusText: { fontSize: 12, fontWeight: 'bold', color: '#4caf50' },
+  actionButtons: { flexDirection: 'row', gap: 8 },
+  actionBtn: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 4, borderWidth: 1, borderColor: COLORS.primary },
+  actionBtnText: { color: COLORS.primary, fontWeight: 'bold', fontSize: 12 },
+  sellBtn: { backgroundColor: COLORS.primary },
+  sellBtnText: { color: COLORS.white },
+});
