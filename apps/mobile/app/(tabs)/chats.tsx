@@ -1,8 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../src/lib/supabase';
+import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
   primary: '#002f34',
@@ -13,31 +15,46 @@ const COLORS = {
   border: '#d8dfe0',
 };
 
-// Mock data for inbox
-const MOCK_CHATS = [
-  {
-    id: 'chat_1',
-    productId: '1',
-    productTitle: 'iPhone 13 Pro Max - Mint Condition',
-    productImage: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&w=150&q=80',
-    otherUser: 'Rahul Sharma',
-    lastMessage: 'Is the price negotiable?',
-    time: '10:45 AM',
-    unread: 2,
-  },
-  {
-    id: 'chat_2',
-    productId: '3',
-    productTitle: 'Honda City V MT 2018 Petrol',
-    productImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=150&q=80',
-    otherUser: 'Priya Desai',
-    lastMessage: 'I can come to see the car tomorrow.',
-    time: 'Yesterday',
-    unread: 0,
-  }
-];
-
 export default function ChatsScreen() {
+  const { user } = useAuth();
+  const [chats, setChats] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        fetchChats();
+      } else {
+        setChats([]);
+        setLoading(false);
+      }
+    }, [user])
+  );
+
+  const fetchChats = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('chats')
+      .select('*, product:product_id(*)')
+      .or(`buyer_id.eq.${user?.id},seller_id.eq.${user?.id}`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching chats:', error);
+    } else if (data) {
+      setChats(data);
+    }
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]} edges={['top']}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
@@ -46,46 +63,53 @@ export default function ChatsScreen() {
       </View>
 
       <FlatList
-        data={MOCK_CHATS}
+        data={chats}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style={styles.chatRow}
-            onPress={() => {
-              router.push({
-                pathname: '/chat/[id]',
-                params: { 
-                  id: item.id,
-                  productTitle: item.productTitle,
-                  otherUser: item.otherUser,
-                  productImage: item.productImage,
-                }
-              });
-            }}
-          >
-            <Image source={{ uri: item.productImage }} style={styles.productImage} />
-            
-            <View style={styles.chatDetails}>
-              <View style={styles.rowTop}>
-                <Text style={styles.otherUser} numberOfLines={1}>{item.otherUser}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-              </View>
-              <Text style={styles.productTitle} numberOfLines={1}>{item.productTitle}</Text>
+        ListEmptyComponent={
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={{ color: COLORS.textLight }}>No active chats found.</Text>
+          </View>
+        }
+        renderItem={({ item }) => {
+          // Identify if the other person is the buyer or seller relative to the current user
+          const isUserSeller = item.seller_id === user?.id;
+          const otherUserId = isUserSeller ? item.buyer_id : item.seller_id;
+          const otherUserDisplay = `User ${otherUserId.substring(0, 5)}...`; // We don't have joins for auth.users, so we abbreviate UUID
+
+          return (
+            <TouchableOpacity 
+              style={styles.chatRow}
+              onPress={() => {
+                router.push({
+                  pathname: '/chat/[id]',
+                  params: { 
+                    id: item.id,
+                    productTitle: item.product?.title || 'Unknown Product',
+                    otherUser: otherUserDisplay,
+                    productImage: item.product?.image_url,
+                  }
+                });
+              }}
+            >
+              <Image source={{ uri: item.product?.image_url || 'https://via.placeholder.com/60' }} style={styles.productImage} />
               
-              <View style={styles.rowBottom}>
-                <Text style={[styles.lastMessage, item.unread > 0 && styles.lastMessageUnread]} numberOfLines={1}>
-                  {item.lastMessage}
-                </Text>
-                {item.unread > 0 && (
-                  <View style={styles.unreadBadge}>
-                    <Text style={styles.unreadText}>{item.unread}</Text>
-                  </View>
-                )}
+              <View style={styles.chatDetails}>
+                <View style={styles.rowTop}>
+                  <Text style={styles.otherUser} numberOfLines={1}>{otherUserDisplay}</Text>
+                  <Text style={styles.time}>{new Date(item.created_at).toLocaleDateString()}</Text>
+                </View>
+                <Text style={styles.productTitle} numberOfLines={1}>{item.product?.title}</Text>
+                
+                <View style={styles.rowBottom}>
+                  <Text style={styles.lastMessage} numberOfLines={1}>
+                    Tap to view messages
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
       />
     </SafeAreaView>
   );

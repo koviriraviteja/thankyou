@@ -1,7 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../src/lib/supabase';
+import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
   primary: '#002f34',
@@ -12,9 +15,109 @@ const COLORS = {
   border: '#d8dfe0',
 };
 
-// We will fetch real data later, using the params passed for now
 export default function ProductDetailsScreen() {
-  const { id, title, price, location, date, image } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { user } = useAuth();
+  
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      fetchProductDetails();
+    }
+  }, [id]);
+
+  const fetchProductDetails = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('products')
+      .select('*') 
+      .eq('id', id)
+      .single();
+    
+    // Fallback: If we can't fetch the seller details easily via join because it's auth.users, we just display "Verified Seller" for now.
+    if (data) {
+      setProduct(data);
+    } else {
+      console.error('Error fetching product:', error);
+    }
+    setLoading(false);
+  };
+
+  const startChat = async () => {
+    if (!user) {
+      alert('Please log in to chat with the seller.');
+      return;
+    }
+    if (user.id === product.seller_id) {
+      alert('You cannot chat with yourself.');
+      return;
+    }
+
+    try {
+      // Check if a chat already exists between these two users for this product
+      const { data: existingChats, error: fetchError } = await supabase
+        .from('chats')
+        .select('*')
+        .eq('product_id', product.id)
+        .eq('buyer_id', user.id);
+
+      let chatId;
+
+      if (existingChats && existingChats.length > 0) {
+        chatId = existingChats[0].id;
+      } else {
+        // Create new chat room
+        const { data: newChat, error: createError } = await supabase
+          .from('chats')
+          .insert({
+            product_id: product.id,
+            buyer_id: user.id,
+            seller_id: product.seller_id
+          })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        chatId = newChat.id;
+      }
+
+      router.push({
+        pathname: '/chat/[id]',
+        params: {
+          id: chatId,
+          productTitle: product.title,
+          otherUser: 'Verified Seller',
+          productImage: product.image_url
+        }
+      });
+    } catch (err) {
+      console.error('Error starting chat:', err);
+      alert('Could not start chat.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </SafeAreaView>
+    );
+  }
+
+  if (!product) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text>Product not found.</Text>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 20 }}>
+          <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>Go Back</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
+  const dateStr = new Date(product.created_at).toLocaleDateString();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +139,7 @@ export default function ProductDetailsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Image Slider Placeholder */}
         <View style={styles.imageContainer}>
-          <Image source={{ uri: image as string }} style={styles.mainImage} />
+          <Image source={{ uri: product.image_url }} style={styles.mainImage} />
           <View style={styles.imageCountBadge}>
             <Text style={styles.imageCountText}>1 / 1</Text>
           </View>
@@ -44,12 +147,12 @@ export default function ProductDetailsScreen() {
 
         {/* Title and Price Block */}
         <View style={styles.detailsBlock}>
-          <Text style={styles.price}>{price}</Text>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.price}>{product.price}</Text>
+          <Text style={styles.title}>{product.title}</Text>
           <View style={styles.locationRow}>
             <Ionicons name="location-outline" size={16} color={COLORS.textLight} />
-            <Text style={styles.locationText}>{location}</Text>
-            <Text style={styles.dateText}>{date}</Text>
+            <Text style={styles.locationText}>{product.location}</Text>
+            <Text style={styles.dateText}>{dateStr}</Text>
           </View>
         </View>
 
@@ -57,7 +160,7 @@ export default function ProductDetailsScreen() {
         <View style={styles.infoBlock}>
           <Text style={styles.sectionTitle}>Details</Text>
           <Text style={styles.descriptionText}>
-            This is a fantastic product in excellent condition. Barely used, comes with all original accessories and box. Contact for more details. Price is slightly negotiable.
+            {product.description || 'No description provided.'}
           </Text>
         </View>
 
@@ -69,7 +172,7 @@ export default function ProductDetailsScreen() {
             </View>
             <View style={styles.sellerInfo}>
               <Text style={styles.sellerName}>Verified Seller</Text>
-              <Text style={styles.sellerDate}>Member since Nov 2022</Text>
+              <Text style={styles.sellerDate}>User ID: {product.seller_id?.substring(0, 8)}...</Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={COLORS.primary} />
           </View>
@@ -78,20 +181,7 @@ export default function ProductDetailsScreen() {
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity 
-          style={styles.chatBtn}
-          onPress={() => {
-            router.push({
-              pathname: '/chat/[id]',
-              params: {
-                id: `new_chat_${id}`,
-                productTitle: title,
-                otherUser: 'Verified Seller',
-                productImage: image
-              }
-            });
-          }}
-        >
+        <TouchableOpacity style={styles.chatBtn} onPress={startChat}>
           <Text style={styles.chatBtnText}>Chat</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.makeOfferBtn}>

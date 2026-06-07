@@ -26,15 +26,19 @@ export default function ProfileScreen() {
       <ScrollView>
         {/* Profile Header */}
         <View style={styles.header}>
-          <View style={styles.avatarContainer}>
-            <Ionicons name="person" size={40} color={COLORS.white} />
-          </View>
+          {user && user.user_metadata?.avatar_url ? (
+            <Image source={{ uri: user.user_metadata.avatar_url }} style={styles.avatarContainer} />
+          ) : (
+            <View style={styles.avatarContainer}>
+              <Ionicons name="person" size={40} color={COLORS.white} />
+            </View>
+          )}
           <View style={styles.info}>
             {user ? (
               <>
-                <Text style={styles.name}>{user.name || 'OLX User'}</Text>
-                <Text style={styles.sub}>+91 {user.phoneNumber}</Text>
-                <TouchableOpacity style={styles.editProfileBtn}>
+                <Text style={styles.name}>{user.user_metadata?.full_name || user.email?.split('@')[0] || 'OLX User'}</Text>
+                <Text style={styles.sub}>{user.email || user.phone || 'No contact info'}</Text>
+                <TouchableOpacity style={styles.editProfileBtn} onPress={() => router.push('/edit-profile')}>
                   <Text style={styles.editProfileText}>View and edit profile</Text>
                 </TouchableOpacity>
               </>

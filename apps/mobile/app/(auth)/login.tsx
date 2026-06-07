@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
   primary: '#002f34',
@@ -13,6 +15,8 @@ const COLORS = {
 };
 
 export default function AuthGatewayScreen() {
+  const { loginWithGoogle } = useAuth();
+
   const handlePhoneLogin = () => {
     router.push('/(auth)/phone');
   };
@@ -38,7 +42,7 @@ export default function AuthGatewayScreen() {
           <Text style={styles.buttonTextDark}>Continue with Phone</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonOutline} onPress={() => handleMockLogin('Google')}>
+        <TouchableOpacity style={styles.buttonOutline} onPress={loginWithGoogle}>
           <Ionicons name="logo-google" size={24} color={COLORS.primary} style={styles.buttonIcon} />
           <Text style={styles.buttonTextDark}>Continue with Google</Text>
         </TouchableOpacity>

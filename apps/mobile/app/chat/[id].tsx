@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Image, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../src/lib/supabase';
+import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
   primary: '#002f34',
@@ -16,48 +17,62 @@ const COLORS = {
   messageReceived: '#ffffff',
 };
 
-// Mock Initial Messages
-const INITIAL_MESSAGES = [
-  { id: '1', text: 'Hi, is this still available?', sender: 'them', time: '10:42 AM' },
-  { id: '2', text: 'Yes, it is.', sender: 'me', time: '10:44 AM' },
-  { id: '3', text: 'Is the price negotiable?', sender: 'them', time: '10:45 AM' },
-];
-
 export default function ChatRoomScreen() {
   const { id, productTitle, otherUser, productImage } = useLocalSearchParams();
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const { user } = useAuth();
+  const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState('');
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    // In a real app, connect to socket.io and Supabase here
-    // const socket = io('http://localhost:3003');
-    // socket.emit('join_room', id);
-    // socket.on('receive_message', (msg) => setMessages(prev => [...prev, msg]));
+    if (id) {
+      fetchMessages();
+      
+      const subscription = supabase
+        .channel(`public:messages:chat_id=eq.${id}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${id}` }, (payload) => {
+          console.log('New message received!', payload.new);
+          setMessages((prev) => [...prev, payload.new]);
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(subscription);
+      };
+    }
   }, [id]);
 
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-
-    const newMessage = {
-      id: Date.now().toString(),
-      text: inputText.trim(),
-      sender: 'me',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    setMessages([...messages, newMessage]);
-    setInputText('');
+  const fetchMessages = async () => {
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('chat_id', id)
+      .order('created_at', { ascending: true });
     
-    // Simulate typing indicator and response
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        text: 'Let me think about it.',
-        sender: 'them',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
-    }, 2000);
+    if (data) {
+      setMessages(data);
+    }
+  };
+
+  const handleSend = async () => {
+    if (!inputText.trim() || !user) return;
+
+    const textToSend = inputText.trim();
+    setInputText(''); // Optimistic clear
+
+    const { error } = await supabase
+      .from('messages')
+      .insert({
+        chat_id: id,
+        sender_id: user.id,
+        text: textToSend
+      });
+
+    if (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message');
+      setInputText(textToSend); // Restore on error
+    }
   };
 
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -100,11 +115,12 @@ export default function ChatRoomScreen() {
           contentContainerStyle={styles.chatList}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           renderItem={({ item }) => {
-            const isMe = item.sender === 'me';
+            const isMe = item.sender_id === user?.id;
+            const timeStr = new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             return (
               <View style={[styles.messageBubble, isMe ? styles.messageMe : styles.messageThem]}>
                 <Text style={styles.messageText}>{item.text}</Text>
-                <Text style={styles.messageTime}>{item.time}</Text>
+                <Text style={styles.messageTime}>{timeStr}</Text>
               </View>
             );
           }}

@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuth } from '../../src/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
+import { supabase } from '../../src/lib/supabase';
 
 const COLORS = {
   primary: '#002f34',
@@ -26,7 +28,32 @@ export default function PostAdScreen() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [location, setLocation] = useState('');
+  const [coords, setCoords] = useState<{lat: number, lng: number} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  React.useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+
+      try {
+        let loc = await Location.getCurrentPositionAsync({});
+        setCoords({ lat: loc.coords.latitude, lng: loc.coords.longitude });
+        
+        let geocode = await Location.reverseGeocodeAsync({
+          latitude: loc.coords.latitude,
+          longitude: loc.coords.longitude
+        });
+        
+        if (geocode.length > 0) {
+          const { city, region, country } = geocode[0];
+          setLocation(`${city || region}, ${country}`);
+        }
+      } catch (e) {
+        console.error('Error fetching location on post screen', e);
+      }
+    })();
+  }, []);
 
   const categories = ['Cars', 'Properties', 'Mobiles', 'Jobs', 'Bikes', 'Electronics', 'Furniture'];
 
@@ -56,19 +83,70 @@ export default function PostAdScreen() {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!title || !price || !location) {
       Alert.alert('Error', 'Please fill all mandatory fields');
       return;
     }
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to post an ad.');
+      return;
+    }
     
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      // 1. Upload Images to Supabase Storage
+      const uploadedUrls: string[] = [];
+      let mainImageUrl = '';
+
+      for (let i = 0; i < images.length; i++) {
+        const uri = images[i];
+        try {
+          const response = await fetch(uri);
+          const blob = await response.blob();
+          const filePath = `${user.id}/${Date.now()}-${i}.jpg`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('product-images')
+            .upload(filePath, blob, {
+              contentType: 'image/jpeg',
+            });
+
+          if (uploadError) throw uploadError;
+
+          const { data: publicUrlData } = supabase.storage
+            .from('product-images')
+            .getPublicUrl(filePath);
+
+          uploadedUrls.push(publicUrlData.publicUrl);
+          if (i === 0) mainImageUrl = publicUrlData.publicUrl; // Use first image as main
+        } catch (err) {
+          console.error('Image upload failed:', err);
+        }
+      }
+
+      // 2. Insert Product into Database
+      const { error: dbError } = await supabase
+        .from('products')
+        .insert({
+          title,
+          description,
+          price: `₹${price}`,
+          location,
+          latitude: coords?.lat || null,
+          longitude: coords?.lng || null,
+          category,
+          image_url: mainImageUrl || 'https://via.placeholder.com/300',
+          image_urls: uploadedUrls,
+          seller_id: user.id,
+        });
+
+      if (dbError) throw dbError;
+
       setIsLoading(false);
       Alert.alert('Success', 'Your Ad has been posted successfully!', [
         { text: 'OK', onPress: () => {
-            // Reset form
             setStep(1);
             setImages([]);
             setTitle('');
@@ -79,7 +157,11 @@ export default function PostAdScreen() {
             router.push('/(tabs)/my-ads');
         }}
       ]);
-    }, 1500);
+    } catch (error: any) {
+      setIsLoading(false);
+      console.error('Post Ad Error:', error);
+      Alert.alert('Error', error.message || 'Failed to post ad.');
+    }
   };
 
   if (step === 1) {
