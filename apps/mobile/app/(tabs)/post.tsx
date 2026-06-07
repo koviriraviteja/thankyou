@@ -6,6 +6,8 @@ import { router } from 'expo-router';
 import { useAuth } from '../../src/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import * as FileSystem from 'expo-file-system/legacy';
+import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../src/lib/supabase';
 
 const COLORS = {
@@ -103,13 +105,12 @@ export default function PostAdScreen() {
       for (let i = 0; i < images.length; i++) {
         const uri = images[i];
         try {
-          const response = await fetch(uri);
-          const blob = await response.blob();
+          const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
           const filePath = `${user.id}/${Date.now()}-${i}.jpg`;
           
           const { data: uploadData, error: uploadError } = await supabase.storage
             .from('product-images')
-            .upload(filePath, blob, {
+            .upload(filePath, decode(base64), {
               contentType: 'image/jpeg',
             });
 
