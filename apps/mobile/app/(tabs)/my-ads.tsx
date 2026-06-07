@@ -15,14 +15,11 @@ const COLORS = {
   border: '#d8dfe0',
 };
 
-const MOCK_FAV_ADS = [
-  { id: '3', title: 'Sony Alpha a7III Camera Body', price: '₹1,10,000', location: 'Andheri West, Mumbai', date: 'YESTERDAY', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=150&q=80' },
-];
-
 export default function MyAdsScreen() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'ADS' | 'FAVORITES'>('ADS');
   const [myAds, setMyAds] = useState<any[]>([]);
+  const [favoriteAds, setFavoriteAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useFocusEffect(
@@ -37,6 +34,8 @@ export default function MyAdsScreen() {
 
   const fetchMyAds = async () => {
     setLoading(true);
+    
+    // Fetch My Ads
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -48,7 +47,30 @@ export default function MyAdsScreen() {
     } else if (data) {
       setMyAds(data);
     }
+
+    // Fetch My Favorites
+    const { data: favData } = await supabase
+      .from('favorites')
+      .select('product:product_id(*)')
+      .eq('user_id', user?.id)
+      .order('created_at', { ascending: false });
+      
+    if (favData) {
+      // filter out any null products if deleted
+      setFavoriteAds(favData.map(f => f.product).filter(Boolean));
+    }
+    
     setLoading(false);
+  };
+
+  const markAsSold = async (productId: string) => {
+    const { error } = await supabase.from('products').update({ is_sold: true }).eq('id', productId);
+    if (!error) fetchMyAds();
+  };
+
+  const toggleFavorite = async (productId: string) => {
+    await supabase.from('favorites').delete().match({ user_id: user?.id, product_id: productId });
+    fetchMyAds();
   };
 
   const renderMyAds = () => {
@@ -76,14 +98,18 @@ export default function MyAdsScreen() {
               </View>
             </View>
             <View style={styles.adFooter}>
-              <Text style={styles.statusText}>ACTIVE</Text>
+              <Text style={[styles.statusText, item.is_sold && { color: 'red' }]}>{item.is_sold ? 'SOLD' : 'ACTIVE'}</Text>
               <View style={styles.actionButtons}>
-                <TouchableOpacity style={styles.actionBtn}>
-                  <Text style={styles.actionBtnText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]}>
-                  <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark as Sold</Text>
-                </TouchableOpacity>
+                {!item.is_sold && (
+                  <>
+                    <TouchableOpacity style={styles.actionBtn} onPress={() => router.push({ pathname: '/edit-ad', params: { id: item.id } })}>
+                      <Text style={styles.actionBtnText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]} onPress={() => markAsSold(item.id)}>
+                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark as Sold</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
             </View>
           </View>
@@ -94,24 +120,24 @@ export default function MyAdsScreen() {
 
   const renderFavorites = () => (
     <FlatList
-      data={MOCK_FAV_ADS}
+      data={favoriteAds}
       keyExtractor={item => item.id}
       contentContainerStyle={styles.listContent}
       ListEmptyComponent={<Text style={styles.emptyText}>You haven't liked any ads yet.</Text>}
       renderItem={({ item }) => (
         <TouchableOpacity 
           style={styles.adCard}
-          onPress={() => router.push({ pathname: '/product/[id]', params: { ...item } })}
+          onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
         >
           <View style={styles.adRow}>
-            <Image source={{ uri: item.image }} style={styles.adImage} />
+            <Image source={{ uri: item.image_url }} style={styles.adImage} />
             <View style={styles.adInfo}>
               <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
               <Text style={styles.adPrice}>{item.price}</Text>
               <Text style={styles.adLocation}>{item.location}</Text>
             </View>
-            <TouchableOpacity style={styles.favIcon}>
-              <Ionicons name="heart" size={24} color={COLORS.primary} />
+            <TouchableOpacity style={styles.favIcon} onPress={() => toggleFavorite(item.id)}>
+              <Ionicons name="heart" size={24} color={'red'} />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

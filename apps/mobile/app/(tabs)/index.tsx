@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TextInput, ScrollView, TouchableOpacity, Image, ActivityIndicator, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import * as Location from 'expo-location';
+import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
   primary: '#002f34',
@@ -80,17 +81,52 @@ export default function HomeFeedScreen() {
   
   const [locationName, setLocationName] = useState('Fetching location...');
   const [selectedLocationFilter, setSelectedLocationFilter] = useState<string | null>(null);
-  const [locationModalVisible, setLocationModalVisible] = useState(false);
-  const [locationSearchQuery, setLocationSearchQuery] = useState('');
-  const [placesSuggestions, setPlacesSuggestions] = useState<any[]>([]);
-  const [selectedState, setSelectedState] = useState<string | null>(null);
-  
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const [sortOption, setSortOption] = useState<'NEWEST' | 'PRICE_LOW' | 'PRICE_HIGH'>('NEWEST');
+  const [sortModalVisible, setSortModalVisible] = useState(false);
+  
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const { user } = useAuth();
+
+  const params = useLocalSearchParams();
 
   useEffect(() => {
     fetchCurrentLocation();
   }, []);
+
+  useEffect(() => {
+    if (params.newLocation) {
+      setLocationName(params.newLocation as string);
+      setSelectedLocationFilter(params.newLocation as string);
+      router.setParams({ newLocation: '' });
+    }
+  }, [params.newLocation]);
+
+  const fetchFavorites = async () => {
+    const { data } = await supabase.from('favorites').select('product_id').eq('user_id', user?.id);
+    if (data) {
+      setFavorites(new Set(data.map(f => f.product_id)));
+    }
+  };
+
+  const toggleFavorite = async (productId: string) => {
+    if (!user) return;
+    
+    const isFav = favorites.has(productId);
+    const newFavs = new Set(favorites);
+    
+    if (isFav) {
+      newFavs.delete(productId);
+      setFavorites(newFavs);
+      await supabase.from('favorites').delete().match({ user_id: user.id, product_id: productId });
+    } else {
+      newFavs.add(productId);
+      setFavorites(newFavs);
+      await supabase.from('favorites').insert({ user_id: user.id, product_id: productId });
+    }
+  };
 
   const fetchCurrentLocation = async () => {
     setLocationName('Fetching location...');
@@ -108,8 +144,9 @@ export default function HomeFeedScreen() {
       });
       
       if (geocode.length > 0) {
-        const { city, region, country } = geocode[0];
-        setLocationName(`${city || region}, ${country}`);
+        const { district, city, region, country, name } = geocode[0];
+        const preciseLocation = district || city || region || name;
+        setLocationName(`${preciseLocation}, ${country}`);
         setSelectedLocationFilter(null);
       } else {
         setLocationName('Unknown Location');
@@ -122,7 +159,10 @@ export default function HomeFeedScreen() {
   useFocusEffect(
     React.useCallback(() => {
       fetchProducts();
-    }, [selectedCategory, selectedLocationFilter])
+      if (user) {
+        fetchFavorites();
+      }
+    }, [selectedCategory, selectedLocationFilter, user])
   );
 
   const fetchProducts = async () => {
@@ -145,83 +185,30 @@ export default function HomeFeedScreen() {
     if (error) {
       console.error('Error fetching products:', error);
     } else if (data) {
-      setProducts(data);
+      // Don't show sold products on the home feed (if the column exists and is true)
+      const availableData = data.filter(item => item.is_sold !== true);
+      applySort(availableData, sortOption);
     }
     setLoading(false);
   };
 
-  const handleManualLocation = (city: string) => {
-    setLocationName(city);
-    setSelectedLocationFilter(city);
-    setLocationModalVisible(false);
-    setLocationSearchQuery('');
-    setPlacesSuggestions([]);
-    setSelectedState(null);
-  };
-
-  // Google Places Autocomplete Integration (New Places API)
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (!locationSearchQuery.trim()) {
-        setPlacesSuggestions([]);
-        return;
-      }
-      
-      try {
-        console.log("Fetching New Google Places API for:", locationSearchQuery);
-        const url = `https://places.googleapis.com/v1/places:autocomplete`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': 'AIzaSyAfubfGmnjaqdF28HCTtx_VuMcBG-3_fZI'
-          },
-          body: JSON.stringify({
-            input: locationSearchQuery,
-            includedRegionCodes: ['in']
-          })
-        });
-        const data = await res.json();
-        
-        if (data.suggestions) {
-          setPlacesSuggestions(data.suggestions);
-        } else {
-          console.log("Google API Error:", data.error?.message || "Unknown error");
-          setPlacesSuggestions([]);
-        }
-      } catch (error) {
-        console.error('Places API Catch Error:', error);
-      }
-    }, 500); // 500ms debounce
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [locationSearchQuery]);
-
-  const handleNativeGeocodeSearch = async () => {
-    if (!locationSearchQuery.trim()) return;
-    try {
-      const geocodeResult = await Location.geocodeAsync(locationSearchQuery);
-      if (geocodeResult.length > 0) {
-        const reverseResult = await Location.reverseGeocodeAsync({
-          latitude: geocodeResult[0].latitude,
-          longitude: geocodeResult[0].longitude
-        });
-        
-        if (reverseResult.length > 0) {
-          const { city, region, country } = reverseResult[0];
-          const finalName = city || region || locationSearchQuery;
-          handleManualLocation(finalName);
-        } else {
-          handleManualLocation(locationSearchQuery);
-        }
-      } else {
-        handleManualLocation(locationSearchQuery);
-      }
-    } catch (e) {
-      console.error(e);
-      handleManualLocation(locationSearchQuery);
+  const applySort = (dataList: any[], option: string) => {
+    let sorted = [...dataList];
+    if (option === 'PRICE_LOW') {
+      sorted.sort((a, b) => Number((a.price||'').replace(/[^0-9]/g, '')) - Number((b.price||'').replace(/[^0-9]/g, '')));
+    } else if (option === 'PRICE_HIGH') {
+      sorted.sort((a, b) => Number((b.price||'').replace(/[^0-9]/g, '')) - Number((a.price||'').replace(/[^0-9]/g, '')));
+    } else {
+      sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
+    setProducts(sorted);
   };
+
+  useEffect(() => {
+    if (products.length > 0) {
+      applySort(products, sortOption);
+    }
+  }, [sortOption]);
 
   const renderHeader = () => (
     <View>
@@ -253,18 +240,24 @@ export default function HomeFeedScreen() {
         </ScrollView>
       </View>
 
-      <Text style={[styles.sectionTitle, { paddingHorizontal: 16, marginTop: 16, marginBottom: 8 }]}>
-        {selectedCategory ? `Showing ${selectedCategory}` : 'Fresh recommendations'}
-      </Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
+        <Text style={styles.sectionTitle}>
+          {selectedCategory ? `Showing ${selectedCategory}` : 'Fresh recommendations'}
+        </Text>
+        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setSortModalVisible(true)}>
+          <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.secondary, marginRight: 4 }}>
+            {sortOption === 'NEWEST' ? 'Newest' : sortOption === 'PRICE_LOW' ? 'Price: Low' : 'Price: High'}
+          </Text>
+          <Ionicons name="filter" size={16} color={COLORS.secondary} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
-
-  const activeStateData = selectedState ? STATES_DATA.find(s => s.state === selectedState) : null;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.topBar}>
-        <TouchableOpacity style={styles.locationContainer} onPress={() => setLocationModalVisible(true)}>
+        <TouchableOpacity style={styles.locationContainer} onPress={() => router.push('/location')}>
           <Ionicons name="location-outline" size={24} color={COLORS.primary} />
           <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
           <Ionicons name="chevron-down" size={20} color={COLORS.primary} />
@@ -311,9 +304,13 @@ export default function HomeFeedScreen() {
                   onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
                 >
                   <Image source={{ uri: item.image_url }} style={styles.cardImage} />
-                  <View style={styles.cardFav}>
-                    <Ionicons name="heart-outline" size={20} color={COLORS.primary} />
-                  </View>
+                  <TouchableOpacity style={styles.cardFav} onPress={() => toggleFavorite(item.id)}>
+                    <Ionicons 
+                      name={favorites.has(item.id) ? "heart" : "heart-outline"} 
+                      size={20} 
+                      color={favorites.has(item.id) ? "red" : COLORS.primary} 
+                    />
+                  </TouchableOpacity>
                   <View style={styles.cardContent}>
                     <Text style={styles.price}>{item.price}</Text>
                     <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
@@ -329,143 +326,40 @@ export default function HomeFeedScreen() {
         )}
       </View>
 
-      <Modal visible={locationModalVisible} animationType="slide" presentationStyle="pageSheet">
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg }}>
-          {/* Dynamic Header based on Drill-down state */}
-          <View style={styles.modalHeader}>
-            {selectedState ? (
-              <TouchableOpacity onPress={() => setSelectedState(null)} style={{ padding: 4 }}>
-                <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity onPress={() => setLocationModalVisible(false)} style={{ padding: 4 }}>
-                <Ionicons name="close" size={28} color={COLORS.primary} />
-              </TouchableOpacity>
-            )}
-            <Text style={styles.modalTitle}>{selectedState ? selectedState : 'Location'}</Text>
-            <View style={{ width: 28 }} />
+      <Modal visible={sortModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.sortModalContainer}>
+            <Text style={styles.modalTitle}>Sort By</Text>
+            
+            <TouchableOpacity 
+              style={styles.sortOptionRow} 
+              onPress={() => { setSortOption('NEWEST'); setSortModalVisible(false); }}
+            >
+              <Text style={[styles.sortOptionText, sortOption === 'NEWEST' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Date Published (Newest)</Text>
+              {sortOption === 'NEWEST' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.sortOptionRow} 
+              onPress={() => { setSortOption('PRICE_LOW'); setSortModalVisible(false); }}
+            >
+              <Text style={[styles.sortOptionText, sortOption === 'PRICE_LOW' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Price: Low to High</Text>
+              {sortOption === 'PRICE_LOW' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.sortOptionRow} 
+              onPress={() => { setSortOption('PRICE_HIGH'); setSortModalVisible(false); }}
+            >
+              <Text style={[styles.sortOptionText, sortOption === 'PRICE_HIGH' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Price: High to Low</Text>
+              {sortOption === 'PRICE_HIGH' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.closeSortBtn} onPress={() => setSortModalVisible(false)}>
+              <Text style={styles.closeSortText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-          
-          <View style={{ flex: 1 }}>
-            {!selectedState ? (
-              <>
-                <View style={{ padding: 16, paddingBottom: 0 }}>
-                  <View style={styles.searchBar}>
-                    <Ionicons name="search" size={20} color={COLORS.textLight} />
-                    <TextInput 
-                      style={styles.searchInput}
-                      placeholder="Search city, area or neighbourhood"
-                      placeholderTextColor={COLORS.textLight}
-                      value={locationSearchQuery}
-                      onChangeText={setLocationSearchQuery}
-                      onSubmitEditing={handleNativeGeocodeSearch}
-                      autoFocus={false}
-                    />
-                    {locationSearchQuery.length > 0 && (
-                      <TouchableOpacity onPress={handleNativeGeocodeSearch} style={{ marginRight: 8, paddingHorizontal: 8, paddingVertical: 4, backgroundColor: COLORS.secondary, borderRadius: 4 }}>
-                        <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Find</Text>
-                      </TouchableOpacity>
-                    )}
-                    {locationSearchQuery.length > 0 && (
-                      <TouchableOpacity onPress={() => setLocationSearchQuery('')}>
-                        <Ionicons name="close-circle" size={20} color={COLORS.textLight} />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-
-                  {!locationSearchQuery && (
-                    <TouchableOpacity 
-                      style={styles.currentLocationBtn}
-                      onPress={() => {
-                        setLocationModalVisible(false);
-                        fetchCurrentLocation();
-                      }}
-                    >
-                      <Ionicons name="locate" size={24} color={COLORS.secondary} />
-                      <View style={{ marginLeft: 12 }}>
-                        <Text style={{ fontSize: 16, color: COLORS.secondary, fontWeight: 'bold' }}>Use current location</Text>
-                        <Text style={{ fontSize: 12, color: COLORS.textLight }}>Enable location services</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                </View>
-
-                {placesSuggestions.length > 0 ? (
-                  <ScrollView style={{ flex: 1, backgroundColor: COLORS.white, elevation: 4 }} keyboardShouldPersistTaps="handled">
-                    {placesSuggestions.map((suggestion) => {
-                      const place = suggestion.placePrediction;
-                      const placeId = place?.placeId;
-                      const mainText = place?.structuredFormat?.mainText?.text || place?.text?.text?.split(',')[0];
-                      const secondaryText = place?.structuredFormat?.secondaryText?.text || place?.text?.text;
-                      
-                      return (
-                        <TouchableOpacity 
-                          key={placeId} 
-                          style={styles.suggestionRow} 
-                          onPress={() => {
-                            handleManualLocation(mainText);
-                          }}
-                        >
-                          <Ionicons name="location-outline" size={20} color={COLORS.textLight} />
-                          <View style={{ marginLeft: 12, flex: 1 }}>
-                            <Text style={{ fontSize: 16, color: COLORS.primary }}>{mainText}</Text>
-                            <Text style={{ fontSize: 12, color: COLORS.textLight }} numberOfLines={1}>{secondaryText}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                ) : (
-                  <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }} keyboardShouldPersistTaps="handled">
-                    {locationSearchQuery.length > 0 ? (
-                      <TouchableOpacity style={styles.stateRow} onPress={handleNativeGeocodeSearch}>
-                        <Ionicons name="map-outline" size={24} color={COLORS.secondary} />
-                        <Text style={[styles.stateText, { color: COLORS.secondary, fontWeight: 'bold' }]}>Search global map for "{locationSearchQuery}"</Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <>
-                        <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Popular Cities</Text>
-                        {/* 3-Column Grid for Popular Cities */}
-                        <View style={styles.gridContainer}>
-                          {POPULAR_CITIES.map(city => (
-                            <TouchableOpacity key={city.name} style={styles.gridItem} onPress={() => handleManualLocation(city.name)}>
-                              <View style={styles.cityIconCircle}>
-                                <Ionicons name={city.icon as any} size={24} color={COLORS.primary} />
-                              </View>
-                              <Text style={styles.gridText}>{city.name}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-
-                        <View style={{ height: 1, backgroundColor: COLORS.border, marginVertical: 16 }} />
-
-                        <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>Choose State</Text>
-                        {STATES_DATA.map(st => (
-                          <TouchableOpacity key={st.state} style={styles.stateRow} onPress={() => setSelectedState(st.state)}>
-                            <Text style={styles.stateText}>{st.state}</Text>
-                            <Ionicons name="chevron-forward" size={20} color={COLORS.textLight} />
-                          </TouchableOpacity>
-                        ))}
-                      </>
-                    )}
-                  </ScrollView>
-                )}
-              </>
-            ) : (
-              // Drill-down View: Cities in selected State
-              <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-                <TouchableOpacity style={styles.stateRow} onPress={() => handleManualLocation(activeStateData?.state || '')}>
-                  <Text style={[styles.stateText, { fontWeight: 'bold' }]}>All in {activeStateData?.state}</Text>
-                </TouchableOpacity>
-                {activeStateData?.cities.map(city => (
-                  <TouchableOpacity key={city} style={styles.stateRow} onPress={() => handleManualLocation(city)}>
-                    <Text style={styles.stateText}>{city}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
-          </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -480,18 +374,7 @@ const styles = StyleSheet.create({
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.white, borderWidth: 1, borderColor: COLORS.primary, borderRadius: 4, paddingHorizontal: 12, paddingVertical: 8 },
   searchInput: { flex: 1, marginLeft: 8, fontSize: 16, color: COLORS.primary },
   
-  modalHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  modalTitle: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: 'bold', color: COLORS.primary },
-  currentLocationBtn: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border, marginTop: 16 },
-  suggestionRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  
-  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' },
-  gridItem: { width: '33%', alignItems: 'center', marginBottom: 20 },
-  cityIconCircle: { width: 50, height: 50, borderRadius: 25, backgroundColor: COLORS.gray, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
   gridText: { fontSize: 13, color: COLORS.primary, textAlign: 'center' },
-
-  stateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 16, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  stateText: { fontSize: 16, color: COLORS.primary },
 
   categoriesSection: { backgroundColor: COLORS.white, paddingVertical: 16 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 16 },
@@ -516,4 +399,11 @@ const styles = StyleSheet.create({
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8, alignItems: 'center' },
   location: { fontSize: 10, color: COLORS.textLight, flex: 1, marginRight: 8 },
   date: { fontSize: 10, color: COLORS.textLight, fontWeight: '500' },
+  
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  sortModalContainer: { backgroundColor: COLORS.white, borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20 },
+  sortOptionRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  sortOptionText: { fontSize: 16, color: COLORS.primary },
+  closeSortBtn: { marginTop: 16, alignItems: 'center', paddingVertical: 12, backgroundColor: COLORS.gray, borderRadius: 8 },
+  closeSortText: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary },
 });

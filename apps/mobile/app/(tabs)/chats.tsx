@@ -42,7 +42,21 @@ export default function ChatsScreen() {
     if (error) {
       console.error('Error fetching chats:', error);
     } else if (data) {
-      setChats(data);
+      // Fetch last message for each chat to determine unread status
+      const chatsWithMessages = await Promise.all(data.map(async (chat) => {
+        const { data: msgData } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('chat_id', chat.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+          
+        const lastMessage = msgData && msgData.length > 0 ? msgData[0] : null;
+        const isUnread = lastMessage && lastMessage.sender_id !== user?.id;
+        
+        return { ...chat, lastMessage, isUnread };
+      }));
+      setChats(chatsWithMessages);
     }
     setLoading(false);
   };
@@ -102,9 +116,14 @@ export default function ChatsScreen() {
                 <Text style={styles.productTitle} numberOfLines={1}>{item.product?.title}</Text>
                 
                 <View style={styles.rowBottom}>
-                  <Text style={styles.lastMessage} numberOfLines={1}>
-                    Tap to view messages
+                  <Text style={[styles.lastMessage, item.isUnread && styles.lastMessageUnread]} numberOfLines={1}>
+                    {item.lastMessage ? item.lastMessage.text : 'Tap to view messages'}
                   </Text>
+                  {item.isUnread && (
+                    <View style={styles.unreadBadge}>
+                      <Text style={styles.unreadText}></Text>
+                    </View>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>

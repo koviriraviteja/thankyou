@@ -196,7 +196,11 @@ export default function PostAdScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setStep(1)}>
             <Ionicons name="arrow-back" size={28} color={COLORS.primary} />
@@ -205,7 +209,11 @@ export default function PostAdScreen() {
           <View style={{ width: 28 }} />
         </View>
 
-        <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }}>
+        <ScrollView 
+          style={styles.content} 
+          contentContainerStyle={{ paddingBottom: 150 }} 
+          keyboardShouldPersistTaps="handled"
+        >
           
           {/* Photo Upload Section */}
           <View style={styles.inputGroup}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ActivityIndicator, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +21,7 @@ export default function ProductDetailsScreen() {
   
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -39,6 +40,14 @@ export default function ProductDetailsScreen() {
     // Fallback: If we can't fetch the seller details easily via join because it's auth.users, we just display "Verified Seller" for now.
     if (data) {
       setProduct(data);
+      if (user) {
+        const { data: favData } = await supabase
+          .from('favorites')
+          .select('*')
+          .match({ user_id: user.id, product_id: id })
+          .maybeSingle();
+        if (favData) setIsFavorite(true);
+      }
     } else {
       console.error('Error fetching product:', error);
     }
@@ -98,6 +107,32 @@ export default function ProductDetailsScreen() {
     }
   };
 
+  const toggleFavorite = async () => {
+    if (!user) {
+      alert('Please log in to add to favorites.');
+      return;
+    }
+    const newStatus = !isFavorite;
+    setIsFavorite(newStatus);
+    
+    if (newStatus) {
+      await supabase.from('favorites').insert({ user_id: user.id, product_id: id });
+    } else {
+      await supabase.from('favorites').delete().match({ user_id: user.id, product_id: id });
+    }
+  };
+
+  const handleShare = async () => {
+    if (!product) return;
+    try {
+      await Share.share({
+        message: `Check out this ad on OLX: ${product.title} for ${product.price}!`,
+      });
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -127,11 +162,11 @@ export default function ProductDetailsScreen() {
           <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
         </TouchableOpacity>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconBtn}>
+          <TouchableOpacity style={styles.iconBtn} onPress={handleShare}>
             <Ionicons name="share-social-outline" size={24} color={COLORS.primary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Ionicons name="heart-outline" size={24} color={COLORS.primary} />
+          <TouchableOpacity style={styles.iconBtn} onPress={toggleFavorite}>
+            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color={isFavorite ? "red" : COLORS.primary} />
           </TouchableOpacity>
         </View>
       </View>
