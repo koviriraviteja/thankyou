@@ -59,7 +59,39 @@ export default function PostAdScreen() {
 
   const categories = ['Cars', 'Properties', 'Mobiles', 'Jobs', 'Bikes', 'Electronics', 'Furniture'];
 
-  const pickImage = async () => {
+  const handleImageSelect = () => {
+    Alert.alert(
+      "Add Photo",
+      "Choose a photo source",
+      [
+        { text: "Camera", onPress: takePhoto },
+        { text: "Gallery", onPress: pickImageFromLibrary },
+        { text: "Cancel", style: "cancel" }
+      ]
+    );
+  };
+
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission Required", "You've refused to allow this app to access your camera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      const newImages = result.assets.map(asset => asset.uri);
+      setImages([...images, ...newImages]);
+    }
+  };
+
+  const pickImageFromLibrary = async () => {
     // Request permission first
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
@@ -219,10 +251,12 @@ export default function PostAdScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Upload up to 12 photos</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
-              <TouchableOpacity style={styles.uploadBtn} onPress={pickImage}>
-                <Ionicons name="camera" size={32} color={COLORS.primary} />
-                <Text style={styles.uploadBtnText}>Add photo</Text>
-              </TouchableOpacity>
+              {images.length < 12 && (
+                <TouchableOpacity style={styles.uploadBtn} onPress={handleImageSelect}>
+                  <Ionicons name="camera" size={32} color={COLORS.primary} />
+                  <Text style={styles.uploadBtnText}>Add photos</Text>
+                </TouchableOpacity>
+              )}
               
               {images.map((uri, index) => (
                 <View key={index} style={styles.imagePreviewContainer}>
