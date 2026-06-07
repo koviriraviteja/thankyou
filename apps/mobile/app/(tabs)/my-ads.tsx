@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
@@ -73,6 +73,30 @@ export default function MyAdsScreen() {
     fetchMyAds();
   };
 
+  const confirmDeleteAd = (productId: string) => {
+    Alert.alert(
+      "Delete Ad",
+      "Are you sure you want to delete this ad? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: () => deleteAd(productId) }
+      ]
+    );
+  };
+
+  const deleteAd = async (productId: string) => {
+    // Optionally delete from favorites first if there's no ON DELETE CASCADE
+    await supabase.from('favorites').delete().eq('product_id', productId);
+    
+    const { error } = await supabase.from('products').delete().eq('id', productId);
+    if (error) {
+      Alert.alert('Error', error.message || 'Failed to delete ad. Check RLS policies.');
+    } else {
+      Alert.alert('Success', 'Ad deleted successfully.');
+      fetchMyAds();
+    }
+  };
+
   const renderMyAds = () => {
     if (loading) return <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 40 }} />;
     
@@ -106,7 +130,10 @@ export default function MyAdsScreen() {
                       <Text style={styles.actionBtnText}>Edit</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]} onPress={() => markAsSold(item.id)}>
-                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark as Sold</Text>
+                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark Sold</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={() => confirmDeleteAd(item.id)}>
+                      <Text style={[styles.actionBtnText, styles.deleteBtnText]}>Delete</Text>
                     </TouchableOpacity>
                   </>
                 )}
@@ -205,4 +232,6 @@ const styles = StyleSheet.create({
   actionBtnText: { color: COLORS.primary, fontWeight: 'bold', fontSize: 12 },
   sellBtn: { backgroundColor: COLORS.primary },
   sellBtnText: { color: COLORS.white },
+  deleteBtn: { borderColor: 'red' },
+  deleteBtnText: { color: 'red' },
 });
