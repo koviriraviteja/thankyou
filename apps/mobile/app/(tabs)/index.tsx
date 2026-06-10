@@ -6,6 +6,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import * as Location from 'expo-location';
 import { useAuth } from '../../src/context/AuthContext';
+import { useNotification } from '../../src/context/NotificationContext';
 
 const COLORS = {
   primary: '#059669', // Emerald Green
@@ -90,6 +91,7 @@ export default function HomeFeedScreen() {
   
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { user } = useAuth();
+  const { notifications } = useNotification();
 
   const params = useLocalSearchParams();
 
@@ -261,9 +263,16 @@ export default function HomeFeedScreen() {
           <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
           <Ionicons name="chevron-down" size={20} color={COLORS.primary} />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/notifications')} style={{ position: 'relative' }}>
+            <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
+            {notifications.length > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationBadgeText}>
+                  {notifications.length > 9 ? '9+' : notifications.length}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
       </View>
 
       <View style={styles.searchContainer}>
@@ -397,4 +406,22 @@ const styles = StyleSheet.create({
   sortOptionText: { fontSize: 16, color: COLORS.primary },
   closeSortBtn: { marginTop: 16, alignItems: 'center', paddingVertical: 12, backgroundColor: COLORS.gray, borderRadius: 8 },
   closeSortText: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary },
+  notificationBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#F59E0B',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.bg,
+  },
+  notificationBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  }
 });

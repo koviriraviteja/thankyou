@@ -1,7 +1,9 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useNotification } from '../../src/context/NotificationContext';
 
 export default function TabLayout() {
+  const { notifications, clearBadge } = useNotification();
   return (
     <Tabs screenOptions={{ 
       headerShown: false,
@@ -20,7 +22,14 @@ export default function TabLayout() {
         name="chats"
         options={{
           title: 'Chats',
+          tabBarBadge: notifications.length > 0 ? notifications.length.toString() : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#F59E0B' }, // Yellow/Gold badge
           tabBarIcon: ({ color }) => <Ionicons name="chatbubble-ellipses" size={24} color={color} />,
+        }}
+        listeners={{
+          tabPress: () => {
+            clearBadge();
+          },
         }}
       />
       <Tabs.Screen

@@ -1,5 +1,6 @@
 import { Stack, router, useSegments } from 'expo-router';
 import { AuthProvider, useAuth } from '../src/context/AuthContext';
+import { NotificationProvider } from '../src/context/NotificationContext';
 import { useEffect } from 'react';
 
 function RootLayoutNav() {
@@ -25,6 +26,7 @@ function RootLayoutNav() {
       <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="edit-ad" options={{ headerShown: false }} />
       <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
+      <Stack.Screen name="notifications" options={{ headerShown: false }} />
       <Stack.Screen name="location" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)/login" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="(auth)/phone" options={{ presentation: 'modal', headerShown: false }} />
@@ -36,7 +38,9 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <NotificationProvider>
+        <RootLayoutNav />
+      </NotificationProvider>
     </AuthProvider>
   );
 }
