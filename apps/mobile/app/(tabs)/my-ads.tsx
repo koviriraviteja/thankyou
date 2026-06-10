@@ -7,17 +7,17 @@ import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
-  bg: '#f8f9fa',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
+  bg: '#ffffff',
   white: '#ffffff',
-  textLight: '#406367',
-  border: '#d8dfe0',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
 };
 
 export default function MyAdsScreen() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'ADS' | 'FAVORITES'>('ADS');
+  const [activeTab, setActiveTab] = useState<'DONATIONS' | 'FAVORITES'>('DONATIONS');
   const [myAds, setMyAds] = useState<any[]>([]);
   const [favoriteAds, setFavoriteAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,8 +75,8 @@ export default function MyAdsScreen() {
 
   const confirmDeleteAd = (productId: string) => {
     Alert.alert(
-      "Delete Ad",
-      "Are you sure you want to delete this ad? This action cannot be undone.",
+      "Delete Donation",
+      "Are you sure you want to delete this donation? This action cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Delete", style: "destructive", onPress: () => deleteAd(productId) }
@@ -90,9 +90,9 @@ export default function MyAdsScreen() {
     
     const { error } = await supabase.from('products').delete().eq('id', productId);
     if (error) {
-      Alert.alert('Error', error.message || 'Failed to delete ad. Check RLS policies.');
+      Alert.alert('Error', error.message || 'Failed to delete donation. Check RLS policies.');
     } else {
-      Alert.alert('Success', 'Ad deleted successfully.');
+      Alert.alert('Success', 'Donation deleted successfully.');
       fetchMyAds();
     }
   };
@@ -105,14 +105,14 @@ export default function MyAdsScreen() {
         data={myAds}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text style={styles.emptyText}>You haven't posted any ads yet.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>You haven't posted any donations yet.</Text>}
         renderItem={({ item }) => (
           <View style={styles.adCard}>
             <View style={styles.adRow}>
               <Image source={{ uri: item.image_url }} style={styles.adImage} />
               <View style={styles.adInfo}>
                 <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
-                <Text style={styles.adPrice}>{item.price}</Text>
+                <Text style={styles.adPrice}>FREE</Text>
                 <View style={styles.adStats}>
                   <Ionicons name="eye-outline" size={14} color={COLORS.textLight} />
                   <Text style={styles.statText}>0 Views</Text>
@@ -122,7 +122,7 @@ export default function MyAdsScreen() {
               </View>
             </View>
             <View style={styles.adFooter}>
-              <Text style={[styles.statusText, item.is_sold && { color: 'red' }]}>{item.is_sold ? 'SOLD' : 'ACTIVE'}</Text>
+              <Text style={[styles.statusText, item.is_sold && { color: COLORS.primary }]}>{item.is_sold ? 'DONATED 🎉' : 'ACTIVE'}</Text>
               <View style={styles.actionButtons}>
                 {!item.is_sold && (
                   <>
@@ -130,13 +130,13 @@ export default function MyAdsScreen() {
                       <Text style={styles.actionBtnText}>Edit</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]} onPress={() => markAsSold(item.id)}>
-                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark Sold</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={() => confirmDeleteAd(item.id)}>
-                      <Text style={[styles.actionBtnText, styles.deleteBtnText]}>Delete</Text>
+                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark Donated</Text>
                     </TouchableOpacity>
                   </>
                 )}
+                <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={() => confirmDeleteAd(item.id)}>
+                  <Text style={[styles.actionBtnText, styles.deleteBtnText]}>Delete</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -150,7 +150,7 @@ export default function MyAdsScreen() {
       data={favoriteAds}
       keyExtractor={item => item.id}
       contentContainerStyle={styles.listContent}
-      ListEmptyComponent={<Text style={styles.emptyText}>You haven't liked any ads yet.</Text>}
+      ListEmptyComponent={<Text style={styles.emptyText}>You haven't liked any donations yet.</Text>}
       renderItem={({ item }) => (
         <TouchableOpacity 
           style={styles.adCard}
@@ -160,7 +160,7 @@ export default function MyAdsScreen() {
             <Image source={{ uri: item.image_url }} style={styles.adImage} />
             <View style={styles.adInfo}>
               <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
-              <Text style={styles.adPrice}>{item.price}</Text>
+              <Text style={styles.adPrice}>FREE</Text>
               <Text style={styles.adLocation}>{item.location}</Text>
             </View>
             <TouchableOpacity style={styles.favIcon} onPress={() => toggleFavorite(item.id)}>
@@ -176,16 +176,16 @@ export default function MyAdsScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Ads</Text>
+        <Text style={styles.headerTitle}>My Donations</Text>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabContainer}>
         <TouchableOpacity 
-          style={[styles.tab, activeTab === 'ADS' && styles.activeTab]}
-          onPress={() => setActiveTab('ADS')}
+          style={[styles.tab, activeTab === 'DONATIONS' && styles.activeTab]}
+          onPress={() => setActiveTab('DONATIONS')}
         >
-          <Text style={[styles.tabText, activeTab === 'ADS' && styles.activeTabText]}>ADS</Text>
+          <Text style={[styles.tabText, activeTab === 'DONATIONS' && styles.activeTabText]}>DONATIONS</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.tab, activeTab === 'FAVORITES' && styles.activeTab]}
@@ -197,7 +197,7 @@ export default function MyAdsScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        {activeTab === 'ADS' ? renderMyAds() : renderFavorites()}
+        {activeTab === 'DONATIONS' ? renderMyAds() : renderFavorites()}
       </View>
     </SafeAreaView>
   );

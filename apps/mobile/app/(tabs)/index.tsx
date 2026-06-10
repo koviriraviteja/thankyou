@@ -8,23 +8,24 @@ import * as Location from 'expo-location';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
   bg: '#ffffff',
   gray: '#f0f0f0',
   white: '#ffffff',
-  textLight: '#406367',
-  border: '#d8dfe0',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
 };
 
 const CATEGORIES = [
-  { id: '1', name: 'Cars', icon: 'car-sport-outline' },
-  { id: '2', name: 'Properties', icon: 'business-outline' },
-  { id: '3', name: 'Mobiles', icon: 'phone-portrait-outline' },
-  { id: '4', name: 'Jobs', icon: 'briefcase-outline' },
-  { id: '5', name: 'Bikes', icon: 'bicycle-outline' },
-  { id: '6', name: 'Electronics', icon: 'tv-outline' },
-  { id: '7', name: 'Furniture', icon: 'bed-outline' },
+  { id: '1', name: 'Clothes', icon: 'shirt-outline' },
+  { id: '2', name: 'Books', icon: 'book-outline' },
+  { id: '3', name: 'Toys', icon: 'happy-outline' },
+  { id: '4', name: 'Food', icon: 'restaurant-outline' },
+  { id: '5', name: 'Electronics', icon: 'tv-outline' },
+  { id: '6', name: 'Furniture', icon: 'bed-outline' },
+  { id: '7', name: 'Medical', icon: 'medkit-outline' },
+  { id: '8', name: 'Others', icon: 'apps-outline' },
 ];
 
 const POPULAR_CITIES = [
@@ -84,7 +85,7 @@ export default function HomeFeedScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   
-  const [sortOption, setSortOption] = useState<'NEWEST' | 'PRICE_LOW' | 'PRICE_HIGH'>('NEWEST');
+  const [sortOption, setSortOption] = useState<'NEWEST' | 'OLDEST'>('NEWEST');
   const [sortModalVisible, setSortModalVisible] = useState(false);
   
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -194,10 +195,8 @@ export default function HomeFeedScreen() {
 
   const applySort = (dataList: any[], option: string) => {
     let sorted = [...dataList];
-    if (option === 'PRICE_LOW') {
-      sorted.sort((a, b) => Number((a.price||'').replace(/[^0-9]/g, '')) - Number((b.price||'').replace(/[^0-9]/g, '')));
-    } else if (option === 'PRICE_HIGH') {
-      sorted.sort((a, b) => Number((b.price||'').replace(/[^0-9]/g, '')) - Number((a.price||'').replace(/[^0-9]/g, '')));
+    if (option === 'OLDEST') {
+      sorted.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
     } else {
       sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
@@ -242,11 +241,11 @@ export default function HomeFeedScreen() {
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
         <Text style={styles.sectionTitle}>
-          {selectedCategory ? `Showing ${selectedCategory}` : 'Fresh recommendations'}
+          {selectedCategory ? `Showing ${selectedCategory}` : 'Recent Donations'}
         </Text>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setSortModalVisible(true)}>
           <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.secondary, marginRight: 4 }}>
-            {sortOption === 'NEWEST' ? 'Newest' : sortOption === 'PRICE_LOW' ? 'Price: Low' : 'Price: High'}
+            {sortOption === 'NEWEST' ? 'Newest' : 'Oldest'}
           </Text>
           <Ionicons name="filter" size={16} color={COLORS.secondary} />
         </TouchableOpacity>
@@ -272,7 +271,7 @@ export default function HomeFeedScreen() {
           <Ionicons name="search" size={20} color={COLORS.textLight} />
           <TextInput 
             style={styles.searchInput}
-            placeholder="Find Cars, Mobile Phones and more..."
+            placeholder="Find Clothes, Books, Food and more..."
             placeholderTextColor={COLORS.textLight}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -293,7 +292,7 @@ export default function HomeFeedScreen() {
             contentContainerStyle={styles.listContent}
             ListEmptyComponent={
               <Text style={{ textAlign: 'center', marginTop: 40, color: COLORS.textLight }}>
-                No products found in this area/category.
+                No donations found in this area/category.
               </Text>
             }
             renderItem={({ item }) => {
@@ -312,7 +311,7 @@ export default function HomeFeedScreen() {
                     />
                   </TouchableOpacity>
                   <View style={styles.cardContent}>
-                    <Text style={styles.price}>{item.price}</Text>
+                    <Text style={styles.price}>FREE</Text>
                     <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
                     <View style={styles.cardFooter}>
                       <Text style={styles.location} numberOfLines={1}>{item.location.split(',')[0]}</Text>
@@ -341,18 +340,10 @@ export default function HomeFeedScreen() {
 
             <TouchableOpacity 
               style={styles.sortOptionRow} 
-              onPress={() => { setSortOption('PRICE_LOW'); setSortModalVisible(false); }}
+              onPress={() => { setSortOption('OLDEST'); setSortModalVisible(false); }}
             >
-              <Text style={[styles.sortOptionText, sortOption === 'PRICE_LOW' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Price: Low to High</Text>
-              {sortOption === 'PRICE_LOW' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.sortOptionRow} 
-              onPress={() => { setSortOption('PRICE_HIGH'); setSortModalVisible(false); }}
-            >
-              <Text style={[styles.sortOptionText, sortOption === 'PRICE_HIGH' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Price: High to Low</Text>
-              {sortOption === 'PRICE_HIGH' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
+              <Text style={[styles.sortOptionText, sortOption === 'OLDEST' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Date Published (Oldest)</Text>
+              {sortOption === 'OLDEST' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.closeSortBtn} onPress={() => setSortModalVisible(false)}>

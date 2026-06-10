@@ -7,13 +7,13 @@ import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
   bg: '#f8f9fa',
   white: '#ffffff',
-  textLight: '#406367',
-  border: '#d8dfe0',
-  messageSent: '#e1ffd4',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
+  messageSent: '#D1FAE5', // Light Emerald
   messageReceived: '#ffffff',
 };
 

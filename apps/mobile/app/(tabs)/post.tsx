@@ -11,12 +11,12 @@ import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../src/lib/supabase';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
   bg: '#ffffff',
   gray: '#f2f4f5',
-  textLight: '#406367',
-  border: '#d8dfe0',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
 };
 
 export default function PostAdScreen() {
@@ -28,7 +28,6 @@ export default function PostAdScreen() {
   const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
   const [location, setLocation] = useState('');
   const [coords, setCoords] = useState<{lat: number, lng: number} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +56,7 @@ export default function PostAdScreen() {
     })();
   }, []);
 
-  const categories = ['Cars', 'Properties', 'Mobiles', 'Jobs', 'Bikes', 'Electronics', 'Furniture'];
+  const categories = ['Clothes', 'Books', 'Toys', 'Food', 'Electronics', 'Furniture', 'Medical', 'Others'];
 
   const handleImageSelect = () => {
     Alert.alert(
@@ -118,7 +117,7 @@ export default function PostAdScreen() {
   };
 
   const handlePost = async () => {
-    if (!title || !price || !location) {
+    if (!title || !location) {
       Alert.alert('Error', 'Please fill all mandatory fields');
       return;
     }
@@ -165,7 +164,7 @@ export default function PostAdScreen() {
         .insert({
           title,
           description,
-          price: `₹${price}`,
+          price: 'Free',
           location,
           latitude: coords?.lat || null,
           longitude: coords?.lng || null,
@@ -184,7 +183,6 @@ export default function PostAdScreen() {
             setImages([]);
             setTitle('');
             setDescription('');
-            setPrice('');
             setLocation('');
             setCategory('');
             router.push('/(tabs)/my-ads');
@@ -204,7 +202,7 @@ export default function PostAdScreen() {
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="close" size={28} color={COLORS.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>What are you offering?</Text>
+          <Text style={styles.headerTitle}>What are you donating?</Text>
           <View style={{ width: 28 }} />
         </View>
         <ScrollView style={styles.content}>
@@ -285,7 +283,7 @@ export default function PostAdScreen() {
             <Text style={styles.label}>Description *</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Include condition, features and reason for selling"
+              placeholder="Include condition, features and reason for donating"
               value={description}
               onChangeText={setDescription}
               multiline
@@ -293,20 +291,6 @@ export default function PostAdScreen() {
               maxLength={4000}
             />
             <Text style={styles.charCount}>{description.length} / 4000</Text>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Price *</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.currencyPrefix}>₹</Text>
-              <TextInput
-                style={styles.priceInput}
-                placeholder=""
-                value={price}
-                onChangeText={(text) => setPrice(text.replace(/[^0-9]/g, ''))}
-                keyboardType="numeric"
-              />
-            </View>
           </View>
 
           <View style={styles.inputGroup}>

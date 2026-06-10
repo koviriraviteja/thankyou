@@ -6,11 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   white: '#ffffff',
-  text: '#002f34',
-  textLight: '#406367',
+  text: '#059669',
+  textLight: '#4B5563',
   border: '#d8dfe0',
 };
 
@@ -28,12 +28,12 @@ export default function AuthGatewayScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        {/* Mock OLX Logo / Icon */}
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>O L X</Text>
+        {/* Mock Logo / Icon */}
+        <View style={styles.logoPlaceholder}>
+          <Ionicons name="heart" size={60} color={COLORS.primary} />
         </View>
-        <Text style={styles.title}>Welcome to OLX</Text>
-        <Text style={styles.subtitle}>The trusted community of buyers and sellers.</Text>
+        <Text style={styles.title}>Welcome to GiveAway</Text>
+        <Text style={styles.subtitle}>Help your community by sharing what you don't need.</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -55,7 +55,7 @@ export default function AuthGatewayScreen() {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          If you continue, you are accepting OLX{' '}
+          If you continue, you are accepting Community{' '}
           <Text style={styles.linkText}>Terms and Conditions</Text> and{' '}
           <Text style={styles.linkText}>Privacy Policy</Text>
         </Text>
@@ -140,3 +140,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

@@ -5,8 +5,8 @@ export default function TabLayout() {
   return (
     <Tabs screenOptions={{ 
       headerShown: false,
-      tabBarActiveTintColor: '#002f34',
-      tabBarInactiveTintColor: '#406367',
+      tabBarActiveTintColor: '#059669', // Emerald Green Primary
+      tabBarInactiveTintColor: '#4B5563', // Gray 600
       tabBarStyle: { height: 60, paddingBottom: 8, paddingTop: 8 }
     }}>
       <Tabs.Screen
@@ -26,15 +26,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="post"
         options={{
-          title: 'Sell',
+          title: 'Donate',
           tabBarIcon: ({ color }) => <Ionicons name="add-circle" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="my-ads"
         options={{
-          title: 'My Ads',
-          tabBarIcon: ({ color }) => <Ionicons name="heart-outline" size={24} color={color} />,
+          title: 'Donations',
+          tabBarIcon: ({ color }) => <Ionicons name="heart" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

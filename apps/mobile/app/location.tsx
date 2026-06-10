@@ -6,12 +6,12 @@ import { router } from 'expo-router';
 import * as Location from 'expo-location';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   bg: '#ffffff',
   gray: '#f0f0f0',
   white: '#ffffff',
-  textLight: '#406367',
+  textLight: '#4B5563',
   border: '#d8dfe0',
 };
 
@@ -277,3 +277,4 @@ const styles = StyleSheet.create({
   stateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 16, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
   stateText: { fontSize: 16, color: COLORS.primary },
 });
+

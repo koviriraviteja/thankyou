@@ -7,12 +7,12 @@ import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
   bg: '#f8f9fa',
   white: '#ffffff',
-  textLight: '#406367',
-  border: '#d8dfe0',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
 };
 
 export default function ProductDetailsScreen() {
@@ -37,7 +37,7 @@ export default function ProductDetailsScreen() {
       .eq('id', id)
       .single();
     
-    // Fallback: If we can't fetch the seller details easily via join because it's auth.users, we just display "Verified Seller" for now.
+    // Fallback: If we can't fetch the donor details easily via join because it's auth.users, we just display "Verified Donor" for now.
     if (data) {
       setProduct(data);
       if (user) {
@@ -97,7 +97,7 @@ export default function ProductDetailsScreen() {
         params: {
           id: chatId,
           productTitle: product.title,
-          otherUser: 'Verified Seller',
+          otherUser: 'Verified Donor',
           productImage: product.image_url
         }
       });
@@ -126,7 +126,7 @@ export default function ProductDetailsScreen() {
     if (!product) return;
     try {
       await Share.share({
-        message: `Check out this ad on OLX: ${product.title} for ${product.price}!`,
+        message: `Check out this donation: ${product.title}!`,
       });
     } catch (error: any) {
       alert(error.message);
@@ -182,7 +182,7 @@ export default function ProductDetailsScreen() {
 
         {/* Title and Price Block */}
         <View style={styles.detailsBlock}>
-          <Text style={styles.price}>{product.price}</Text>
+          <Text style={styles.price}>FREE</Text>
           <Text style={styles.title}>{product.title}</Text>
           <View style={styles.locationRow}>
             <Ionicons name="location-outline" size={16} color={COLORS.textLight} />
@@ -206,7 +206,7 @@ export default function ProductDetailsScreen() {
               <Ionicons name="person" size={30} color={COLORS.white} />
             </View>
             <View style={styles.sellerInfo}>
-              <Text style={styles.sellerName}>Verified Seller</Text>
+              <Text style={styles.sellerName}>Verified Donor</Text>
               <Text style={styles.sellerDate}>User ID: {product.seller_id?.substring(0, 8)}...</Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={COLORS.primary} />
@@ -217,10 +217,10 @@ export default function ProductDetailsScreen() {
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.chatBtn} onPress={startChat}>
-          <Text style={styles.chatBtnText}>Chat</Text>
+          <Text style={styles.chatBtnText}>Chat with Donor</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.makeOfferBtn}>
-          <Text style={styles.makeOfferBtnText}>Make offer</Text>
+          <Text style={styles.makeOfferBtnText}>Request Item</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -5,11 +5,11 @@ import { useAuth } from '../../src/context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   white: '#ffffff',
-  text: '#002f34',
-  textLight: '#406367',
+  text: '#059669',
+  textLight: '#4B5563',
   border: '#d8dfe0',
   error: '#ff5a5f'
 };
@@ -180,3 +180,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

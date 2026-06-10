@@ -10,11 +10,11 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   bg: '#f8f9fa',
   white: '#ffffff',
-  textLight: '#406367',
+  textLight: '#4B5563',
   border: '#d8dfe0',
 };
 
@@ -165,3 +165,4 @@ const styles = StyleSheet.create({
   saveBtn: { backgroundColor: COLORS.primary, padding: 16, borderRadius: 4, alignItems: 'center', marginTop: 20 },
   saveBtnText: { color: COLORS.white, fontSize: 16, fontWeight: 'bold' },
 });
+

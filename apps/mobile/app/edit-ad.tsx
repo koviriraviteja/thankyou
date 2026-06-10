@@ -7,12 +7,12 @@ import { supabase } from '../src/lib/supabase';
 import { useAuth } from '../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669', // Emerald Green
+  secondary: '#10B981', // Emerald Light
   bg: '#ffffff',
   gray: '#f2f4f5',
-  textLight: '#406367',
-  border: '#d8dfe0',
+  textLight: '#4B5563', // Gray 600
+  border: '#E5E7EB',
 };
 
 export default function EditAdScreen() {
@@ -21,7 +21,6 @@ export default function EditAdScreen() {
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
   const [location, setLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -35,14 +34,13 @@ export default function EditAdScreen() {
     if (data) {
       setTitle(data.title || '');
       setDescription(data.description || '');
-      setPrice((data.price || '').replace(/[^0-9]/g, ''));
       setLocation(data.location || '');
     }
     setIsFetching(false);
   };
 
   const handleUpdate = async () => {
-    if (!title || !price || !location) {
+    if (!title || !location) {
       Alert.alert('Error', 'Please fill all mandatory fields');
       return;
     }
@@ -55,7 +53,7 @@ export default function EditAdScreen() {
         .update({
           title,
           description,
-          price: `₹${price}`,
+          price: 'Free',
           location,
         })
         .eq('id', id);
@@ -92,7 +90,7 @@ export default function EditAdScreen() {
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={28} color={COLORS.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit your ad</Text>
+          <Text style={styles.headerTitle}>Edit your donation</Text>
           <View style={{ width: 28 }} />
         </View>
 
@@ -102,7 +100,7 @@ export default function EditAdScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Ad title *</Text>
+            <Text style={styles.label}>Item title *</Text>
             <TextInput
               style={styles.input}
               placeholder="Key features of your item"
@@ -117,7 +115,7 @@ export default function EditAdScreen() {
             <Text style={styles.label}>Description *</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Include condition, features and reason for selling"
+              placeholder="Include condition, features and reason for donating"
               value={description}
               onChangeText={setDescription}
               multiline
@@ -125,20 +123,6 @@ export default function EditAdScreen() {
               maxLength={4000}
             />
             <Text style={styles.charCount}>{description.length} / 4000</Text>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Price *</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.currencyPrefix}>₹</Text>
-              <TextInput
-                style={styles.priceInput}
-                placeholder=""
-                value={price}
-                onChangeText={(text) => setPrice(text.replace(/[^0-9]/g, ''))}
-                keyboardType="numeric"
-              />
-            </View>
           </View>
 
           <View style={styles.inputGroup}>

@@ -7,11 +7,11 @@ import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   bg: '#ffffff',
   gray: '#f2f4f5',
-  textLight: '#406367',
+  textLight: '#4B5563',
   border: '#d8dfe0',
 };
 
@@ -152,3 +152,4 @@ const styles = StyleSheet.create({
   unreadBadge: { backgroundColor: COLORS.secondary, borderRadius: 12, minWidth: 24, height: 24, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 6 },
   unreadText: { color: COLORS.white, fontSize: 12, fontWeight: 'bold' },
 });
+

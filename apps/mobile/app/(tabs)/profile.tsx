@@ -6,11 +6,11 @@ import { router } from 'expo-router';
 import { useAuth } from '../../src/context/AuthContext';
 
 const COLORS = {
-  primary: '#002f34',
-  secondary: '#00a49f',
+  primary: '#059669',
+  secondary: '#10B981',
   bg: '#f8f9fa',
   white: '#ffffff',
-  textLight: '#406367',
+  textLight: '#4B5563',
   border: '#d8dfe0',
 };
 
@@ -36,7 +36,7 @@ export default function ProfileScreen() {
           <View style={styles.info}>
             {user ? (
               <>
-                <Text style={styles.name}>{user.user_metadata?.full_name || user.email?.split('@')[0] || 'OLX User'}</Text>
+                <Text style={styles.name}>{user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}</Text>
                 <Text style={styles.sub}>{user.email || user.phone || 'No contact info'}</Text>
                 <TouchableOpacity style={styles.editProfileBtn} onPress={() => router.push('/edit-profile')}>
                   <Text style={styles.editProfileText}>View and edit profile</Text>
@@ -44,8 +44,8 @@ export default function ProfileScreen() {
               </>
             ) : (
               <>
-                <Text style={styles.name}>Welcome to OLX!</Text>
-                <Text style={styles.sub}>Take charge of your buying and selling journey.</Text>
+                <Text style={styles.name}>Welcome to the Community!</Text>
+                <Text style={styles.sub}>Take charge of your donation journey.</Text>
                 <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
                   <Text style={styles.loginBtnText}>Log in or register</Text>
                 </TouchableOpacity>
@@ -57,7 +57,7 @@ export default function ProfileScreen() {
         {/* Menu Items */}
         <View style={styles.menu}>
           {[
-            { id: '1', title: 'Buy Packages & My Orders', icon: 'card-outline' },
+            { id: '1', title: 'My Donation History', icon: 'heart-circle-outline' },
             { id: '2', title: 'Settings', icon: 'settings-outline' },
             { id: '3', title: 'Help & Support', icon: 'help-circle-outline' },
             { id: '4', title: 'Select Language', icon: 'language-outline', value: 'English' },
@@ -101,3 +101,4 @@ const styles = StyleSheet.create({
   logoutItem: { flexDirection: 'row', padding: 20, alignItems: 'center' },
   logoutText: { fontSize: 16, color: COLORS.primary, fontWeight: 'bold' },
 });
+
