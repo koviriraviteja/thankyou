@@ -24,6 +24,7 @@ function RootLayoutNav() {
       <Stack.Screen name="product/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="edit-ad" options={{ headerShown: false }} />
+      <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
       <Stack.Screen name="location" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)/login" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="(auth)/phone" options={{ presentation: 'modal', headerShown: false }} />

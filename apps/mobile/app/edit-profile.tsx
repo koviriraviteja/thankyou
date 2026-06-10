@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../src/lib/supabase';
 import { useAuth } from '../src/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system/legacy';
+import { decode } from 'base64-arraybuffer';
 
 const COLORS = {
   primary: '#002f34',
@@ -45,13 +48,12 @@ export default function EditProfileScreen() {
 
       // If avatarUrl is a local file (starts with file://), upload it
       if (avatarUrl && !avatarUrl.startsWith('http')) {
-        const response = await fetch(avatarUrl);
-        const blob = await response.blob();
+        const base64 = await FileSystem.readAsStringAsync(avatarUrl, { encoding: 'base64' });
         const filePath = `${user.id}/avatar-${Date.now()}.jpg`;
         
         const { error: uploadError } = await supabase.storage
           .from('product-images') // Reusing the public bucket we created
-          .upload(filePath, blob, { contentType: 'image/jpeg' });
+          .upload(filePath, decode(base64), { contentType: 'image/jpeg' });
 
         if (uploadError) throw uploadError;
 
