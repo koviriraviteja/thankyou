@@ -10,9 +10,6 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
-    "@olx-clone/api-client": "*",
-    "@olx-clone/types": "*",
-    "@olx-clone/ui": "*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.107.0",
     "axios": "^1.17.0",
