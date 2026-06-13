@@ -1,0 +1,340 @@
+--------- beginning of main
+06-13 20:20:35.409  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1159.000000,,175.000000,,4.000000,0.000000,1414674879156466]
+06-13 20:20:35.609  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,175.000000,,4.000000,0.000000,1414675079564419]
+06-13 20:20:35.611  1860  1860 D AALLightSensor: oldLux=186 [SA:-1 LA:-1] newLux=186 (oriLux: 186)
+06-13 20:20:35.695 22341 13924 I NearbySharing: Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+06-13 20:20:35.696 22341 16828 I NearbySharing: Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+06-13 20:20:35.713  2244  3015 I Osense-BaseDecisionMaker: notifySceneToAthenaPolicy: SCENE_RES_IO_PSI, bundle: Bundle[{ioLevel=3}]
+06-13 20:20:35.714  2244  3015 I Osense-BaseDecisionMaker: OSense not supported scene! SCENE_RES_IO_PSI
+06-13 20:20:35.733  3521  3521 D AtCmdParser: [PHONE1]< com.oplus.telephony.AtCmdParser$2@69013af urc ind:+ECSQ: 32,32,1,-355,-34,1,1,96,32767,1
+06-13 20:20:35.735  3521  3521 D SubsysEventListenerManager-SubsysTelephonyCallback[1]: onSignalStrengthsChanged
+06-13 20:20:35.738  2971  3194 I SystemUi--Statusbar: MobileConnectionRepositoryImpl-->subId:3 isSoftSimCard:false slotId:1
+06-13 20:20:35.788 15775 17592 I BugleDataModel: running action GenericWorkerQueueAction
+06-13 20:20:35.788 15775 15775 I BugleDataModel: ActionExecutorImpl: ACTION_EXECUTE_QUEUED_GenericWorkerQueueAction
+06-13 20:20:35.789 15775 17592 I BugleDataModel: ActionExecutorImpl: ACTION_BACKGROUND_QUEUED_GenericWorkerQueueAction
+06-13 20:20:35.790 15775 17592 I BugleDataModel: finished running action GenericWorkerQueueAction in 1 ms
+06-13 20:20:35.792 15775 21156 I BugleJobs: GenericWorkerQueueAction: Bailing early, no work found, no failed work found
+06-13 20:20:35.792 15775 21156 I BugleDataModel: ActionExecutorImpl: ACTION_RESPONSE_QUEUED_GenericWorkerQueueAction
+06-13 20:20:35.809  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,175.000000,,4.000000,0.000000,1414675279225279]
+06-13 20:20:36.009  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,175.000000,,4.000000,0.000000,1414675479408351]
+06-13 20:20:36.210  1433  1505 I OriginChannel: wise light debug, data[1].type is 65627,data[1].sensor is 91:[1158.000000,,150.000000,,4.000000,0.000000,1414675679534943]
+06-13 20:20:36.347  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:36.354  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1292,avg=1015,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=35,debug=0,region=12,ttf=6670(01:51:10),ui_ttf=5975(01:39:35)
+06-13 20:20:36.409  1433  1505 I OriginChannel: wise light debug, data[1].type is 65627,data[1].sensor is 91:[1158.000000,,150.000000,,4.000000,0.000000,1414675879396798]
+06-13 20:20:36.609  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,200.000000,,4.000000,0.000000,1414676079448985]
+06-13 20:20:36.744  1400  1782 E TetherController: property_get sys.radio.data.modem_share_flag return 0, 1!
+06-13 20:20:36.771  1429  1429 D healthd : system healthd: battery l=49 v=3 t=35.4 h=2 st=2 c=-1292 fc=4287000 cc=1 chg=u
+06-13 20:20:36.809  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,125.000000,,4.000000,0.000000,1414676279235264]
+06-13 20:20:36.858  1429  1429 D healthd : system healthd: battery l=49 v=3 t=35.4 h=2 st=2 c=-1292 fc=4287000 cc=1 chg=u
+06-13 20:20:37.010  1433  1505 I OriginChannel: wise light debug, data[1].type is 65627,data[1].sensor is 91:[1158.000000,,200.000000,,4.000000,0.000000,1414676479896683]
+06-13 20:20:37.074  1487  1487 D vendor.oplus.hardware.charger-V6-service: get_ui_charge_icon_type 1 3 0 0 1
+06-13 20:20:37.076  1487  1487 D vendor.oplus.hardware.charger-V6-service: oplus_chg_get_cpa_power 7500 charge_online 1 retention_topic 0
+06-13 20:20:37.082  2971  2971 I SystemUi--Statusbar: BatteryControllerExt-->updateBatteryChangeIntent():broadcast=android.intent.action.BATTERY_CHANGED,level=49,scale=100
+06-13 20:20:37.083  2971  2971 I SystemUi--Statusbar: BatteryRepository-->level: 49 -- isSavingMode: false
+--------- beginning of system
+06-13 20:20:37.092  2244  2466 D OplusDisplayBrightnessBroadcastReceiver: onReceive action = android.intent.action.BATTERY_CHANGED , listeners = [com.android.server.display.OplusFeatureHDREnhanceBrightness$PhoneInfoReceiver@2061ef2, com.android.server.display.OplusFeatureEdrEnhanceBrightness$PhoneInfoReceiver@b351943]
+06-13 20:20:37.093  3521  3521 D SubsysBroadcastManager: onReceive action:android.intent.action.BATTERY_CHANGED
+06-13 20:20:37.095  6650  6650 E VendorNfcService: changeNfcStateByWirelessCharge: feature WIRELESS_CHARGING = true; mIsWirelessCharging: false; mIsReverseChargingSwitchOpen: false; mNfcWorkMode: 0; isOverSeaRegion() = true
+06-13 20:20:37.099  5536  5828 E Battery : ChargeProtectionUtils: First Alarm is Sat Jun 13 10:15:00 GMT+05:30 2026, nowRtc  = Sat Jun 13 20:20:37 GMT+05:30 2026, too close , ignore it.
+06-13 20:20:37.099  5536  5828 E Battery : ChargeProtectionUtils: mCanlendarTmp.isEmpty()!
+06-13 20:20:37.100 17864 17864 D CustomLogManagerService: onReceive android.intent.action.BATTERY_CHANGED
+06-13 20:20:37.102  3521  3521 D AtCmdParser: [PHONE0]< com.oplus.telephony.AtCmdParser$2@69013af urc ind:+ECSQ: 8,32,-371,1,1,-64,-435,4096,-11,3
+06-13 20:20:37.125  1487  1487 D vendor.oplus.hardware.charger-V6-service: getChargerControl:sub_current=100
+06-13 20:20:37.125  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_voltage=3800
+06-13 20:20:37.125  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_soc=-1
+06-13 20:20:37.125  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_temperature=250
+06-13 20:20:37.125  1487  1487 D vendor.oplus.hardware.charger-V6-service: main_soc=48
+06-13 20:20:37.209  1433  1505 I OriginChannel: wise light debug, data[1].type is 65627,data[1].sensor is 91:[1157.000000,,175.000000,,4.000000,0.000000,1414676679215102]
+06-13 20:20:37.221  1487  1487 D vendor.oplus.hardware.charger-V6-service: getChargerControl:sub_current=100
+06-13 20:20:37.221  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_voltage=3800
+06-13 20:20:37.221  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_soc=-1
+06-13 20:20:37.221  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_temperature=250
+06-13 20:20:37.221  1487  1487 D vendor.oplus.hardware.charger-V6-service: main_soc=48
+06-13 20:20:37.233  1487  1487 D vendor.oplus.hardware.charger-V6-service: get_ui_charge_icon_type 1 3 0 0 1
+06-13 20:20:37.234  1487  1487 D vendor.oplus.hardware.charger-V6-service: oplus_chg_get_cpa_power 7500 charge_online 1 retention_topic 0
+06-13 20:20:37.347  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:37.357  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1267,avg=1065,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=36,debug=0,region=12,ttf=6355(01:45:55),ui_ttf=5974(01:39:34)
+06-13 20:20:37.409  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1158.000000,,200.000000,,4.000000,0.000000,1414676879356732]
+06-13 20:20:37.589 12841 12952 I AIUnit-b6.e1781361777777: onReceive android.intent.action.BATTERY_CHANGED -> BatteryEvent[batteryPct:49.0, isCharging:true, isLowBattery:false, isPowerSave:false, plugged:2]
+06-13 20:20:37.609  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,150.000000,,4.000000,0.000000,1414677079257342]
+06-13 20:20:37.809  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1162.000000,,175.000000,,4.000000,0.000000,1414677279395712]
+06-13 20:20:37.859  1819  2231 D ULogGuard: Monitoring: 2 threads, 0 requests, 0 time-bombs; 7 guards. ResetFlags = 0x7
+06-13 20:20:37.925  2971  3088 I SystemUi--Statusbar: OplusNetworkSpeedControllExImpl-->updateNetworkSpeed: isConnected:true,isSwitchOn:true
+06-13 20:20:37.926  2244  2765 W Settings: Setting notification_bubbles has moved from android.provider.Settings.Global to android.provider.Settings.Secure, returning read-only value.
+06-13 20:20:37.926  2244  2765 W Settings: Setting apply_ramping_ringer has moved from android.provider.Settings.Global to android.provider.Settings.System, returning read-only value.
+06-13 20:20:37.931  2971  3088 I SystemUi--Statusbar: OplusNetworkSpeedControllExImpl-->getTotalByte: totalRxBytes:67615264395,totalTxBytes:4404564318,loopbackTxBytes:753067736,loopbackRxBytes:751913228 ,totalBytes:70514847749
+06-13 20:20:37.935  2244  2765 W SettingsStatsUtil: Can not parse value to float: +network
+06-13 20:20:37.944  2244  2765 W SettingsStatsUtil: Can not parse value to float: +network
+06-13 20:20:37.948  2971  2971 I SystemUi--Keyguard: KeyguardUtils-->density is 0 sInitialDisplayDensity:480
+06-13 20:20:37.962  1558  1558 I BufferQueueProducer: [NotificationShade#206968](this:0xb40000763d1fa9e0,id:-1,api:0,p:-1,c:1558) queueBuffer: fps=10.44 dur=4887.13 max=4015.19 min=7.06
+06-13 20:20:37.963  1558  1558 I BufferQueueProducer: [StatusBar#101](this:0xb4000076920479e0,id:-1,api:0,p:-1,c:1558) queueBuffer: fps=0.25 dur=4024.12 max=4024.12 min=4024.12
+06-13 20:20:37.966  1425  1425 I hwcomposer: [HWCDisplay] (0 updateFps():4192), (type:1, mode:2) fps:0.496870,dur:4025.20,max:4017.43,min:7.76  
+06-13 20:20:37.969  1558  1558 I OplusPerfCount: The num of client composition of MTKDEV in last 60192 ms is: 275
+06-13 20:20:37.969  1558  1558 I OplusPerfCount: The num of blur fliter in last 60192 ms is: 363
+06-13 20:20:37.983  1558  1558 I OplusPerfCount: The layer number in last 60192ms is: 2 layer, 10 time, 3 layer, 289 time, 4 layer, 335 time, 5 layer, 42 time, 6 layer, 89 time, 7 layer, 5 time, 
+06-13 20:20:38.009  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1162.000000,,150.000000,,4.000000,0.000000,1414677479384668]
+06-13 20:20:38.012  1558  4192 D SurfaceFlinger: captureDisplay from pid 1558 uid -1 display 4627039422300187648
+06-13 20:20:38.165  1464  3580 E PerformanceService: storage_feature: open /sys/devices/platform/soc/112b0000.ufshci//virtualtlcbuff fail
+06-13 20:20:38.178  2244  2846 D OplusWifiPower_TriggerCenter: mComponentCallback: wifistat
+06-13 20:20:38.178  2971  3088 D WifiStatusTracker: mNetworkCallback onCapabilitiesChanged network:653 mPrimaryNetworkId:653
+06-13 20:20:38.178  3521  3521 D VendorWifiService: onEvent event:9,action:1
+06-13 20:20:38.180  3521  3777 D SubsysEventListenerManager: onCapabilitiesChanged
+06-13 20:20:38.180  3521  3777 D DataStateTracker: getCurDataChannel, channel:1
+06-13 20:20:38.182  2971  3088 D WifiStatusTracker: mNetworkCallback onCapabilitiesChanged network:653 mPrimaryNetworkId:653
+06-13 20:20:38.182  2971  3195 D WifiPickerTracker: handleNetworkCapabilitiesChanged network:653
+06-13 20:20:38.183  2244  2846 D SystemNetworkObserver: wifi network 653 nc changed, primary=true
+06-13 20:20:38.183  2244  2846 D SystemNetworkObserver: default network nc changed 653
+06-13 20:20:38.184  2244  2872 D OplusSlaNetworkManager: isPrimaryWifi:true network:653
+06-13 20:20:38.185  2244  2846 D OplusSplitScreenManagerService: com.android.settings unSupportsSplitScreen by blockList or ForbidActivityList
+06-13 20:20:38.186  2244  2846 D OplusSplitScreenManagerService: com.android.settings unSupportsSplitScreen by blockList or ForbidActivityList
+06-13 20:20:38.186 22341 22740 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+06-13 20:20:38.186 22341 22740 W .gms.persistent: Large reply transaction of 2113536 bytes, interface descriptor , code 1
+06-13 20:20:38.188  5365  5419 I BugleRcsEngine: Connected state: [1], networkType: [WIFI] [CONTEXT thread_id=12404 ]
+06-13 20:20:38.189  5365  5424 I BugleRcsEngine: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference [CONTEXT log_prefix="RcsEngineImpl[DUAL_REG]:[2da6e610-0315]>Handler" thread_id=12407 ]
+06-13 20:20:38.190  5365  5424 I BugleRcsEngine: Cannot use CS.apk as it's battery optimized [CONTEXT thread_id=12407 ]
+06-13 20:20:38.191  6937  8004 I CardConfig.RxNetworkMonitor: onNetworkStateChange, current:true, last:true
+06-13 20:20:38.191 22341 22740 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+06-13 20:20:38.192 22341 22740 W .gms.persistent: Large reply transaction of 2113536 bytes, interface descriptor , code 1
+06-13 20:20:38.193  1932  2501 D AidlBufferPoolAcc: evictor expired: 1, evicted: 0
+06-13 20:20:38.193 24886 25018 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED LinkUpBandwidth>=12000Kbps LinkDnBandwidth>=60000Kbps TransportInfo: <SSID: <unknown ssid>, BSSID: 02:00:00:00:00:00, MAC: 02:00:00:00:00:00, IP: /192.168.0.2, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -46, Link speed: 702Mbps, Tx Link speed: 702Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5745MHz, Net ID: -1, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: -1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none><none>MLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>> SignalStrength: -46 UnderlyingNetworks: Null]
+06-13 20:20:38.193  2971  3088 I SystemUi--Statusbar: NetworkController.WifiSignalController-->handleStatusUpdated state=3 enabled=true connected=true isDefaultNetwork=true rssi=-46 level=4 statusLabel=null isDirty=false
+06-13 20:20:38.194 21007 21125 D AidlBufferPoolAcc: evictor expired: 2, evicted: 0
+06-13 20:20:38.194  2971  3088 I SystemUi--Statusbar: NetworkController.WifiSignalController-->handleStatusUpdated state=3 enabled=true connected=true isDefaultNetwork=true rssi=-46 level=4 statusLabel=null isDirty=false
+06-13 20:20:38.194  2971  3088 I SystemUi--Statusbar: NetworkController.WifiSignalController-->handleStatusUpdated state=3 enabled=true connected=true isDefaultNetwork=true rssi=-46 level=4 statusLabel=null isDirty=false
+06-13 20:20:38.195  2971  3195 I WifiPickerTracker: wifi connected status realConnectedWifiEntry not null: true
+06-13 20:20:38.195 22341 22740 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+06-13 20:20:38.195 22341 22740 W .gms.persistent: Large reply transaction of 2113536 bytes, interface descriptor , code 1
+06-13 20:20:38.196 12841 13196 I AIUnit-NetworkPublisher: onNetworkChanged [onCapabilitiesChanged, 653]
+06-13 20:20:38.196 11987 12121 W ONET_cdo_connect: onCapabilitiesChanged 653,cellular:false,wifi:true,isEthernetAvailable:false,metered:false
+06-13 20:20:38.199 22341 22740 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+06-13 20:20:38.199 22341 22740 W .gms.persistent: Large reply transaction of 2113536 bytes, interface descriptor , code 1
+06-13 20:20:38.200 17646 17722 W ONET_cdo_connect: onCapabilitiesChanged 653,cellular:false,wifi:true,metered:false
+06-13 20:20:38.205 22341 26577 I NearbyMediums: Wifi changed new SSID: "Navya-7671"
+06-13 20:20:38.205 22341 26577 I NearbyMediums: WifiLanConnectivityInfo is not changed, skip notify.
+06-13 20:20:38.205  2244  2750 D ConnectivityService: NetReassign [no changes] [c 0] [a 1] [i 1]
+06-13 20:20:38.207  2244  2750 D ConnectivityService: NetReassign [no changes] [c 0] [a 1] [i 1]
+06-13 20:20:38.209 13710 14213 I NearbyMediums: Wifi changed new SSID: "Navya-7671"
+06-13 20:20:38.209 13710 14213 I NearbyMediums: WifiLanConnectivityInfo is not changed, skip notify.
+06-13 20:20:38.210  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,150.000000,,4.000000,0.000000,1414677679397005]
+06-13 20:20:38.210  1814  9331 D AidlBufferPool: bufferpool2 0xb40000754537c9e8 : 0(0 size) total buffers - 0(0 size) used buffers - 22/30 (recycle/alloc) - 8/52 (fetch/transfer)
+06-13 20:20:38.210  1814  9331 D AidlBufferPoolAcc: evictor expired: 1, evicted: 1
+06-13 20:20:38.348  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:38.361  1487  4693 D charge_time: write 5973s(01:39:33) to ttf, rc=6
+06-13 20:20:38.361  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1335,avg=1162,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=37,debug=0,region=12,ttf=5821(01:37:01),ui_ttf=5973(01:39:33)
+06-13 20:20:38.409  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414677879387601]
+06-13 20:20:38.609  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,200.000000,,4.000000,0.000000,1414678079383424]
+06-13 20:20:38.657  2971  2971 I SystemUi--Notification: OplusExpandableNotificationRowExImpl-->NOTIFICATION_ZOOM-->updateDragViewState showZoom=false isPinned=false isActivityIntent=true emptyView=true isZoomValid=true pendingIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x1400c001 pkg=com.google.android.apps.messaging cmp=com.google.android.apps.messaging/.ui.ConversationListActivity (has extras) }
+06-13 20:20:38.663  2244  2318 D SensorService: 	>>> actuating h/w activate handle=4 enabled=0
+06-13 20:20:38.667  1433  1433 I OriginChannel: batch: [4,5000000,0]
+06-13 20:20:38.668  2244  2318 D SensorService: 	>>> actuating h/w activate handle=16 enabled=0
+06-13 20:20:38.668  1433  1433 I FusionChannel: activate: [16,0]
+06-13 20:20:38.668  1433  1433 I OriginChannel: activate: [4,0]
+06-13 20:20:38.670  2244  2318 D SensorService: 	>>> actuating h/w BATCH 0x00000001 80000000 2000000000
+06-13 20:20:38.671  1433  1433 I OriginChannel: batch: [1,80000000,2000000000]
+06-13 20:20:38.674  2971  2971 I SystemUi--Notification: OplusExpandableNotificationRowExImpl-->NOTIFICATION_ZOOM-->updateDragViewState showZoom=false zoomOldTimes=11 com.oplus.systemui.statusbar.notification.row.OplusExpandableNotificationRowExImpl.updateDragViewState:801 com.android.systemui.statusbar.notification.row.ExpandableNotificationRow.setPinned:1251 com.android.systemui.statusbar.notification.collection.NotificationEntry.setRowPinned:717 com.android.systemui.statusbar.policy.BaseHeadsUpManager$HeadsUpEntry.setRowPinned:853 com.android.systemui.statusbar.phone.HeadsUpManagerPhone$HeadsUpEntryPhone.setRowPinned:611 com.android.systemui.statusbar.policy.BaseHeadsUpManager.setEntryPinned:360 com.android.systemui.statusbar.policy.BaseHeadsUpManager.onEntryRemoved:460 com.android.systemui.statusbar.phone.HeadsUpManagerPhone.onEntryRemoved:464 com.android.systemui.statusbar.policy.BaseHeadsUpManager.lambda$removeEntry$3:439 com.android.systemui.statusbar.policy.BaseHeadsUpManager.$r8$lambda$_utmZCzSoMY5q8GYJZ3QxTQdNSw:0 
+06-13 20:20:38.674  2971  2971 W TouchableRegionManager: onHeadsUpPinnedModeChanged
+06-13 20:20:38.674  2971  2971 I PluginSeedling--Base: SeedlingPluginService-->onStateChange: Bundle[{headsUpNotificationPinnedMode=false, state=headsUpNotificationPinnedMode}]
+06-13 20:20:38.675  2971  2971 I SystemUi--Common: HeadsUpAppearanceControllerExImp-->[updateHeadsUpBlurInternal] needBlur=, com.android.systemui.statusbar.notification.row.ExpandableNotificationRow{9ecb409 VFE...C.. ......ID 0,0-984,453 #7f0a04a5 app:id/expandableNotificationRow alpha=1.0 viewInfo = } false
+06-13 20:20:38.676  2971  2971 I PluginSeedling--Base: SeedlingPluginService-->onStateChange: Bundle[{headsUpNotificationPackage=com.google.android.apps.messaging, state=onShowHeadsUpNotification, onShowHeadsUpNotification=false}]
+06-13 20:20:38.676  2971  2971 I PluginSeedling--CapsuleCard: CardRootViewModel-->handleOnShowHeadsUpNotification: false packageName: com.google.android.apps.messaging
+06-13 20:20:38.676  2971  2971 D PluginSeedling--Capsule: ThreadUtil-->CardRootViewModel-runOnUiThreadDelay token:showCard
+06-13 20:20:38.677  2971  2971 I SystemUi--Common: HeadsUpAppearanceControllerExImp-->[updateHeadsUpBlurInternal] needBlur=, com.android.systemui.statusbar.notification.row.ExpandableNotificationRow{9ecb409 VFE...C.. ......ID 0,0-984,453 #7f0a04a5 app:id/expandableNotificationRow alpha=1.0 viewInfo = } true
+06-13 20:20:38.678  2971  2971 I SystemUi--Common: ViewBlurManager-->[blurForHeadsUp] blurHeadsUpEnabled=false
+06-13 20:20:38.678  2971  2971 I SystemUi--Common: HeadsUpAppearanceControllerExImp-->[updateHeadsUpBlurInternal] needBlur=, com.android.systemui.statusbar.notification.row.ExpandableNotificationRow{9ecb409 VFE...C.. ......ID 0,0-984,453 #7f0a04a5 app:id/expandableNotificationRow alpha=1.0 viewInfo = } true
+06-13 20:20:38.678  2971  2971 I SystemUi--Common: ViewBlurManager-->[blurForHeadsUp] blurHeadsUpEnabled=false
+06-13 20:20:38.679  2971  2971 E LockScreenNotificationDispatcherImp: updateNotificationListOnKg size:0
+06-13 20:20:38.680  2971  2971 I SystemUi--Notification: LockScreenNotificationDispatcherImp-->updateNotificationListOnKg resultCode: 0
+06-13 20:20:38.682  2971  2971 I SystemUi--Keyguard: KeyguardUtils-->density is 0 sInitialDisplayDensity:480
+06-13 20:20:38.691 22341 26577 I NearbySharing: Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+06-13 20:20:38.695 22341 26577 I NearbySharing: Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+06-13 20:20:38.740  1487  1589 D vendor.oplus.hardware.charger-V6-service: ret_value:130, read content:,363,368,3985,3985,-1335,1500,2200,48,49,1,6,-1,4862,49,1,0,1,1,0,0,4465,0,7,0,7,3,0,0,354,0,1,1,0,0,61,61,61,0,0,0,0,0,0,0,0,0,0
+06-13 20:20:38.740  1487  1589 D vendor.oplus.hardware.charger-V6-service: gmtime: 2026-06-13-20-20-38
+06-13 20:20:38.741  1487  1589 D vendor.oplus.hardware.charger-V6-service: usb_online:1, ac_online:0, wireless_online:-2147483648
+06-13 20:20:38.810  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414678279612035]
+06-13 20:20:38.969  1558  1558 I BufferQueueProducer: [NotificationShade#206968](this:0xb40000763d1fa9e0,id:-1,api:0,p:-1,c:1558) queueBuffer: fps=32.77 dur=1007.14 max=741.31 min=5.83
+06-13 20:20:38.972  1425  1425 I hwcomposer: [HWCDisplay] (0 updateFps():4192), (type:1, mode:2) fps:32.787907,dur:1006.47,max:739.89,min:5.84  
+06-13 20:20:39.010  1433  1505 I OriginChannel: wise light debug, data[3].type is 65627,data[3].sensor is 91:[1320.000000,,25.000000,,5.000000,0.000000,1414678479855131]
+06-13 20:20:39.019  5360  5360 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.inappreach.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService mCallingUid=10116 }
+06-13 20:20:39.093  2971  2971 E StackScroll: Heads up view appearing mWasCancelled = false for ANIMATION_TYPE_ADD
+06-13 20:20:39.093  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->SHADE_FOCUSABLE-->mNotificationShadeFocusable= true, mPanelExpanded= false, mBouncerShowing= false, mKeyguardShowing= false, mKeyguardOccluded= false, mKeyguardNeedsInput= false, ENABLE_REMOTE_INPUT= true, mRemoteInputActive= false, layoutFlags= -2122055576
+06-13 20:20:39.093  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->SHADE_VISIBLE-->mKeyguardShowing= false, mKeyguardOccluded= false, mPanelVisible= true, mKeyguardFadingAway= false, mKeyguardGoingAway= false, mBouncerShowing= false, mScrimsVisibility= 0, mBackgroundBlurRadius= 0, mForcePluginOpen= false, mediaBackdropShowing= false, viewVisibility= true
+06-13 20:20:39.097  2971  2971 I SystemUi--Notification: PanelAnimationEx-->resetFraction, finalPosition=0.0, reason=panel invisble
+06-13 20:20:39.099  2971  2971 D OplusCursorFeedback: editorDetachFromWindow android.widget.Editor@1eb4c48
+06-13 20:20:39.100 17864 19794 D CustomLogManagerService: WorkHandler msg.what :5
+06-13 20:20:39.100  2971  2971 D RemoteInput: unregistering Predictive Back callback
+06-13 20:20:39.102  2971  2971 I SystemUi--Notification: OplusShadeExpansionStat-->panelExpansionChanged expanded:false,mTracking:false,mState:1,fraction:0.0,reason:HeadsUpExistenceChangedRunnable
+06-13 20:20:39.102  2971  2971 I SystemUi--Common: OplusShadeExpansionStat-->go state: OPENING -> CLOSED
+06-13 20:20:39.102  2971  2971 I SystemUi--Common: OplusShadeExpansionStat-->go state: OPENING -> CLOSED
+06-13 20:20:39.103  2971  2971 I SystemUi--Notification: PanelAnimationEx-->resetFraction, finalPosition=0.0, reason=panel invisble
+06-13 20:20:39.104  2971  2971 I SystemUi--Common: HeadsUpAppearanceControllerExImp-->[updateHeadsUpBlurInternal] needBlur=, com.android.systemui.statusbar.notification.row.ExpandableNotificationRow{9ecb409 VFE...C.. ......ID 0,0-984,453 #7f0a04a5 app:id/expandableNotificationRow alpha=1.0 viewInfo = } false
+06-13 20:20:39.104 17864 19794 D CustomLogManagerService: curTemp:354 limit:390
+06-13 20:20:39.104 17864 19794 D CustomLogManagerService: checkUploadStatus: isSceenOn=true activeNetType=1 isCharging=true isUploading:false temperatureLimit:false
+06-13 20:20:39.105 17864 19794 D CustomLogManagerService: sys.log.customer=false
+06-13 20:20:39.105 17864 19794 D CustomLogManagerService: isHaveCustomLogCollecting :false
+06-13 20:20:39.108  2971  2971 D ViewRootImplExtImpl: wrapConfigInfoIntoFlags rotation=0, smallestScreenWidthDp=360, relayoutAsync=true, flags=1, newFlags=23592961, residentWS=false, title=NotificationShade
+06-13 20:20:39.109  2971  2971 W VRI[NotificationShade]: updateBlastSurfaceIfNeeded, surfaceSize:Point(1080, 2412), lastSurfaceSize:Point(1080, 2412), format:-3, blastBufferQueue:android.graphics.BLASTBufferQueue@d8df6c7
+06-13 20:20:39.109  2244  2277 D WindowManagerServiceExtImpl: extractConfigInfoAndRealFlags rotation=0, screenDp=360, residentWS:0, win=Window{e0b2624 u0 NotificationShade}
+06-13 20:20:39.111  2244  2277 V WindowManager: Relayout Window{e0b2624 u0 NotificationShade}: viewVisibility=0, oldvis=0, req=1080x2412, vsysui=, x=0, y=0
+06-13 20:20:39.111  2971  2971 I SystemUi--Keyguard: KeyguardUtils-->density is 0 sInitialDisplayDensity:480
+06-13 20:20:39.113  2971  2971 I SurfaceControl:  setExtendedRangeBrightness sc=Surface(name=NotificationShade)/@0x43e6c80,currentBufferRatio=1.0,desiredRatio=1.0
+06-13 20:20:39.125  2971  2971 I SystemUi--Notification: PanelAnimationEx-->resetFraction, finalPosition=0.0, reason=panel invisble
+06-13 20:20:39.125  2971  2971 I SystemUi--Common: OplusShadeExpansionStat-->go state: CLOSED -> CLOSED
+06-13 20:20:39.125  2971  2971 I SystemUi--Common: OplusShadeExpansionStat-->go state: CLOSED -> CLOSED
+06-13 20:20:39.126  2971  2971 I SystemUi--QuickSettings: BackActionInteractor-->unregisterBackCallback
+06-13 20:20:39.126  2971  2971 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=com.android.systemui.back.domain.interactor.BackActionInteractor$callback$2@6e37e74
+06-13 20:20:39.126  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->SHADE_FOCUSABLE-->mNotificationShadeFocusable= false, mPanelExpanded= false, mBouncerShowing= false, mKeyguardShowing= false, mKeyguardOccluded= false, mKeyguardNeedsInput= false, ENABLE_REMOTE_INPUT= true, mRemoteInputActive= false, layoutFlags= -2122055608
+06-13 20:20:39.126  2244  2590 D CoreBackPreview: Window{e0b2624 u0 NotificationShade}: Setting back callback null
+06-13 20:20:39.126  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->isExpanded: isPowerBlock=false ,isErrorFpTouchWhenScreenOff=false ,qsPanelVisible=false, isAodMaskShow=false
+06-13 20:20:39.126  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->SHADE_VISIBLE-->mKeyguardShowing= false, mKeyguardOccluded= false, mPanelVisible= false, mKeyguardFadingAway= false, mKeyguardGoingAway= false, mBouncerShowing= false, mScrimsVisibility= 0, mBackgroundBlurRadius= 0, mForcePluginOpen= false, mediaBackdropShowing= false, viewVisibility= false
+06-13 20:20:39.127  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->isExpanded: isPowerBlock=false ,isErrorFpTouchWhenScreenOff=false ,qsPanelVisible=false, isAodMaskShow=false
+06-13 20:20:39.127  2971  2971 I SystemUi--Notification: OplusNotificationShadeWindowControllerExImpl-->isExpanded: isPowerBlock=false ,isErrorFpTouchWhenScreenOff=false ,qsPanelVisible=false, isAodMaskShow=false
+06-13 20:20:39.129  2971  2971 I SystemUi--Statusbar: CollapsedStatusBarFragmentExImpl-->setForceStatusBarVisible:false callers:com.android.systemui.statusbar.window.StatusBarWindowController.setForceStatusBarVisible:304 com.android.systemui.shade.ShadeControllerImpl.makeExpandedInvisible:418 com.android.systemui.statusbar.phone.CentralSurfacesImpl$$ExternalSyntheticLambda33.run:0 com.oplus.systemui.shade.NotificationPanelViewControllerExImp.delayExpandedRunnable:1089 
+06-13 20:20:39.129  2971  2971 I SystemUi--QuickSettings: OplusSeparateQSPluginImpl-->shouldHideStatusBar isFullyCollapsed true
+06-13 20:20:39.130  2971  2971 I SystemUi--Statusbar: CollapsedSbFragment-->New visibilities calculated internally. StatusBarVisibilityModel(showClock: true showNotificationIcons:true showOngoingActivityChip:false showSystemInfo:true ) 
+06-13 20:20:39.130  2971  2971 I SystemUi--Statusbar: CollapsedStatusBarFragmentExImpl-->animate: false, unlockAnimationRunning: false, fadingAway: false, keyguard: false
+06-13 20:20:39.130  2971  2971 I SystemUi--Statusbar: CollapsedStatusBarFragmentExImpl-->StatusBarVisibilityModelEx: StatusBarVisibilityModelEx(showClock: true showPromptView:false showOngoingCallChip:false showNotificationContainer:true showOperatorName:true showSeedlingContainer:true ), animate: false
+06-13 20:20:39.131  2971  2971 I SystemUi--Notification: PanelAnimationEx-->fractionAnimation onAnimationEnd, value=0.0
+06-13 20:20:39.131  2971  2971 I SystemUi--Notification: PanelAnimationEx-->pullDownAnimatorEnd, isStarPullDown false 
+06-13 20:20:39.139  2971  2971 D HWUI    : RenderProxy::destroy: this=0xb400007604cc2800, mContext=0xb4000075f5962e00
+06-13 20:20:39.139  2971  3122 D HWUI    : SkiaOpenGLPipeline::setSurface: this=0xb400007604c43ac0, surface=NULL
+06-13 20:20:39.143  2971  2971 D ViewRootImplExtImpl: wrapConfigInfoIntoFlags rotation=0, smallestScreenWidthDp=360, relayoutAsync=false, flags=1, newFlags=23592961, residentWS=false, title=NotificationShade
+06-13 20:20:39.144  2244  2277 D WindowManagerServiceExtImpl: extractConfigInfoAndRealFlags rotation=0, screenDp=360, residentWS:0, win=Window{e0b2624 u0 NotificationShade}
+06-13 20:20:39.144  2244  2277 V WindowManager: Relayout Window{e0b2624 u0 NotificationShade}: viewVisibility=4, oldvis=0, req=1080x2412, vsysui=, x=0, y=0
+06-13 20:20:39.145  2244  2277 I WindowManager: Window{e0b2624 u0 NotificationShade} state from HAS_DRAWN to NO_SURFACE; reason: destroySurface
+06-13 20:20:39.145  2244  2427 I UserAwareMgr: handleFgAppChanged, pkgName: com.android.systemui, pid: 2971, isVisible: false, fgAppType: FG2
+06-13 20:20:39.146  2244  2427 I UserAwareMgr: fg app status not changed, beforeVisible: true, currentVisible: true
+06-13 20:20:39.149  2244  2277 D WindowManager: NFW_findFocusedWindowIfNeeded:Window{c544265 u0 com.android.settings/com.android.settings.applications.InstalledAppDetails} mCurrentFocus:Window{c544265 u0 com.android.settings/com.android.settings.applications.InstalledAppDetails}
+06-13 20:20:39.150  2971  2971 D BLASTBufferQueue: [VRI[NotificationShade]#25754](f:0,a:2) destructor()
+06-13 20:20:39.150  2971  2971 D BufferQueueConsumer: [VRI[NotificationShade]#25754(BLAST Consumer)25754](id:b9b00006580,api:0,p:-1,c:2971) disconnect
+06-13 20:20:39.155  2244  2277 V WindowManager: Relayout Window{e58cf9e u0 StatusBar}: viewVisibility=0, oldvis=0, req=1080x107, vsysui=, x=0, y=0
+06-13 20:20:39.160  2244  2277 D WindowManager: setFrameRateStart invalid typeId return!
+06-13 20:20:39.162  2971  2971 I SystemUi--Keyguard: KeyguardRapidUnlockUtils-->composeKeyguard show=true, reason=applyVisibility_hide
+06-13 20:20:39.173  1558  1558 I SurfaceFlinger: onHandleDestroyed: name=Surface(name=e58cf9e StatusBar)/@0x62db84e - animation-leash of insets_animation#206967, layerId=206967, parentId=0
+06-13 20:20:39.174  1558  1558 I SurfaceFlinger: onHandleDestroyed: name=NotificationShade#206968, layerId=206968, parentId=0
+06-13 20:20:39.181  1558  1558 I BufferQueueDebug: [Surface(name=e58cf9e StatusBar)/@0x62db84e - animation-leash of insets_animation#206967](this:0xb40000763d1f79e0,id:-1,api:0,p:-1,c:1558) onDestructor()
+06-13 20:20:39.182  1558  1558 I BufferQueueDebug: [NotificationShade#206968](this:0xb40000763d1fa9e0,id:-1,api:0,p:-1,c:1558) onDestructor()
+06-13 20:20:39.194  1932  2501 D AidlBufferPool: bufferpool2 0xb4000076bbdba268 : 0(0 size) total buffers - 0(0 size) used buffers - 20/24 (recycle/alloc) - 4/23 (fetch/transfer)
+06-13 20:20:39.194  1932  2501 D AidlBufferPoolAcc: evictor expired: 2, evicted: 1
+06-13 20:20:39.210  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1158.000000,,100.000000,,5.000000,0.000000,1414678679655723]
+06-13 20:20:39.314  3330  6326 D IpClient/wlan0: addressUpdated: 2406:b400:1a:896c:94f3:bbff:fef8:5a20/64 on ifindex 37 flags 0x00000100 scope 0
+06-13 20:20:39.314  3330  6326 D IpClient/wlan0: addressUpdated: 2406:b400:1a:896c:6b1c:3a17:cb05:b32d/64 on ifindex 37 flags 0x00000001 scope 0
+06-13 20:20:39.314  3330  6326 W AlarmManager: Unrecognized alarm listener com.android.networkstack.android.net.ip.IpClientLinkObserver$Dhcp6PdPreferredPrefixAlarmListener@dce1e05
+06-13 20:20:39.315  3330  6326 D ApfFilter: (wlan0): Ignoring RA RA fe80::3e78:95ff:fee5:1414 -> ff02::1 1800s 2406:b400:1a:896c::/64 300s/300s RIO 30s 2406:b400:1a:896c::/64  which matches RA fe80::3e78:95ff:fee5:1414 -> ff02::1 1800s 2406:b400:1a:896c::/64 300s/300s RIO 30s 2406:b400:1a:896c::/64 
+06-13 20:20:39.350  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:39.364  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1242,avg=1240,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=38,debug=0,region=12,ttf=5452(01:30:52),ui_ttf=5972(01:39:32)
+06-13 20:20:39.375 22341 22341 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService mCallingUid=10111 }
+06-13 20:20:39.410  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414678879842180]
+06-13 20:20:39.425  5360  5360 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.chromesync.service.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService mCallingUid=10137 }
+06-13 20:20:39.440  1569  1600 D ccci_mdinit: (1):monitor_time_update_thread round:92860 ########
+06-13 20:20:39.476  2244  2778 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.sendBroadcast:1261 com.android.server.job.controllers.OplusCpuController.notifyHighCpuEventForApp:387 com.android.server.job.controllers.OplusCpuController.handleCpuUpdate:333 com.android.server.job.controllers.OplusCpuController.-$$Nest$mhandleCpuUpdate:0 com.android.server.job.controllers.OplusCpuController$CpuTrackerHandler.handleMessage:257 
+06-13 20:20:39.545  1822  1822 I thermal_repeater: [recvMdThermalInfo] ret=28, strLen=127,  3, 39, -50, 0, 32767, 10539
+06-13 20:20:39.610  1433  1505 I OriginChannel: wise light debug, data[4].type is 65627,data[4].sensor is 91:[1161.000000,,125.000000,,4.000000,0.000000,1414679079600935]
+06-13 20:20:39.612  1860  1860 D AALLightSensor: oldLux=186 [SA:-1 LA:-1] newLux=186 (oriLux: 186)
+06-13 20:20:39.810  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1162.000000,,200.000000,,4.000000,0.000000,1414679279969310]
+06-13 20:20:40.010  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1162.000000,,175.000000,,4.000000,0.000000,1414679479738858]
+06-13 20:20:40.110  2244  2244 D MBrainLocalService: isVendorFreezeConditionPass is false
+06-13 20:20:40.111  2244  2244 D MBrainLocalService: notifyNetworkChange failed
+06-13 20:20:40.111  3393  3393 D OplusTelephonyController: onSignalStrengthChanged: SignalStrength=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 level=0,mLte=CellSignalStrengthLte: rssi=2147483647 rsrp=-108 rsrq=2147483647 rssnr=2147483647 cqiTableIndex=2147483647 cqi=2147483647 ta=2147483647 level=1 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiCqiTableIndex = 2147483647 csiCqiReport = [] ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 level = 0 parametersUseForLevel = 0 timingAdvance = 2147483647 },primary=CellSignalStrengthLte}
+06-13 20:20:40.113  3521  3521 D SubsysEventListenerManager-SubsysTelephonyCallback[0]: onSignalStrengthsChanged
+06-13 20:20:40.116  2971  3194 I SystemUi--Statusbar: MobileConnectionRepositoryImpl-->subId:1 isSoftSimCard:false slotId:0
+06-13 20:20:40.210  1433  1505 I OriginChannel: wise light debug, data[3].type is 65627,data[3].sensor is 91:[1162.000000,,200.000000,,4.000000,0.000000,1414679680109632]
+06-13 20:20:40.250  2244  2358 D AES     : AEEIOCTL_GET/SET_SF_STATE IOCTL,cmd= 1074294797, lParam=0. 
+06-13 20:20:40.251  2244  2358 D AES     : AEEIOCTL_RT_MON_Kick IOCTL,cmd= 2147774474, lParam=300. 
+06-13 20:20:40.350  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:40.367  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1301,avg=1287,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=39,debug=0,region=12,ttf=5251(01:27:31),ui_ttf=5971(01:39:31)
+06-13 20:20:40.410  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1162.000000,,175.000000,,4.000000,0.000000,1414679879656324]
+06-13 20:20:40.610  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414680079880388]
+06-13 20:20:40.810  1433  1505 I OriginChannel: wise light debug, data[0].type is 65627,data[0].sensor is 91:[1161.000000,,150.000000,,4.000000,0.000000,1414680279612594]
+06-13 20:20:40.853  3521  3521 D AtCmdParser: [PHONE1]< com.oplus.telephony.AtCmdParser$2@69013af urc ind:+ECSQ: 33,31,1,-351,-36,1,1,96,32767,1
+06-13 20:20:40.855  3521  3521 D SubsysEventListenerManager-SubsysTelephonyCallback[1]: onSignalStrengthsChanged
+06-13 20:20:40.858  2971  3194 I SystemUi--Statusbar: MobileConnectionRepositoryImpl-->subId:3 isSoftSimCard:false slotId:1
+06-13 20:20:40.860  1819  2231 D ULogGuard: Monitoring: 2 threads, 0 requests, 0 time-bombs; 7 guards. ResetFlags = 0x7
+06-13 20:20:41.010  1433  1505 I OriginChannel: wise light debug, data[3].type is 65627,data[3].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414680479849264]
+06-13 20:20:41.200  2244  2846 D OplusWifiPower_TriggerCenter: mComponentCallback: wifistat
+06-13 20:20:41.201  3521  3521 D VendorWifiService: onEvent event:9,action:1
+06-13 20:20:41.205  2244  2846 D OplusSplitScreenManagerService: com.android.settings unSupportsSplitScreen by blockList or ForbidActivityList
+06-13 20:20:41.205  2244  2846 D OplusSplitScreenManagerService: com.android.settings unSupportsSplitScreen by blockList or ForbidActivityList
+06-13 20:20:41.210  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,150.000000,,4.000000,0.000000,1414680679656239]
+06-13 20:20:41.236  1400  1782 E TetherController: property_get sys.radio.data.modem_share_flag return 0, 1!
+06-13 20:20:41.351  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:41.371  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1332,avg=1295,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=40,debug=0,region=12,ttf=5217(01:26:57),ui_ttf=5970(01:39:30)
+06-13 20:20:41.410  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,200.000000,,4.000000,0.000000,1414680879871913]
+06-13 20:20:41.410  7662 25332 E MIDASApplication: MIDASPullAtomManager: onPullAtom 150122
+06-13 20:20:41.439  1448  1448 W android.hardware.thermal-service.mediatek: i=0 tz_data[i].tz_idx[0]=9
+06-13 20:20:41.440  1448  1448 I android.hardware.thermal-service.mediatek: fill_temperatures filterType1 name: CPU type: CPU throttlingStatus: NONE value: 44.17 ret_temps size 0
+06-13 20:20:41.454  2244  2590 W Settings: Setting notification_bubbles has moved from android.provider.Settings.Global to android.provider.Settings.Secure, returning read-only value.
+06-13 20:20:41.454  2244  2590 W Settings: Setting apply_ramping_ringer has moved from android.provider.Settings.Global to android.provider.Settings.System, returning read-only value.
+06-13 20:20:41.462  2244  2590 W SettingsStatsUtil: Can not parse value to float: +network
+06-13 20:20:41.467  2244  2590 W SettingsStatsUtil: Can not parse value to float: +network
+06-13 20:20:41.610  1433  1505 I OriginChannel: wise light debug, data[4].type is 65627,data[4].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414681079596600]
+06-13 20:20:41.696  1449  1568 I libPowerHal: perfUserScnCheckAll
+06-13 20:20:41.698  1449  1568 I libPowerHal: perfScnDumpAll cmd:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: ========================
+06-13 20:20:41.698  1449  1568 I libPowerHal: surfaceflinger - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: surfaceflinger - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: surfaceflinger cmd:1430100 param:8
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud cmd:240c000, param:100
+06-13 20:20:41.698  1449  1568 I libPowerHal: vice-mtk-legacy - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: vice-mtk-legacy - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: vice-mtk-legacy cmd:1810000, param:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud - gpu freq min:-1, max:-1, scn_action:0
+06-13 20:20:41.698  1449  1568 I libPowerHal: v3avpud cmd:1468000 param:0
+06-13 20:20:41.699  1449  1568 I libPowerHal: ========================
+06-13 20:20:41.810  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,200.000000,,4.000000,0.000000,1414681279877129]
+06-13 20:20:41.933  2971  3088 I SystemUi--Statusbar: OplusNetworkSpeedControllExImpl-->updateNetworkSpeed: isConnected:true,isSwitchOn:true
+06-13 20:20:41.936  2971  3088 I SystemUi--Statusbar: OplusNetworkSpeedControllExImpl-->getTotalByte: totalRxBytes:67615269343,totalTxBytes:4404564479,loopbackTxBytes:753067736,loopbackRxBytes:751913228 ,totalBytes:70514852858
+06-13 20:20:41.949  2971  2971 I SurfaceControl:  setExtendedRangeBrightness sc=Surface(name=StatusBar)/@0xb53e5df,currentBufferRatio=1.0,desiredRatio=1.0
+06-13 20:20:41.957  2971  2971 I SystemUi--Keyguard: KeyguardUtils-->density is 0 sInitialDisplayDensity:480
+06-13 20:20:41.966  1558  1558 I BufferQueueProducer: [StatusBar#101](this:0xb4000076920479e0,id:-1,api:0,p:-1,c:1558) queueBuffer: fps=0.50 dur=4003.30 max=3262.67 min=740.63
+06-13 20:20:41.970  1425  1425 I hwcomposer: [HWCDisplay] (0 updateFps():4192), (type:1, mode:2) fps:7.005464,dur:2997.66,max:2783.55,min:4.75  
+06-13 20:20:42.010  1433  1505 I OriginChannel: wise light debug, data[3].type is 65627,data[3].sensor is 91:[1162.000000,,175.000000,,4.000000,0.000000,1414681479687951]
+06-13 20:20:42.132  2244  2427 I UserAwareMgr: handleAppChangedToBg, pkgName: com.android.systemui, pid: 2971
+06-13 20:20:42.134  2971  3984 D UXUtils : setHasTopUi: false; stack: com.oplus.systemui.shade.OplusNotificationShadeWindowControllerExImpl$uxFlagUpdateRunnable$1$1.run:83
+06-13 20:20:42.134  2971  3984 D UXUtils : notifyUiSwitched: 0
+06-13 20:20:42.134  2244  2427 I UserAwareMgr: handleAppChangedToBg, pkgName: com.android.systemui, pid: 2971
+06-13 20:20:42.135  2244  2427 W UserAwareMgr: app not not found or not visible: {pkgName='com.android.systemui', processName='com.android.systemui', pid=2971, uid=10190, flags='systemui|bg', renderTid=3122, hwuiTids=[4105, 4106], glTids=null, threadInfos={wmshell.main={threadName='wmshell.main', tid=3028, extendTids=null}, ll.splashworker={threadName='ll.splashworker', tid=3055, extendTids=null}, wmshell.anim={threadName='wmshell.anim', tid=3045, extendTids=null}, VolumeDialogControllerImpl={threadName='VolumeDialogControllerImpl', tid=3805, extendTids=null}, ll.splashscreen={threadName='ll.splashscreen', tid=3054, extendTids=null}, KeyguardWorkerThread={threadName='KeyguardWorkerThread', tid=3210, extendTids=null}, OnScreenFingerprint OpticalUIUpdateThread={threadName='OnScreenFingerprint OpticalUIUpdateThread', tid=4005, extendTids=null}, ImageWallpaper={threadName='ImageWallpaper', tid=4020, extendTids=null}, KgdAnimThread={threadName='KgdAnimThread', tid=3211, extendTids=null}, GestureUI={threadName='GestureUI', tid=3629, extendTids=null}, SysUiLng={threadName='SysUiLng', tid=4016, extendTids=null}}}
+06-13 20:20:42.135  2244  2427 W UserAwareMgr: handleAppChangedToBg process is empty
+06-13 20:20:42.210  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1162.000000,,200.000000,,4.000000,0.000000,1414681679882658]
+06-13 20:20:42.225  3521  3521 D AtCmdParser: [PHONE0]< com.oplus.telephony.AtCmdParser$2@69013af urc ind:+ECSQ: 7,32,-371,1,1,-65,-436,4096,-15,3
+06-13 20:20:42.241  1487  1487 D vendor.oplus.hardware.charger-V6-service: getChargerControl:sub_current=100
+06-13 20:20:42.241  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_voltage=3800
+06-13 20:20:42.241  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_soc=-1
+06-13 20:20:42.241  1487  1487 D vendor.oplus.hardware.charger-V6-service: sub_temperature=250
+06-13 20:20:42.241  1487  1487 D vendor.oplus.hardware.charger-V6-service: main_soc=48
+06-13 20:20:42.353  1487  1595 D BatteryChargeControl: bcc get no support from charging protocol
+06-13 20:20:42.355 19489 20327 I PlayCommon: [13152] Preparing logs for uploading
+06-13 20:20:42.373  1487  4693 D charge_time: type=cdp/dcp,reserve_soc=3,soc=48,ui_soc=49,current=1398,avg=1321,not_chg_cnt=0,stable_cnt=7,fcc=4287,fcc_ratio=88,delta=41,debug=0,region=12,ttf=5113(01:25:13),ui_ttf=5969(01:39:29)
+06-13 20:20:42.404 19489 20327 I PlayCommon: [13152] Connecting to server for timestamp: https://play.googleapis.com/play/log/timestamp
+06-13 20:20:42.409  1433  1505 I OriginChannel: wise light debug, data[2].type is 65627,data[2].sensor is 91:[1161.000000,,175.000000,,4.000000,0.000000,1414681879263336]
+06-13 20:20:42.553  2244  2721 W Binder  : Outgoing transactions from this process must be FLAG_ONEWAY
+06-13 20:20:42.553  2244  2721 W Binder  : java.lang.Throwable
+06-13 20:20:42.553  2244  2721 W Binder  : 	at android.os.BinderProxy.transact(BinderProxy.java:633)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at android.content.ContentProviderProxy.insert(ContentProviderNative.java:587)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at android.content.ContentProviderClient.insert(ContentProviderClient.java:347)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at android.content.ContentProviderClient.insert(ContentProviderClient.java:336)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl.insert(OplusStatisticsImpl.java:307)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl.sendDataToDCS(OplusStatisticsImpl.java:287)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl.flushInternal(OplusStatisticsImpl.java:264)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl.lambda$setDelayFlushJobIfNeed$4(OplusStatisticsImpl.java:211)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl.$r8$lambda$4UYTp2NCu6Rml69JNqEuK7o54SI(Unknown Source:0)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at com.oplus.util.OplusStatisticsImpl$$ExternalSyntheticLambda5.run(D8$$SyntheticClass:0)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:520)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:348)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+06-13 20:20:42.553  2244  2721 W Binder  : 	at java.lang.Thread.run(Thread.java:1564)
+06-13 20:20:42.558  1400  1782 E TetherController: property_get sys.radio.data.modem_share_flag return 0, 1!
+06-13 20:20:42.610  1433  1505 I OriginChannel: wise light debug, data[4].type is 65627,data[4].sensor is 91:[1161.000000,,150.000000,,4.000000,0.000000,1414682079856571]
+06-13 20:20:42.611  2971  2971 E LockScreenNotificationDispatcherImp: updateNotificationListOnKg size:0
+06-13 20:20:42.611  2971  2971 I SystemUi--Notification: LockScreenNotificationDispatcherImp-->updateNotificationListOnKg resultCode: 0
+06-13 20:20:42.616  2971  2971 D OplusCursorFeedback: editorDetachFromWindow android.widget.Editor@cb6e411
+06-13 20:20:42.620  2971  2971 D RemoteInput: unregistering Predictive Back callback
+06-13 20:20:42.620  2971  2971 D RemoteInput: unregistering Predictive Back callback
+06-13 20:20:42.620  2971  2971 D InsetsController: hide(ime(), fromIme=false)
+06-13 20:20:42.621  2971  2971 I ImeTracker: com.android.systemui:b32b2327: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_BY_INSETS_API fromUser false
+06-13 20:20:42.621  2971  2971 I ImeTracker: com.android.systemui:b32b2327: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+06-13 20:20:42.625  2971  2971 I SystemUi--Keyguard: KeyguardUtils-->density is 0 sInitialDisplayDensity:480
