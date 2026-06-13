@@ -7,21 +7,25 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "20.12.2",
+      "node": "20.19.4",
       "android": {
         "resourceClass": "medium"
       }
     },
     "preview": {
       "distribution": "internal",
-      "node": "20.12.2",
+      "node": "20.19.4",
       "android": {
-        "resourceClass": "medium"
+        "resourceClass": "medium",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "env": {
+        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=\"-XX:MaxMetaspaceSize=2g -Xmx8g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8\" -Dorg.gradle.parallel=true -Dorg.gradle.daemon=false"
       }
     },
     "production": {
       "autoIncrement": true,
-      "node": "20.12.2",
+      "node": "20.19.4",
       "android": {
         "resourceClass": "medium"
       }
