@@ -7,15 +7,24 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "20.12.2"
+      "node": "20.12.2",
+      "android": {
+        "resourceClass": "medium"
+      }
     },
     "preview": {
       "distribution": "internal",
-      "node": "20.12.2"
+      "node": "20.12.2",
+      "android": {
+        "resourceClass": "medium"
+      }
     },
     "production": {
       "autoIncrement": true,
-      "node": "20.12.2"
+      "node": "20.12.2",
+      "android": {
+        "resourceClass": "medium"
+      }
     }
   },
   "submit": {
