@@ -1,134 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+/**
+ * ThankU — Notifications Screen
+ *
+ * Shows donation requests, approvals, ThankU notes, and system alerts.
+ */
+
+import React from 'react';
+import {
+  StyleSheet, Text, View, FlatList, TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { supabase } from '../src/lib/supabase';
-import { useAuth } from '../src/context/AuthContext';
 import { useNotification } from '../src/context/NotificationContext';
+import { colors } from '../src/theme/colors';
+import { typography } from '../src/theme/typography';
+import { spacing } from '../src/theme/spacing';
+import { radius } from '../src/theme/radius';
+import { EmptyState } from '../src/components/ui/EmptyState';
 
-const COLORS = {
-  primary: '#059669', // Emerald Green
-  secondary: '#10B981', // Emerald Light
-  bg: '#f8f9fa',
-  white: '#ffffff',
-  textLight: '#4B5563', // Gray 600
-  border: '#E5E7EB',
+const NOTIFICATION_ICONS: Record<string, { icon: string; color: string; bg: string }> = {
+  request: { icon: 'hand-left-outline', color: colors.primary, bg: colors.highlight },
+  approved: { icon: 'checkmark-circle-outline', color: colors.success, bg: '#ECFDF5' },
+  thanku: { icon: 'heart-outline', color: colors.coral, bg: '#FFF5F5' },
+  system: { icon: 'information-circle-outline', color: colors.info, bg: '#EFF6FF' },
 };
 
 export default function NotificationsScreen() {
-  const { user } = useAuth();
-  const { clearBadge, notifications, removeNotification } = useNotification();
-
-  useEffect(() => {
-    // Clear the unread badge when entering the notifications screen
-    clearBadge();
-  }, [user]);
-
-  const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity 
-      style={styles.notificationCard}
-      onPress={() => {
-        removeNotification(item.id);
-        router.push(`/chat/${item.chat_id}`);
-      }}
-    >
-      <View style={styles.iconContainer}>
-        <Ionicons name="chatbubble-ellipses" size={24} color={COLORS.primary} />
-      </View>
-      <View style={styles.details}>
-        <Text style={styles.title}>New Message regarding {item.productTitle}</Text>
-        <Text style={styles.messageText} numberOfLines={2}>{item.text}</Text>
-        <Text style={styles.time}>{new Date(item.created_at).toLocaleString()}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color={COLORS.textLight} />
-    </TouchableOpacity>
-  );
+  const { notifications } = useNotification();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <View style={{ width: 24 }} />
+        <TouchableOpacity>
+          <Text style={styles.markAll}>Mark all read</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
         data={notifications}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        renderItem={renderItem}
+        keyExtractor={(_, i) => i.toString()}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View style={styles.center}>
-            <Ionicons name="notifications-off-outline" size={60} color={COLORS.border} />
-            <Text style={styles.emptyText}>No new notifications</Text>
-          </View>
+          <EmptyState
+            imageSource={require('../assets/images/empty-state.png')}
+            title="All caught up!"
+            body="You don't have any new notifications right now."
+          />
         }
+        renderItem={({ item }) => {
+          const config = NOTIFICATION_ICONS[item.type] || NOTIFICATION_ICONS.system;
+          return (
+            <TouchableOpacity style={[styles.notifItem, !item.read && styles.notifUnread]}>
+              <View style={[styles.notifIcon, { backgroundColor: config.bg }]}>
+                <Ionicons name={config.icon as any} size={22} color={config.color} />
+              </View>
+              <View style={styles.notifContent}>
+                <Text style={styles.notifTitle}>{item.title || 'Notification'}</Text>
+                <Text style={styles.notifBody} numberOfLines={2}>{item.message || item.body}</Text>
+                <Text style={styles.notifTime}>
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Just now'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  header: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between',
-    padding: 16, 
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border
+  container: { flex: 1, backgroundColor: colors.background },
+  header: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: spacing.medium, paddingVertical: spacing.small,
+    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.primary },
-  backBtn: { padding: 4 },
-  listContent: { padding: 16 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 },
-  emptyText: { marginTop: 16, fontSize: 16, color: COLORS.textLight },
-  notificationCard: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+  headerTitle: { ...typography.h3, color: colors.textPrimary },
+  markAll: { ...typography.caption, color: colors.accent, fontWeight: '600' },
+  list: { paddingVertical: spacing.tiny },
+  notifItem: {
+    flexDirection: 'row', padding: spacing.medium, backgroundColor: colors.surface,
+    borderBottomWidth: 1, borderBottomColor: colors.divider,
   },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.gray,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
+  notifUnread: { backgroundColor: colors.highlight },
+  notifIcon: {
+    width: 44, height: 44, borderRadius: 22, justifyContent: 'center',
+    alignItems: 'center', marginRight: spacing.small,
   },
-  details: {
-    flex: 1,
-    marginRight: 12,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 4,
-  },
-  messageText: {
-    fontSize: 13,
-    color: COLORS.textLight,
-    marginBottom: 6,
-  },
-  time: {
-    fontSize: 11,
-    color: '#9CA3AF',
-  }
+  notifContent: { flex: 1 },
+  notifTitle: { ...typography.bodySmall, color: colors.textPrimary, fontWeight: '700' },
+  notifBody: { ...typography.bodySmall, color: colors.textSecondary, marginTop: 2, lineHeight: 20 },
+  notifTime: { ...typography.caption, color: colors.textDisabled, marginTop: spacing.micro },
 });

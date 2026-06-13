@@ -1,237 +1,391 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
+/**
+ * ThankU — My Donations / Giving Screen
+ *
+ * Matches Reference Image: Screen 16 (Donation Tracking)
+ * Features: Donation timeline tracker, status badges,
+ * DONATIONS / FAVORITES tabs, mark as donated.
+ */
+
+import React, { useState } from 'react';
+import {
+  StyleSheet, Text, View, TouchableOpacity, FlatList, Image,
+  ActivityIndicator, Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { shadows } from '../../src/theme/shadows';
+import { EmptyState } from '../../src/components/ui/EmptyState';
 
-const COLORS = {
-  primary: '#059669', // Emerald Green
-  secondary: '#10B981', // Emerald Light
-  bg: '#ffffff',
-  white: '#ffffff',
-  textLight: '#4B5563', // Gray 600
-  border: '#E5E7EB',
-};
+type ActiveTab = 'DONATIONS' | 'FAVORITES';
 
 export default function MyAdsScreen() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'DONATIONS' | 'FAVORITES'>('DONATIONS');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('DONATIONS');
   const [myAds, setMyAds] = useState<any[]>([]);
   const [favoriteAds, setFavoriteAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
-      if (user) {
-        fetchMyAds();
-      } else {
-        setLoading(false);
-      }
+      if (user) fetchMyAds();
+      else setLoading(false);
     }, [user])
   );
 
   const fetchMyAds = async () => {
     setLoading(true);
-    
-    // Fetch My Ads
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('products')
       .select('*')
       .eq('seller_id', user?.id)
       .order('created_at', { ascending: false });
+    if (data) setMyAds(data);
 
-    if (error) {
-      console.error('Error fetching my ads:', error);
-    } else if (data) {
-      setMyAds(data);
-    }
-
-    // Fetch My Favorites
     const { data: favData } = await supabase
       .from('favorites')
       .select('product:product_id(*)')
       .eq('user_id', user?.id)
       .order('created_at', { ascending: false });
-      
-    if (favData) {
-      // filter out any null products if deleted
-      setFavoriteAds(favData.map(f => f.product).filter(Boolean));
-    }
-    
+    if (favData) setFavoriteAds(favData.map(f => f.product).filter(Boolean));
     setLoading(false);
   };
 
-  const markAsSold = async (productId: string) => {
-    const { error } = await supabase.from('products').update({ is_sold: true }).eq('id', productId);
-    if (!error) fetchMyAds();
-  };
-
-  const toggleFavorite = async (productId: string) => {
-    await supabase.from('favorites').delete().match({ user_id: user?.id, product_id: productId });
-    fetchMyAds();
-  };
-
-  const confirmDeleteAd = (productId: string) => {
+  const markAsDonated = async (productId: string) => {
     Alert.alert(
-      "Delete Donation",
-      "Are you sure you want to delete this donation? This action cannot be undone.",
+      'Mark as Donated? 🎉',
+      'This will mark the item as successfully given away.',
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: () => deleteAd(productId) }
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Confirm',
+          onPress: async () => {
+            await supabase.from('products').update({ is_sold: true }).eq('id', productId);
+            fetchMyAds();
+          },
+        },
       ]
     );
   };
 
-  const deleteAd = async (productId: string) => {
-    // Optionally delete from favorites first if there's no ON DELETE CASCADE
-    await supabase.from('favorites').delete().eq('product_id', productId);
-    
-    const { error } = await supabase.from('products').delete().eq('id', productId);
-    if (error) {
-      Alert.alert('Error', error.message || 'Failed to delete donation. Check RLS policies.');
-    } else {
-      Alert.alert('Success', 'Donation deleted successfully.');
-      fetchMyAds();
-    }
-  };
-
-  const renderMyAds = () => {
-    if (loading) return <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 40 }} />;
-    
-    return (
-      <FlatList
-        data={myAds}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text style={styles.emptyText}>You haven't posted any donations yet.</Text>}
-        renderItem={({ item }) => (
-          <View style={styles.adCard}>
-            <View style={styles.adRow}>
-              <Image source={{ uri: item.image_url }} style={styles.adImage} />
-              <View style={styles.adInfo}>
-                <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
-                <Text style={styles.adPrice}>FREE</Text>
-                <View style={styles.adStats}>
-                  <Ionicons name="eye-outline" size={14} color={COLORS.textLight} />
-                  <Text style={styles.statText}>0 Views</Text>
-                  <Ionicons name="heart-outline" size={14} color={COLORS.textLight} style={{ marginLeft: 12 }} />
-                  <Text style={styles.statText}>0 Likes</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.adFooter}>
-              <Text style={[styles.statusText, item.is_sold && { color: COLORS.primary }]}>{item.is_sold ? 'DONATED 🎉' : 'ACTIVE'}</Text>
-              <View style={styles.actionButtons}>
-                {!item.is_sold && (
-                  <>
-                    <TouchableOpacity style={styles.actionBtn} onPress={() => router.push({ pathname: '/edit-ad', params: { id: item.id } })}>
-                      <Text style={styles.actionBtnText}>Edit</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.actionBtn, styles.sellBtn]} onPress={() => markAsSold(item.id)}>
-                      <Text style={[styles.actionBtnText, styles.sellBtnText]}>Mark Donated</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-                <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={() => confirmDeleteAd(item.id)}>
-                  <Text style={[styles.actionBtnText, styles.deleteBtnText]}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
-      />
+  const confirmDelete = (productId: string) => {
+    Alert.alert(
+      'Delete Donation',
+      'Are you sure? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await supabase.from('favorites').delete().eq('product_id', productId);
+            await supabase.from('products').delete().eq('id', productId);
+            fetchMyAds();
+          },
+        },
+      ]
     );
   };
 
-  const renderFavorites = () => (
-    <FlatList
-      data={favoriteAds}
-      keyExtractor={item => item.id}
-      contentContainerStyle={styles.listContent}
-      ListEmptyComponent={<Text style={styles.emptyText}>You haven't liked any donations yet.</Text>}
-      renderItem={({ item }) => (
-        <TouchableOpacity 
-          style={styles.adCard}
-          onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
-        >
-          <View style={styles.adRow}>
-            <Image source={{ uri: item.image_url }} style={styles.adImage} />
-            <View style={styles.adInfo}>
-              <Text style={styles.adTitle} numberOfLines={2}>{item.title}</Text>
-              <Text style={styles.adPrice}>FREE</Text>
-              <Text style={styles.adLocation}>{item.location}</Text>
+  const removeFavorite = async (productId: string) => {
+    await supabase.from('favorites').delete().match({ user_id: user?.id, product_id: productId });
+    fetchMyAds();
+  };
+
+  const getStatusConfig = (item: any) => {
+    if (item.is_sold) return { label: 'Donated 🎉', color: colors.success, bg: '#ECFDF5' };
+    return { label: 'Active', color: colors.primary, bg: colors.highlight };
+  };
+
+  const renderDonation = ({ item }: { item: any }) => {
+    const status = getStatusConfig(item);
+    const timeStr = new Date(item.created_at).toLocaleDateString();
+
+    return (
+      <View style={styles.donationCard}>
+        <View style={styles.cardRow}>
+          <Image source={{ uri: item.image_url }} style={styles.cardImage} />
+          <View style={styles.cardInfo}>
+            <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+            <View style={[styles.statusPill, { backgroundColor: status.bg }]}>
+              <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
             </View>
-            <TouchableOpacity style={styles.favIcon} onPress={() => toggleFavorite(item.id)}>
-              <Ionicons name="heart" size={24} color={'red'} />
-            </TouchableOpacity>
+            <View style={styles.cardMeta}>
+              <Ionicons name="location-outline" size={12} color={colors.textSecondary} />
+              <Text style={styles.cardMetaText}>{item.location?.split(',')[0]}</Text>
+              <Text style={styles.cardMetaText}>• {timeStr}</Text>
+            </View>
           </View>
+        </View>
+
+        {/* Action Row */}
+        <View style={styles.actionRow}>
+          {!item.is_sold && (
+            <>
+              <TouchableOpacity
+                style={styles.actionBtnPrimary}
+                onPress={() => markAsDonated(item.id)}
+              >
+                <Ionicons name="checkmark-circle-outline" size={16} color={colors.surface} />
+                <Text style={styles.actionBtnPrimaryText}>Mark Donated</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionBtnGhost}
+                onPress={() => router.push({ pathname: '/edit-ad', params: { id: item.id } })}
+              >
+                <Text style={styles.actionBtnGhostText}>Edit</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          <TouchableOpacity
+            style={styles.actionBtnDanger}
+            onPress={() => confirmDelete(item.id)}
+          >
+            <Ionicons name="trash-outline" size={14} color={colors.error} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const renderFavorite = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.donationCard}
+      onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
+    >
+      <View style={styles.cardRow}>
+        <Image source={{ uri: item.image_url }} style={styles.cardImage} />
+        <View style={styles.cardInfo}>
+          <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+          <Text style={styles.cardSubtitle}>{item.location}</Text>
+        </View>
+        <TouchableOpacity style={styles.favBtn} onPress={() => removeFavorite(item.id)}>
+          <Ionicons name="heart" size={22} color={colors.coral} />
         </TouchableOpacity>
-      )}
-    />
+      </View>
+    </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Donations</Text>
+        <Text style={styles.headerTitle}>My Giving</Text>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabContainer}>
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'DONATIONS' && styles.activeTab]}
-          onPress={() => setActiveTab('DONATIONS')}
-        >
-          <Text style={[styles.tabText, activeTab === 'DONATIONS' && styles.activeTabText]}>DONATIONS</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'FAVORITES' && styles.activeTab]}
-          onPress={() => setActiveTab('FAVORITES')}
-        >
-          <Text style={[styles.tabText, activeTab === 'FAVORITES' && styles.activeTabText]}>FAVORITES</Text>
-        </TouchableOpacity>
+        {(['DONATIONS', 'FAVORITES'] as ActiveTab[]).map(tab => (
+          <TouchableOpacity
+            key={tab}
+            style={[styles.tab, activeTab === tab && styles.tabActive]}
+            onPress={() => setActiveTab(tab)}
+          >
+            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
+              {tab === 'DONATIONS' ? 'My Donations' : 'Saved Items'}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {/* Content */}
-      <View style={styles.content}>
-        {activeTab === 'DONATIONS' ? renderMyAds() : renderFavorites()}
-      </View>
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : activeTab === 'DONATIONS' ? (
+        <FlatList
+          data={myAds}
+          keyExtractor={item => item.id}
+          renderItem={renderDonation}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState
+              imageSource={require('../../assets/images/empty-state.png')}
+              title="No donations yet"
+              body="You haven't posted any items yet. Start sharing and make someone's day!"
+              ctaTitle="Donate Your First Item"
+              onCtaPress={() => router.push('/(tabs)/post')}
+            />
+          }
+        />
+      ) : (
+        <FlatList
+          data={favoriteAds}
+          keyExtractor={item => item.id}
+          renderItem={renderFavorite}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState
+              imageSource={require('../../assets/images/empty-state.png')}
+              title="No saved items"
+              body="Items you love will appear here. Start exploring!"
+              ctaTitle="Explore Items"
+              onCtaPress={() => router.push('/(tabs)/')}
+            />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  header: { padding: 16, backgroundColor: COLORS.white },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.primary },
-  tabContainer: { flexDirection: 'row', backgroundColor: COLORS.white, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  tab: { flex: 1, paddingVertical: 14, alignItems: 'center', borderBottomWidth: 3, borderBottomColor: 'transparent' },
-  activeTab: { borderBottomColor: COLORS.primary },
-  tabText: { fontSize: 14, fontWeight: 'bold', color: COLORS.textLight },
-  activeTabText: { color: COLORS.primary },
-  content: { flex: 1 },
-  listContent: { padding: 16 },
-  emptyText: { textAlign: 'center', color: COLORS.textLight, marginTop: 40, fontSize: 16 },
-  adCard: { backgroundColor: COLORS.white, borderRadius: 8, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: COLORS.border },
-  adRow: { flexDirection: 'row' },
-  adImage: { width: 80, height: 80, borderRadius: 4, backgroundColor: '#e0e0e0', marginRight: 12 },
-  adInfo: { flex: 1, justifyContent: 'center' },
-  adTitle: { fontSize: 14, color: COLORS.textLight, marginBottom: 4 },
-  adPrice: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary, marginBottom: 8 },
-  adLocation: { fontSize: 12, color: COLORS.textLight },
-  adStats: { flexDirection: 'row', alignItems: 'center' },
-  statText: { fontSize: 12, color: COLORS.textLight, marginLeft: 4 },
-  favIcon: { padding: 4 },
-  adFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: COLORS.border },
-  statusText: { fontSize: 12, fontWeight: 'bold', color: '#4caf50' },
-  actionButtons: { flexDirection: 'row', gap: 8 },
-  actionBtn: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 4, borderWidth: 1, borderColor: COLORS.primary },
-  actionBtnText: { color: COLORS.primary, fontWeight: 'bold', fontSize: 12 },
-  sellBtn: { backgroundColor: COLORS.primary },
-  sellBtnText: { color: COLORS.white },
-  deleteBtn: { borderColor: 'red' },
-  deleteBtnText: { color: 'red' },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // ─── Header ──────────────────────────────────────
+  header: {
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+    backgroundColor: colors.surface,
+  },
+  headerTitle: {
+    ...typography.h2,
+    color: colors.textPrimary,
+  },
+
+  // ─── Tabs ────────────────────────────────────────
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: spacing.small,
+    alignItems: 'center',
+    borderBottomWidth: 3,
+    borderBottomColor: 'transparent',
+  },
+  tabActive: {
+    borderBottomColor: colors.primary,
+  },
+  tabText: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  tabTextActive: {
+    color: colors.primary,
+    fontWeight: '700',
+  },
+
+  // ─── Cards ───────────────────────────────────────
+  listContent: {
+    padding: spacing.medium,
+    gap: spacing.small,
+  },
+  donationCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.medium,
+    ...shadows.sm,
+  },
+  cardRow: {
+    flexDirection: 'row',
+  },
+  cardImage: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.md,
+    backgroundColor: colors.highlight,
+    marginRight: spacing.small,
+  },
+  cardInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  cardTitle: {
+    ...typography.bodySmall,
+    color: colors.textPrimary,
+    fontWeight: '600',
+    marginBottom: spacing.micro,
+  },
+  cardSubtitle: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  statusPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.tiny,
+    paddingVertical: 2,
+    borderRadius: radius.full,
+    marginBottom: spacing.micro,
+  },
+  statusText: {
+    ...typography.caption,
+    fontWeight: '700',
+    fontSize: 10,
+  },
+  cardMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  cardMetaText: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  favBtn: {
+    padding: spacing.micro,
+    justifyContent: 'center',
+  },
+
+  // ─── Actions ─────────────────────────────────────
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.small,
+    paddingTop: spacing.small,
+    borderTopWidth: 1,
+    borderTopColor: colors.divider,
+    gap: spacing.tiny,
+  },
+  actionBtnPrimary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.small,
+    paddingVertical: spacing.tiny,
+    borderRadius: radius.sm,
+    gap: 4,
+  },
+  actionBtnPrimaryText: {
+    ...typography.caption,
+    color: colors.surface,
+    fontWeight: '700',
+  },
+  actionBtnGhost: {
+    paddingHorizontal: spacing.small,
+    paddingVertical: spacing.tiny,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  actionBtnGhostText: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  actionBtnDanger: {
+    marginLeft: 'auto',
+    padding: spacing.tiny,
+  },
 });

@@ -1,154 +1,157 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Image, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+/**
+ * ThankU — Chat Thread Screen
+ *
+ * Premium messaging with ThankU branding.
+ * Features: Product context header, message bubbles, typing indicator.
+ */
+
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  FlatList, KeyboardAvoidingView, Platform, Image,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { shadows } from '../../src/theme/shadows';
 
-const COLORS = {
-  primary: '#059669', // Emerald Green
-  secondary: '#10B981', // Emerald Light
-  bg: '#f8f9fa',
-  white: '#ffffff',
-  textLight: '#4B5563', // Gray 600
-  border: '#E5E7EB',
-  messageSent: '#D1FAE5', // Light Emerald
-  messageReceived: '#ffffff',
-};
-
-export default function ChatRoomScreen() {
+export default function ChatScreen() {
   const { id, productTitle, otherUser, productImage } = useLocalSearchParams();
   const { user } = useAuth();
   const [messages, setMessages] = useState<any[]>([]);
-  const [inputText, setInputText] = useState('');
+  const [newMessage, setNewMessage] = useState('');
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    if (id) {
-      fetchMessages();
-      
-      const subscription = supabase
-        .channel(`public:messages:chat_id=eq.${id}`)
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${id}` }, (payload) => {
-          console.log('New message received!', payload.new);
-          setMessages((prev) => [...prev, payload.new]);
-        })
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(subscription);
-      };
-    }
+    fetchMessages();
+    const subscription = supabase
+      .channel(`chat-${id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${id}` },
+        (payload) => setMessages((prev) => [...prev, payload.new])
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(subscription); };
   }, [id]);
 
   const fetchMessages = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('messages')
       .select('*')
       .eq('chat_id', id)
       .order('created_at', { ascending: true });
-    
-    if (data) {
-      setMessages(data);
-    }
+    if (data) setMessages(data);
   };
 
-  const handleSend = async () => {
-    if (!inputText.trim() || !user) return;
-
-    const textToSend = inputText.trim();
-    setInputText(''); // Optimistic clear
-
-    const { error } = await supabase
-      .from('messages')
-      .insert({
-        chat_id: id,
-        sender_id: user.id,
-        text: textToSend
-      });
-
-    if (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message');
-      setInputText(textToSend); // Restore on error
-    }
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !user) return;
+    const messageText = newMessage.trim();
+    setNewMessage('');
+    await supabase.from('messages').insert({
+      chat_id: id,
+      sender_id: user.id,
+      text: messageText,
+    });
   };
 
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
-  useEffect(() => {
-    if (Platform.OS === 'ios') return;
-    const showSub = Keyboard.addListener('keyboardDidShow', (e) => setKeyboardHeight(e.endCoordinates.height));
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardHeight(0));
-    return () => { showSub.remove(); hideSub.remove(); };
-  }, []);
+  const renderMessage = useCallback(({ item }: { item: any }) => {
+    const isMe = item.sender_id === user?.id;
+    return (
+      <View style={[styles.messageBubbleRow, isMe ? styles.myRow : styles.theirRow]}>
+        <View style={[styles.bubble, isMe ? styles.myBubble : styles.theirBubble]}>
+          <Text style={[styles.messageText, isMe ? styles.myText : styles.theirText]}>
+            {item.text}
+          </Text>
+          <Text style={[styles.timeText, isMe ? styles.myTime : styles.theirTime]}>
+            {formatTime(item.created_at)}
+          </Text>
+        </View>
+      </View>
+    );
+  }, [user?.id]);
 
   return (
-    <SafeAreaView style={[styles.container, { paddingBottom: Platform.OS === 'android' ? keyboardHeight : 0 }]} edges={['top']}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
-        style={styles.keyboardView}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-        enabled={Platform.OS === 'ios'}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
-          </TouchableOpacity>
-          <Image source={{ uri: productImage as string }} style={styles.headerImage} />
-          <View style={styles.headerInfo}>
-            <Text style={styles.headerName} numberOfLines={1}>{otherUser}</Text>
-            <Text style={styles.headerProduct} numberOfLines={1}>{productTitle}</Text>
-          </View>
-          <TouchableOpacity style={styles.backBtn}>
-            <Ionicons name="ellipsis-vertical" size={24} color={COLORS.primary} />
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+        </TouchableOpacity>
+        <View style={styles.headerInfo}>
+          <Text style={styles.headerName} numberOfLines={1}>{otherUser || 'User'}</Text>
+          <Text style={styles.headerProduct} numberOfLines={1}>{productTitle || 'Item'}</Text>
         </View>
+        {productImage && (
+          <Image source={{ uri: productImage as string }} style={styles.headerImage} />
+        )}
+      </View>
 
-        {/* Chat Area */}
+      {/* Product Context Banner */}
+      <TouchableOpacity style={styles.contextBanner}>
+        <Ionicons name="gift-outline" size={16} color={colors.primary} />
+        <Text style={styles.contextText} numberOfLines={1}>
+          Discussing: {productTitle}
+        </Text>
+        <Ionicons name="chevron-forward" size={14} color={colors.textDisabled} />
+      </TouchableOpacity>
+
+      {/* Messages */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
         <FlatList
           ref={flatListRef}
           data={messages}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.chatList}
+          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+          renderItem={renderMessage}
+          contentContainerStyle={styles.messageList}
+          showsVerticalScrollIndicator={false}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-          renderItem={({ item }) => {
-            const isMe = item.sender_id === user?.id;
-            const timeStr = new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            return (
-              <View style={[styles.messageBubble, isMe ? styles.messageMe : styles.messageThem]}>
-                <Text style={styles.messageText}>{item.text}</Text>
-                <Text style={styles.messageTime}>{timeStr}</Text>
+          ListEmptyComponent={
+            <View style={styles.emptyChat}>
+              <View style={styles.emptyChatIcon}>
+                <Ionicons name="chatbubbles-outline" size={40} color={colors.secondary} />
               </View>
-            );
-          }}
+              <Text style={styles.emptyChatTitle}>Start the conversation</Text>
+              <Text style={styles.emptyChatBody}>
+                Be kind, be genuine. Great connections start with a friendly message.
+              </Text>
+            </View>
+          }
         />
 
-        {/* Input Area */}
-        <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.attachBtn}>
-            <Ionicons name="add" size={28} color={COLORS.primary} />
-          </TouchableOpacity>
-          <View style={styles.textInputWrapper}>
+        {/* Input */}
+        <View style={styles.inputBar}>
+          <View style={styles.inputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={styles.input}
               placeholder="Type a message..."
-              value={inputText}
-              onChangeText={setInputText}
+              placeholderTextColor={colors.textDisabled}
+              value={newMessage}
+              onChangeText={setNewMessage}
               multiline
+              maxLength={1000}
             />
           </View>
-          {inputText.trim() ? (
-            <TouchableOpacity style={styles.sendBtn} onPress={handleSend}>
-              <Ionicons name="send" size={24} color={COLORS.secondary} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.sendBtn}>
-              <Ionicons name="mic" size={24} color={COLORS.primary} />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={[styles.sendBtn, !newMessage.trim() && styles.sendBtnDisabled]}
+            onPress={sendMessage}
+            disabled={!newMessage.trim()}
+          >
+            <Ionicons name="send" size={20} color={newMessage.trim() ? colors.surface : colors.textDisabled} />
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -156,23 +159,173 @@ export default function ChatRoomScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  keyboardView: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 12, backgroundColor: COLORS.white, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  backBtn: { padding: 8 },
-  headerImage: { width: 40, height: 40, borderRadius: 20, marginHorizontal: 8 },
-  headerInfo: { flex: 1 },
-  headerName: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary },
-  headerProduct: { fontSize: 12, color: COLORS.textLight },
-  chatList: { padding: 16 },
-  messageBubble: { maxWidth: '80%', padding: 12, borderRadius: 12, marginBottom: 12 },
-  messageMe: { alignSelf: 'flex-end', backgroundColor: COLORS.messageSent, borderBottomRightRadius: 4 },
-  messageThem: { alignSelf: 'flex-start', backgroundColor: COLORS.messageReceived, borderBottomLeftRadius: 4, borderWidth: 1, borderColor: COLORS.border },
-  messageText: { fontSize: 16, color: COLORS.primary, marginBottom: 4 },
-  messageTime: { fontSize: 10, color: COLORS.textLight, alignSelf: 'flex-end' },
-  inputContainer: { flexDirection: 'row', alignItems: 'flex-end', padding: 12, paddingBottom: Platform.OS === 'ios' ? 24 : 20, backgroundColor: COLORS.white, borderTopWidth: 1, borderTopColor: COLORS.border, width: '100%' },
-  attachBtn: { padding: 8, marginRight: 4, justifyContent: 'center' },
-  textInputWrapper: { flex: 1, backgroundColor: COLORS.gray, borderRadius: 20, minHeight: 40, maxHeight: 100, justifyContent: 'center' },
-  textInput: { paddingHorizontal: 16, paddingVertical: 10, fontSize: 16, color: COLORS.primary, width: '100%' },
-  sendBtn: { padding: 8, marginLeft: 4, justifyContent: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  // ─── Header ──────────────────────────────────────
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  backBtn: {
+    marginRight: spacing.small,
+  },
+  headerInfo: {
+    flex: 1,
+  },
+  headerName: {
+    ...typography.body,
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  headerProduct: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  headerImage: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.sm,
+    backgroundColor: colors.highlight,
+    marginLeft: spacing.small,
+  },
+
+  // ─── Context Banner ──────────────────────────────
+  contextBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.highlight,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.tiny,
+    gap: spacing.tiny,
+  },
+  contextText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '600',
+    flex: 1,
+  },
+
+  // ─── Messages ────────────────────────────────────
+  messageList: {
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+  },
+  messageBubbleRow: {
+    marginBottom: spacing.tiny,
+    maxWidth: '80%',
+  },
+  myRow: {
+    alignSelf: 'flex-end',
+  },
+  theirRow: {
+    alignSelf: 'flex-start',
+  },
+  bubble: {
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    borderRadius: radius.lg,
+  },
+  myBubble: {
+    backgroundColor: colors.primary,
+    borderBottomRightRadius: radius.xs,
+  },
+  theirBubble: {
+    backgroundColor: colors.surface,
+    borderBottomLeftRadius: radius.xs,
+    ...shadows.sm,
+  },
+  messageText: {
+    ...typography.body,
+    lineHeight: 22,
+  },
+  myText: {
+    color: colors.textOnPrimary,
+  },
+  theirText: {
+    color: colors.textPrimary,
+  },
+  timeText: {
+    ...typography.caption,
+    fontSize: 10,
+    marginTop: spacing.micro,
+    alignSelf: 'flex-end',
+  },
+  myTime: {
+    color: 'rgba(17,24,39,0.5)',
+  },
+  theirTime: {
+    color: colors.textDisabled,
+  },
+
+  // ─── Empty ───────────────────────────────────────
+  emptyChat: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxxl,
+    paddingHorizontal: spacing.xl,
+  },
+  emptyChatIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.highlight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.medium,
+  },
+  emptyChatTitle: {
+    ...typography.h3,
+    color: colors.textPrimary,
+    marginBottom: spacing.tiny,
+  },
+  emptyChatBody: {
+    ...typography.body,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+
+  // ─── Input Bar ───────────────────────────────────
+  inputBar: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    padding: spacing.small,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: spacing.tiny,
+  },
+  inputContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    backgroundColor: colors.background,
+    paddingHorizontal: spacing.medium,
+    maxHeight: 120,
+  },
+  input: {
+    ...typography.body,
+    color: colors.textPrimary,
+    paddingVertical: spacing.small,
+    minHeight: 44,
+  },
+  sendBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sendBtnDisabled: {
+    backgroundColor: colors.border,
+  },
 });

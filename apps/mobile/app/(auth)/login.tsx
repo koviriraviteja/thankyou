@@ -1,62 +1,88 @@
+/**
+ * ThankU — Onboarding / Login Screen
+ *
+ * Matches Reference Image: Screen 20 (Onboarding Flow)
+ * Premium welcome screen with ThankU branding, illustration placeholder,
+ * "Give Freely. Help Genuinely." tagline, and auth options.
+ */
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useAuth } from '../../src/context/AuthContext';
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { Button } from '../../src/components/ui/Button';
 
-const COLORS = {
-  primary: '#059669',
-  secondary: '#10B981',
-  white: '#ffffff',
-  text: '#059669',
-  textLight: '#4B5563',
-  border: '#d8dfe0',
-};
-
-export default function AuthGatewayScreen() {
+export default function OnboardingScreen() {
   const { loginWithGoogle } = useAuth();
-
-  const handlePhoneLogin = () => {
-    router.push('/(auth)/phone');
-  };
-
-  const handleMockLogin = (provider: string) => {
-    Alert.alert('Coming Soon', `${provider} login will be implemented soon! For now, please use Phone Login.`);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        {/* Mock Logo / Icon */}
-        <View style={styles.logoPlaceholder}>
-          <Ionicons name="heart" size={60} color={COLORS.primary} />
+      {/* Skip button */}
+      <TouchableOpacity style={styles.skipBtn} onPress={() => router.replace('/(tabs)/')}>
+        <Text style={styles.skipText}>Skip</Text>
+      </TouchableOpacity>
+
+      {/* Hero Section */}
+      <View style={styles.heroSection}>
+        {/* Logo & Brand */}
+        <View style={styles.logoContainer}>
+          <View style={styles.logoIcon}>
+            <Ionicons name="heart" size={32} color={colors.surface} />
+          </View>
+          <Text style={styles.brandName}>ThankU</Text>
         </View>
-        <Text style={styles.title}>Welcome to GiveAway</Text>
-        <Text style={styles.subtitle}>Help your community by sharing what you don't need.</Text>
+
+        <Text style={styles.tagline}>Give Freely. Help Genuinely.</Text>
+
+        {/* Illustration */}
+        <View style={styles.illustrationContainer}>
+          <Image 
+            source={require('../../assets/images/onboarding-hero.png')} 
+            style={{ width: 280, height: 280 }} 
+            contentFit="contain" 
+          />
+        </View>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonOutline} onPress={handlePhoneLogin}>
-          <Ionicons name="call-outline" size={24} color={COLORS.primary} style={styles.buttonIcon} />
-          <Text style={styles.buttonTextDark}>Continue with Phone</Text>
+      {/* Welcome Text */}
+      <View style={styles.welcomeSection}>
+        <Text style={styles.welcomeTitle}>Welcome to ThankU</Text>
+        <Text style={styles.welcomeBody}>
+          A community where giving creates{'\n'}happiness and gratitude grows.
+        </Text>
+      </View>
+
+      {/* Action Buttons */}
+      <View style={styles.actionSection}>
+        <Button
+          title="Get Started"
+          onPress={() => router.push('/(auth)/phone')}
+          size="lg"
+          icon={<Ionicons name="arrow-forward" size={20} color={colors.textOnPrimary} />}
+        />
+
+        <TouchableOpacity style={styles.googleBtn} onPress={loginWithGoogle}>
+          <Ionicons name="logo-google" size={20} color={colors.textPrimary} />
+          <Text style={styles.googleBtnText}>Continue with Google</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonOutline} onPress={loginWithGoogle}>
-          <Ionicons name="logo-google" size={24} color={COLORS.primary} style={styles.buttonIcon} />
-          <Text style={styles.buttonTextDark}>Continue with Google</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttonOutline} onPress={() => handleMockLogin('Email')}>
-          <Ionicons name="mail-outline" size={24} color={COLORS.primary} style={styles.buttonIcon} />
-          <Text style={styles.buttonTextDark}>Continue with Email</Text>
+        <TouchableOpacity onPress={() => router.push('/(auth)/phone')}>
+          <Text style={styles.existingAccount}>I already have an account</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          If you continue, you are accepting Community{' '}
-          <Text style={styles.linkText}>Terms and Conditions</Text> and{' '}
+          By continuing, you agree to our{' '}
+          <Text style={styles.linkText}>Terms</Text> and{' '}
           <Text style={styles.linkText}>Privacy Policy</Text>
         </Text>
       </View>
@@ -67,77 +93,112 @@ export default function AuthGatewayScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    padding: 24,
-    justifyContent: 'space-between',
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.large,
   },
-  header: {
+  skipBtn: {
+    alignSelf: 'flex-end',
+    paddingVertical: spacing.tiny,
+    paddingHorizontal: spacing.small,
+  },
+  skipText: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+  },
+
+  // ─── Hero ────────────────────────────────────────
+  heroSection: {
     alignItems: 'center',
-    marginTop: 40,
+    paddingTop: spacing.large,
   },
   logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  logoText: {
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: '900',
-    letterSpacing: 2,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    gap: 16,
-  },
-  buttonOutline: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    gap: spacing.tiny,
+    marginBottom: spacing.tiny,
   },
-  buttonIcon: {
-    marginRight: 16,
+  logoIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.md,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  buttonTextDark: {
-    color: COLORS.primary,
-    fontSize: 16,
-    fontWeight: 'bold',
-    flex: 1,
+  brandName: {
+    ...typography.h1,
+    color: colors.primary,
+  },
+  tagline: {
+    ...typography.body,
+    color: colors.textSecondary,
+    marginBottom: spacing.large,
+  },
+  illustrationContainer: {
+    width: '100%',
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+
+  // ─── Welcome ─────────────────────────────────────
+  welcomeSection: {
+    alignItems: 'center',
+    paddingVertical: spacing.large,
+  },
+  welcomeTitle: {
+    ...typography.h2,
+    color: colors.textPrimary,
+    marginBottom: spacing.tiny,
+  },
+  welcomeBody: {
+    ...typography.body,
+    color: colors.textSecondary,
     textAlign: 'center',
+    lineHeight: 24,
   },
+
+  // ─── Actions ─────────────────────────────────────
+  actionSection: {
+    gap: spacing.small,
+  },
+  googleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    gap: spacing.tiny,
+  },
+  googleBtnText: {
+    ...typography.label,
+    color: colors.textPrimary,
+  },
+  existingAccount: {
+    ...typography.bodySmall,
+    color: colors.accent,
+    textAlign: 'center',
+    fontWeight: '600',
+    paddingVertical: spacing.tiny,
+  },
+
+  // ─── Footer ──────────────────────────────────────
   footer: {
-    marginBottom: 20,
+    marginTop: 'auto',
+    paddingBottom: spacing.medium,
   },
   footerText: {
-    fontSize: 12,
-    color: COLORS.textLight,
+    ...typography.caption,
+    color: colors.textDisabled,
     textAlign: 'center',
     lineHeight: 18,
   },
   linkText: {
-    textDecorationLine: 'underline',
-    color: COLORS.primary,
-    fontWeight: 'bold',
+    color: colors.accent,
+    fontWeight: '600',
   },
 });
-

@@ -1,76 +1,112 @@
+/**
+ * ThankU — OTP Verification Screen
+ *
+ * Premium OTP entry with individual digit cells, resend timer, and ThankU branding.
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  KeyboardAvoidingView, Platform, ActivityIndicator,
+} from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const COLORS = {
-  primary: '#059669',
-  secondary: '#10B981',
-  white: '#ffffff',
-  text: '#059669',
-  textLight: '#4B5563',
-  border: '#d8dfe0',
-  error: '#ff5a5f'
-};
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { Button } from '../../src/components/ui/Button';
 
 export default function VerifyScreen() {
   const { phone } = useLocalSearchParams();
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resendTimer, setResendTimer] = useState(30);
   const { verifyOtp } = useAuth();
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    // Focus input on mount
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 500);
+    setTimeout(() => inputRef.current?.focus(), 500);
   }, []);
+
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   const handleVerify = async () => {
     if (otp.length < 6) {
-      setError('Please enter a valid 6-digit OTP');
+      setError('Please enter the complete 6-digit code');
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
       const success = await verifyOtp(phone as string, otp);
       if (success) {
-        // Dismiss the entire auth modal flow and go back to home feed
         router.replace('/');
       } else {
-        setError('Invalid OTP. Please try again.');
+        setError('Invalid code. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleResend = () => {
+    if (resendTimer > 0) return;
+    setResendTimer(30);
+    // Trigger resend logic here
+  };
+
+  // Display OTP as individual cells
+  const otpDigits = otp.split('').concat(Array(6 - otp.length).fill(''));
+
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
       >
+        {/* Back Button */}
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+        </TouchableOpacity>
+
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Enter Confirmation Code</Text>
+          <Text style={styles.title}>Enter verification code</Text>
           <Text style={styles.subtitle}>
-            Enter the 6-digit code we sent to +91 {phone}
+            We sent a 6-digit code to{'\n'}
+            <Text style={styles.phoneHighlight}>+91 {phone}</Text>
           </Text>
         </View>
 
-        <View style={styles.inputContainer}>
+        {/* OTP Cells */}
+        <View style={styles.otpContainer}>
+          {otpDigits.map((digit, i) => (
+            <View
+              key={i}
+              style={[
+                styles.otpCell,
+                i < otp.length && styles.otpCellFilled,
+                i === otp.length && styles.otpCellActive,
+              ]}
+            >
+              <Text style={styles.otpDigit}>{digit}</Text>
+            </View>
+          ))}
+          {/* Hidden input */}
           <TextInput
             ref={inputRef}
-            style={styles.input}
-            placeholder="000000"
+            style={styles.hiddenInput}
             keyboardType="number-pad"
             maxLength={6}
             value={otp}
@@ -78,32 +114,35 @@ export default function VerifyScreen() {
               setOtp(text.replace(/[^0-9]/g, ''));
               setError('');
             }}
+            autoFocus
           />
         </View>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
+        {/* Resend */}
         <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn't receive the code? </Text>
-          <TouchableOpacity>
-            <Text style={styles.resendLink}>Resend</Text>
-          </TouchableOpacity>
+          {resendTimer > 0 ? (
+            <Text style={styles.resendTimer}>Resend code in {resendTimer}s</Text>
+          ) : (
+            <TouchableOpacity onPress={handleResend}>
+              <Text style={styles.resendLink}>Resend Code</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        <TouchableOpacity 
-          style={[
-            styles.button, 
-            otp.length < 6 && styles.buttonDisabled
-          ]} 
-          onPress={handleVerify}
-          disabled={otp.length < 6 || isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Verify and Create Account</Text>
-          )}
-        </TouchableOpacity>
+        {/* Spacer */}
+        <View style={{ flex: 1 }} />
+
+        {/* CTA */}
+        <View style={styles.ctaSection}>
+          <Button
+            title="Verify & Continue"
+            onPress={handleVerify}
+            loading={isLoading}
+            disabled={otp.length < 6 || isLoading}
+          />
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -112,72 +151,93 @@ export default function VerifyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: colors.surface,
   },
   content: {
     flex: 1,
-    padding: 24,
-    justifyContent: 'space-between',
+    paddingHorizontal: spacing.large,
+  },
+  backBtn: {
+    paddingVertical: spacing.small,
+    alignSelf: 'flex-start',
   },
   header: {
-    marginTop: 20,
-    marginBottom: 40,
+    marginTop: spacing.large,
+    marginBottom: spacing.xl,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 8,
+    ...typography.h1,
+    color: colors.textPrimary,
+    marginBottom: spacing.tiny,
   },
   subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
+    ...typography.body,
+    color: colors.textSecondary,
+    lineHeight: 24,
   },
-  inputContainer: {
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primary,
-    paddingVertical: 8,
-    marginBottom: 20,
+  phoneHighlight: {
+    ...typography.body,
+    color: colors.textPrimary,
+    fontWeight: '700',
   },
-  input: {
-    fontSize: 32,
-    color: COLORS.primary,
-    letterSpacing: 8,
-    textAlign: 'center',
+
+  // ─── OTP Cells ───────────────────────────────────
+  otpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: spacing.tiny,
+    marginBottom: spacing.medium,
+    position: 'relative',
   },
+  otpCell: {
+    flex: 1,
+    height: 60,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  otpCellFilled: {
+    borderColor: colors.primary,
+    backgroundColor: colors.highlight,
+  },
+  otpCellActive: {
+    borderColor: colors.primary,
+    borderWidth: 2,
+  },
+  otpDigit: {
+    ...typography.h2,
+    color: colors.textPrimary,
+  },
+  hiddenInput: {
+    position: 'absolute',
+    width: '100%',
+    height: 60,
+    opacity: 0,
+  },
+
   errorText: {
-    color: COLORS.error,
-    fontSize: 14,
-    marginBottom: 20,
+    ...typography.bodySmall,
+    color: colors.error,
     textAlign: 'center',
+    marginBottom: spacing.medium,
   },
   resendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 40,
+    alignItems: 'center',
+    marginBottom: spacing.large,
   },
-  resendText: {
-    color: COLORS.textLight,
+  resendTimer: {
+    ...typography.bodySmall,
+    color: colors.textDisabled,
   },
   resendLink: {
-    color: COLORS.secondary,
-    fontWeight: 'bold',
+    ...typography.bodySmall,
+    color: colors.accent,
+    fontWeight: '700',
   },
-  button: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: COLORS.border,
-  },
-  buttonText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: 'bold',
+  ctaSection: {
+    paddingBottom: spacing.large,
   },
 });
-

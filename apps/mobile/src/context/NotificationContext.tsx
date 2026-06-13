@@ -66,7 +66,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                 const chat = chats.find(c => c.id === msg.chat_id);
                 return {
                   ...msg,
-                  productTitle: chat?.product?.title || 'an item'
+                  productTitle: (chat?.product as any)?.title || 'an item'
                 };
               });
             setNotifications(activeNotifications);
@@ -138,7 +138,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
             .single();
 
           if (chatData && (chatData.buyer_id === user.id || chatData.seller_id === user.id)) {
-            const productTitle = chatData.product?.title || 'an item';
+            const productTitle = (chatData.product as any)?.title || 'an item';
             
             // Add to notifications list
             setNotifications(prev => [{ ...newMessage, productTitle }, ...prev]);
@@ -199,12 +199,12 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     right: 20,
-    backgroundColor: '#059669', // Emerald
-    borderRadius: 12,
-    shadowColor: '#000',
+    backgroundColor: '#5ED6E3',
+    borderRadius: 16,
+    shadowColor: '#111827',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
     elevation: 8,
     zIndex: 9999,
   },
@@ -214,19 +214,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer: {
-    marginRight: 16,
+    marginRight: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textContainer: {
     flex: 1,
   },
   toastTitle: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: '#111827',
+    fontWeight: '700',
     fontSize: 14,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   toastText: {
-    color: '#e0f2fe',
+    color: '#111827',
     fontSize: 13,
+    opacity: 0.7,
   },
 });

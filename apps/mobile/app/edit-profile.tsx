@@ -1,5 +1,14 @@
+/**
+ * ThankU — Edit Profile Screen
+ *
+ * Premium profile editor with avatar upload, name & phone editing.
+ */
+
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
+import {
+  StyleSheet, Text, View, TextInput, TouchableOpacity,
+  Alert, Image, ScrollView, KeyboardAvoidingView, Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,19 +17,15 @@ import { useAuth } from '../src/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
-
-const COLORS = {
-  primary: '#059669',
-  secondary: '#10B981',
-  bg: '#f8f9fa',
-  white: '#ffffff',
-  textLight: '#4B5563',
-  border: '#d8dfe0',
-};
+import { colors } from '../src/theme/colors';
+import { typography } from '../src/theme/typography';
+import { spacing } from '../src/theme/spacing';
+import { radius } from '../src/theme/radius';
+import { shadows } from '../src/theme/shadows';
+import { Button } from '../src/components/ui/Button';
 
 export default function EditProfileScreen() {
   const { user } = useAuth();
-  
   const [name, setName] = useState(user?.user_metadata?.full_name || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
@@ -33,7 +38,6 @@ export default function EditProfileScreen() {
       aspect: [1, 1],
       quality: 0.5,
     });
-
     if (!result.canceled && result.assets[0].uri) {
       setAvatarUrl(result.assets[0].uri);
     }
@@ -42,44 +46,26 @@ export default function EditProfileScreen() {
   const handleSave = async () => {
     if (!user) return;
     setLoading(true);
-
     try {
       let finalAvatarUrl = avatarUrl;
-
-      // If avatarUrl is a local file (starts with file://), upload it
       if (avatarUrl && !avatarUrl.startsWith('http')) {
         const base64 = await FileSystem.readAsStringAsync(avatarUrl, { encoding: 'base64' });
         const filePath = `${user.id}/avatar-${Date.now()}.jpg`;
-        
         const { error: uploadError } = await supabase.storage
-          .from('product-images') // Reusing the public bucket we created
-          .upload(filePath, decode(base64), { contentType: 'image/jpeg' });
-
-        if (uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabase.storage
           .from('product-images')
-          .getPublicUrl(filePath);
-
+          .upload(filePath, decode(base64), { contentType: 'image/jpeg' });
+        if (uploadError) throw uploadError;
+        const { data: publicUrlData } = supabase.storage.from('product-images').getPublicUrl(filePath);
         finalAvatarUrl = publicUrlData.publicUrl;
       }
-
-      // Update Auth Metadata
-      const { data, error } = await supabase.auth.updateUser({
-        data: {
-          full_name: name,
-          avatar_url: finalAvatarUrl,
-        }
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: name, avatar_url: finalAvatarUrl },
       });
-
       if (error) throw error;
-
-      Alert.alert('Success', 'Profile updated successfully!', [
-        { text: 'OK', onPress: () => router.back() }
+      Alert.alert('Profile Updated 🎉', 'Your changes have been saved.', [
+        { text: 'OK', onPress: () => router.back() },
       ]);
-
     } catch (error: any) {
-      console.error('Error updating profile:', error);
       Alert.alert('Error', error.message || 'Failed to update profile');
     } finally {
       setLoading(false);
@@ -87,82 +73,201 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={{ padding: 8 }}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
-        <View style={{ width: 40 }} />
+        <View style={{ width: 24 }} />
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.avatarSection}>
-          <TouchableOpacity onPress={pickImage}>
-            {avatarUrl ? (
-              <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-            ) : (
-              <View style={[styles.avatar, { backgroundColor: COLORS.border, justifyContent: 'center', alignItems: 'center' }]}>
-                <Ionicons name="person" size={40} color={COLORS.white} />
-              </View>
-            )}
-            <View style={styles.editAvatarBadge}>
-              <Ionicons name="camera" size={16} color={COLORS.white} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder="Enter your name"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Phone Number (Optional)</Text>
-          <TextInput
-            style={styles.input}
-            value={phone}
-            onChangeText={setPhone}
-            placeholder="Enter your phone number"
-            keyboardType="phone-pad"
-            editable={false} // Supabase requires phone OTP to change phone, so disable for now
-          />
-          <Text style={{ fontSize: 12, color: COLORS.textLight, marginTop: 4 }}>Phone numbers cannot be changed directly without verification.</Text>
-        </View>
-
-        <TouchableOpacity 
-          style={styles.saveBtn} 
-          onPress={handleSave}
-          disabled={loading}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          {loading ? (
-            <ActivityIndicator color={COLORS.white} />
-          ) : (
-            <Text style={styles.saveBtnText}>Save Changes</Text>
-          )}
-        </TouchableOpacity>
-      </View>
+          {/* Avatar */}
+          <View style={styles.avatarSection}>
+            <TouchableOpacity onPress={pickImage} style={styles.avatarWrapper}>
+              {avatarUrl ? (
+                <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+              ) : (
+                <View style={styles.avatarPlaceholder}>
+                  <Ionicons name="person" size={40} color={colors.surface} />
+                </View>
+              )}
+              <View style={styles.editAvatarBadge}>
+                <Ionicons name="camera" size={14} color={colors.surface} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pickImage}>
+              <Text style={styles.changePhotoText}>Change Photo</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Form */}
+          <View style={styles.formSection}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Full Name</Text>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+                placeholderTextColor={colors.textDisabled}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <View style={[styles.input, styles.inputDisabled]}>
+                <Text style={styles.inputDisabledText}>{user?.email || 'Not set'}</Text>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Phone Number</Text>
+              <TextInput
+                style={[styles.input, styles.inputDisabled]}
+                value={phone}
+                editable={false}
+                placeholder="Not set"
+                placeholderTextColor={colors.textDisabled}
+              />
+              <Text style={styles.helperText}>
+                Phone numbers cannot be changed directly without verification.
+              </Text>
+            </View>
+          </View>
+
+          {/* Save */}
+          <View style={styles.ctaSection}>
+            <Button
+              title="Save Changes"
+              onPress={handleSave}
+              loading={loading}
+              disabled={loading}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.white },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary },
-  content: { padding: 20 },
-  avatarSection: { alignItems: 'center', marginBottom: 30 },
-  avatar: { width: 100, height: 100, borderRadius: 50 },
-  editAvatarBadge: { position: 'absolute', bottom: 0, right: 0, backgroundColor: COLORS.secondary, width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORS.white },
-  inputGroup: { marginBottom: 20 },
-  label: { fontSize: 14, color: COLORS.textLight, marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 4, padding: 12, fontSize: 16, color: COLORS.primary },
-  saveBtn: { backgroundColor: COLORS.primary, padding: 16, borderRadius: 4, alignItems: 'center', marginTop: 20 },
-  saveBtnText: { color: COLORS.white, fontSize: 16, fontWeight: 'bold' },
-});
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  headerTitle: {
+    ...typography.h3,
+    color: colors.textPrimary,
+  },
+  content: {
+    paddingBottom: spacing.xxl,
+  },
 
+  // ─── Avatar ──────────────────────────────────────
+  avatarSection: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+    backgroundColor: colors.surface,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginBottom: spacing.small,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  avatarPlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editAvatarBadge: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: colors.surface,
+  },
+  changePhotoText: {
+    ...typography.bodySmall,
+    color: colors.accent,
+    fontWeight: '600',
+  },
+
+  // ─── Form ────────────────────────────────────────
+  formSection: {
+    backgroundColor: colors.surface,
+    marginTop: spacing.small,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+  },
+  inputGroup: {
+    marginBottom: spacing.large,
+  },
+  label: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+    fontWeight: '600',
+    marginBottom: spacing.tiny,
+  },
+  input: {
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+    ...typography.body,
+    color: colors.textPrimary,
+    backgroundColor: colors.background,
+  },
+  inputDisabled: {
+    backgroundColor: colors.divider,
+    justifyContent: 'center',
+  },
+  inputDisabledText: {
+    ...typography.body,
+    color: colors.textDisabled,
+  },
+  helperText: {
+    ...typography.caption,
+    color: colors.textDisabled,
+    marginTop: spacing.micro,
+  },
+
+  // ─── CTA ─────────────────────────────────────────
+  ctaSection: {
+    padding: spacing.medium,
+  },
+});

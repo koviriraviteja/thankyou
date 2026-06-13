@@ -1,18 +1,23 @@
+/**
+ * ThankU — Phone Login Screen
+ *
+ * Premium phone number entry with ThankU branding.
+ */
+
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  KeyboardAvoidingView, Platform, ActivityIndicator,
+} from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const COLORS = {
-  primary: '#059669',
-  secondary: '#10B981',
-  white: '#ffffff',
-  text: '#059669',
-  textLight: '#4B5563',
-  border: '#d8dfe0',
-  error: '#ff5a5f'
-};
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { Button } from '../../src/components/ui/Button';
 
 export default function PhoneLoginScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -25,17 +30,12 @@ export default function PhoneLoginScreen() {
       setError('Please enter a valid 10-digit phone number');
       return;
     }
-
     setIsLoading(true);
     setError('');
-    
     try {
       await login(phoneNumber);
-      router.push({
-        pathname: '/(auth)/verify',
-        params: { phone: phoneNumber }
-      });
-    } catch (err) {
+      router.push({ pathname: '/(auth)/verify', params: { phone: phoneNumber } });
+    } catch {
       setError('Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
@@ -44,61 +44,145 @@ export default function PhoneLoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
       >
+        {/* Back Button */}
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+        </TouchableOpacity>
+
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Enter your phone number</Text>
-          <Text style={styles.subtitle}>We will send a confirmation code to your phone</Text>
+          <Text style={styles.subtitle}>
+            We'll send a verification code to confirm it's you
+          </Text>
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.prefix}>+91</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="00000 00000"
-            keyboardType="phone-pad"
-            maxLength={10}
-            value={phoneNumber}
-            onChangeText={(text) => {
-              setPhoneNumber(text.replace(/[^0-9]/g, ''));
-              setError('');
-            }}
-            autoFocus
+        {/* Phone Input */}
+        <View style={styles.inputSection}>
+          <View style={styles.inputContainer}>
+            <View style={styles.prefixBox}>
+              <Text style={styles.flag}>🇮🇳</Text>
+              <Text style={styles.prefix}>+91</Text>
+              <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="00000 00000"
+              placeholderTextColor={colors.textDisabled}
+              keyboardType="phone-pad"
+              maxLength={10}
+              value={phoneNumber}
+              onChangeText={(text) => {
+                setPhoneNumber(text.replace(/[^0-9]/g, ''));
+                setError('');
+              }}
+              autoFocus
+            />
+          </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        </View>
+
+        {/* Spacer */}
+        <View style={{ flex: 1 }} />
+
+        {/* CTA */}
+        <View style={styles.ctaSection}>
+          <Button
+            title="Continue"
+            onPress={handleNext}
+            loading={isLoading}
+            disabled={phoneNumber.length < 10 || isLoading}
           />
+          <Text style={styles.disclaimer}>
+            By continuing, you agree to receive an SMS for verification. Standard rates may apply.
+          </Text>
         </View>
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        <TouchableOpacity 
-          style={[styles.button, phoneNumber.length < 10 && styles.buttonDisabled]} 
-          onPress={handleNext}
-          disabled={phoneNumber.length < 10 || isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color={COLORS.white} />
-          ) : (
-            <Text style={styles.buttonText}>Next</Text>
-          )}
-        </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.white },
-  content: { flex: 1, padding: 24, justifyContent: 'space-between' },
-  header: { marginTop: 20, marginBottom: 40 },
-  title: { fontSize: 24, fontWeight: 'bold', color: COLORS.primary, marginBottom: 8 },
-  subtitle: { fontSize: 16, color: COLORS.textLight },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', borderBottomWidth: 2, borderBottomColor: COLORS.primary, paddingVertical: 8, marginBottom: 20 },
-  prefix: { fontSize: 18, color: COLORS.primary, fontWeight: 'bold', marginRight: 12 },
-  input: { flex: 1, fontSize: 18, color: COLORS.primary },
-  errorText: { color: COLORS.error, fontSize: 14, marginBottom: 20 },
-  button: { backgroundColor: COLORS.primary, paddingVertical: 16, borderRadius: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
-  buttonDisabled: { backgroundColor: COLORS.border },
-  buttonText: { color: COLORS.white, fontSize: 16, fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    backgroundColor: colors.surface,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: spacing.large,
+  },
+  backBtn: {
+    paddingVertical: spacing.small,
+    alignSelf: 'flex-start',
+  },
+  header: {
+    marginTop: spacing.large,
+    marginBottom: spacing.xl,
+  },
+  title: {
+    ...typography.h1,
+    color: colors.textPrimary,
+    marginBottom: spacing.tiny,
+  },
+  subtitle: {
+    ...typography.body,
+    color: colors.textSecondary,
+    lineHeight: 24,
+  },
+  inputSection: {
+    marginBottom: spacing.large,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    overflow: 'hidden',
+  },
+  prefixBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+    borderRightWidth: 1,
+    borderRightColor: colors.border,
+    gap: spacing.micro,
+  },
+  flag: {
+    fontSize: 20,
+  },
+  prefix: {
+    ...typography.body,
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.medium,
+    ...typography.h3,
+    color: colors.textPrimary,
+    letterSpacing: 2,
+  },
+  errorText: {
+    ...typography.bodySmall,
+    color: colors.error,
+    marginTop: spacing.tiny,
+  },
+  ctaSection: {
+    paddingBottom: spacing.large,
+  },
+  disclaimer: {
+    ...typography.caption,
+    color: colors.textDisabled,
+    textAlign: 'center',
+    marginTop: spacing.small,
+    lineHeight: 18,
+  },
 });
-

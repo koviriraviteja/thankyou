@@ -1,17 +1,33 @@
 {
   "expo": {
-    "name": "OLX Clone",
-    "slug": "olx-clone",
+    "name": "ThankU",
+    "slug": "thanku",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#5ED6E3"
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.olxclone"
+      "bundleIdentifier": "com.thanku.app"
     },
     "android": {
-      "package": "com.yourcompany.olxclone"
+      "package": "com.thanku.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#5ED6E3"
+      }
     },
-    "scheme": "olxclone"
+    "scheme": "thanku",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image-picker",
+      "expo-location"
+    ]
   }
 }

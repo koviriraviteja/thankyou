@@ -1,5 +1,16 @@
+/**
+ * ThankU — Home Feed Screen
+ *
+ * Matches Reference Image: Screen 13 (Search & Discovery)
+ * Features: Greeting header, search bar, trending donations,
+ * category grid, filter pills, donation feed.
+ */
+
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TextInput, ScrollView, TouchableOpacity, Image, ActivityIndicator, Modal } from 'react-native';
+import {
+  StyleSheet, Text, View, FlatList, TextInput, ScrollView,
+  TouchableOpacity, Image, ActivityIndicator, RefreshControl,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -7,92 +18,43 @@ import { supabase } from '../../src/lib/supabase';
 import * as Location from 'expo-location';
 import { useAuth } from '../../src/context/AuthContext';
 import { useNotification } from '../../src/context/NotificationContext';
-
-const COLORS = {
-  primary: '#059669', // Emerald Green
-  secondary: '#10B981', // Emerald Light
-  bg: '#ffffff',
-  gray: '#f0f0f0',
-  white: '#ffffff',
-  textLight: '#4B5563', // Gray 600
-  border: '#E5E7EB',
-};
+import { colors } from '../../src/theme/colors';
+import { typography } from '../../src/theme/typography';
+import { spacing } from '../../src/theme/spacing';
+import { radius } from '../../src/theme/radius';
+import { shadows } from '../../src/theme/shadows';
+import { DonationCard } from '../../src/components/ui/Card';
+import { EmptyState } from '../../src/components/ui/EmptyState';
 
 const CATEGORIES = [
-  { id: '1', name: 'Clothes', icon: 'shirt-outline' },
-  { id: '2', name: 'Books', icon: 'book-outline' },
-  { id: '3', name: 'Toys', icon: 'happy-outline' },
-  { id: '4', name: 'Food', icon: 'restaurant-outline' },
-  { id: '5', name: 'Electronics', icon: 'tv-outline' },
-  { id: '6', name: 'Furniture', icon: 'bed-outline' },
-  { id: '7', name: 'Medical', icon: 'medkit-outline' },
-  { id: '8', name: 'Others', icon: 'apps-outline' },
+  { id: '1', name: 'Furniture', icon: 'bed-outline' },
+  { id: '2', name: 'Electronics', icon: 'tv-outline' },
+  { id: '3', name: 'Books', icon: 'book-outline' },
+  { id: '4', name: 'Clothing', icon: 'shirt-outline' },
+  { id: '5', name: 'Toys', icon: 'happy-outline' },
+  { id: '6', name: 'Kitchen', icon: 'restaurant-outline' },
+  { id: '7', name: 'Sports', icon: 'football-outline' },
+  { id: '8', name: 'Medical', icon: 'medkit-outline' },
+  { id: '9', name: 'Nature/Plants', icon: 'leaf-outline' },
+  { id: '10', name: 'Food', icon: 'nutrition-outline' },
+  { id: '11', name: 'Miscellaneous', icon: 'cube-outline' },
 ];
 
-const POPULAR_CITIES = [
-  { name: 'Mumbai', icon: 'business-outline' },
-  { name: 'Delhi', icon: 'trail-sign-outline' },
-  { name: 'Bangalore', icon: 'laptop-outline' },
-  { name: 'Hyderabad', icon: 'restaurant-outline' },
-  { name: 'Ahmedabad', icon: 'analytics-outline' },
-  { name: 'Chennai', icon: 'sunny-outline' }
-];
-
-const STATES_DATA = [
-  { state: 'Andaman and Nicobar', cities: ['Port Blair'] },
-  { state: 'Andhra Pradesh', cities: ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Tirupati'] },
-  { state: 'Arunachal Pradesh', cities: ['Itanagar', 'Tawang', 'Naharlagun', 'Pasighat'] },
-  { state: 'Assam', cities: ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon'] },
-  { state: 'Bihar', cities: ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia'] },
-  { state: 'Chandigarh', cities: ['Chandigarh'] },
-  { state: 'Chhattisgarh', cities: ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Durg'] },
-  { state: 'Dadra and Nagar Haveli', cities: ['Silvassa', 'Daman', 'Diu'] },
-  { state: 'Delhi', cities: ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi'] },
-  { state: 'Goa', cities: ['Panaji', 'Vasco da Gama', 'Margao', 'Mapusa', 'Ponda'] },
-  { state: 'Gujarat', cities: ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar'] },
-  { state: 'Haryana', cities: ['Faridabad', 'Gurgaon', 'Panipat', 'Ambala', 'Rohtak', 'Hisar'] },
-  { state: 'Himachal Pradesh', cities: ['Shimla', 'Manali', 'Dharamshala', 'Mandi', 'Solan'] },
-  { state: 'Jammu and Kashmir', cities: ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla'] },
-  { state: 'Jharkhand', cities: ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Deoghar'] },
-  { state: 'Karnataka', cities: ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum'] },
-  { state: 'Kerala', cities: ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Malappuram'] },
-  { state: 'Ladakh', cities: ['Leh', 'Kargil'] },
-  { state: 'Lakshadweep', cities: ['Kavaratti'] },
-  { state: 'Madhya Pradesh', cities: ['Indore', 'Bhopal', 'Jabalpur', 'Gwalior', 'Ujjain'] },
-  { state: 'Maharashtra', cities: ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad'] },
-  { state: 'Manipur', cities: ['Imphal', 'Thoubal', 'Bishnupur'] },
-  { state: 'Meghalaya', cities: ['Shillong', 'Tura', 'Jowai'] },
-  { state: 'Mizoram', cities: ['Aizawl', 'Lunglei', 'Champhai'] },
-  { state: 'Nagaland', cities: ['Kohima', 'Dimapur', 'Mokokchung'] },
-  { state: 'Odisha', cities: ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Berhampur', 'Sambalpur'] },
-  { state: 'Puducherry', cities: ['Puducherry', 'Oulgaret', 'Karaikal'] },
-  { state: 'Punjab', cities: ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda'] },
-  { state: 'Rajasthan', cities: ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Bikaner', 'Ajmer'] },
-  { state: 'Sikkim', cities: ['Gangtok', 'Namchi', 'Geyzing'] },
-  { state: 'Tamil Nadu', cities: ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem'] },
-  { state: 'Telangana', cities: ['Hyderabad', 'Warangal', 'Nizamabad', 'Karimnagar'] },
-  { state: 'Tripura', cities: ['Agartala', 'Dharmanagar', 'Udaipur'] },
-  { state: 'Uttar Pradesh', cities: ['Lucknow', 'Kanpur', 'Ghaziabad', 'Agra', 'Varanasi', 'Meerut', 'Noida'] },
-  { state: 'Uttarakhand', cities: ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rishikesh'] },
-  { state: 'West Bengal', cities: ['Kolkata', 'Howrah', 'Darjeeling', 'Siliguri', 'Asansol'] }
-];
+const DISTANCE_FILTERS = ['1 km', '5 km', '10 km', '20 km'];
+const CONDITION_FILTERS = ['All', 'New', 'Like New', 'Good', 'Used'];
 
 export default function HomeFeedScreen() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [refreshing, setRefreshing] = useState(false);
   const [locationName, setLocationName] = useState('Fetching location...');
-  const [selectedLocationFilter, setSelectedLocationFilter] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedDistance, setSelectedDistance] = useState('5 km');
+  const [selectedCondition, setSelectedCondition] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const [sortOption, setSortOption] = useState<'NEWEST' | 'OLDEST'>('NEWEST');
-  const [sortModalVisible, setSortModalVisible] = useState(false);
-  
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { user } = useAuth();
   const { notifications } = useNotification();
-
   const params = useLocalSearchParams();
 
   useEffect(() => {
@@ -102,24 +64,45 @@ export default function HomeFeedScreen() {
   useEffect(() => {
     if (params.newLocation) {
       setLocationName(params.newLocation as string);
-      setSelectedLocationFilter(params.newLocation as string);
       router.setParams({ newLocation: '' });
     }
   }, [params.newLocation]);
 
-  const fetchFavorites = async () => {
-    const { data } = await supabase.from('favorites').select('product_id').eq('user_id', user?.id);
-    if (data) {
-      setFavorites(new Set(data.map(f => f.product_id)));
+  const fetchCurrentLocation = async () => {
+    setLocationName('Fetching location...');
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setLocationName('Location Access Denied');
+      return;
     }
+    try {
+      let loc = await Location.getCurrentPositionAsync({});
+      let geocode = await Location.reverseGeocodeAsync({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      });
+      if (geocode.length > 0) {
+        const { district, city, region, country, name } = geocode[0];
+        const preciseLocation = district || city || region || name;
+        setLocationName(`${preciseLocation}, ${country}`);
+      } else {
+        setLocationName('Unknown Location');
+      }
+    } catch {
+      setLocationName('Location Error');
+    }
+  };
+
+  const fetchFavorites = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('favorites').select('product_id').eq('user_id', user.id);
+    if (data) setFavorites(new Set(data.map(f => f.product_id)));
   };
 
   const toggleFavorite = async (productId: string) => {
     if (!user) return;
-    
     const isFav = favorites.has(productId);
     const newFavs = new Set(favorites);
-    
     if (isFav) {
       newFavs.delete(productId);
       setFavorites(newFavs);
@@ -131,41 +114,11 @@ export default function HomeFeedScreen() {
     }
   };
 
-  const fetchCurrentLocation = async () => {
-    setLocationName('Fetching location...');
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setLocationName('Location Access Denied');
-      return;
-    }
-
-    try {
-      let location = await Location.getCurrentPositionAsync({});
-      let geocode = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude
-      });
-      
-      if (geocode.length > 0) {
-        const { district, city, region, country, name } = geocode[0];
-        const preciseLocation = district || city || region || name;
-        setLocationName(`${preciseLocation}, ${country}`);
-        setSelectedLocationFilter(null);
-      } else {
-        setLocationName('Unknown Location');
-      }
-    } catch (e) {
-      setLocationName('Location Error');
-    }
-  };
-
   useFocusEffect(
     React.useCallback(() => {
       fetchProducts();
-      if (user) {
-        fetchFavorites();
-      }
-    }, [selectedCategory, selectedLocationFilter, user])
+      if (user) fetchFavorites();
+    }, [selectedCategory, user])
   );
 
   const fetchProducts = async () => {
@@ -174,82 +127,126 @@ export default function HomeFeedScreen() {
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
-      
+
     if (selectedCategory) {
       query = query.eq('category', selectedCategory);
     }
 
-    if (selectedLocationFilter) {
-      query = query.ilike('location', `%${selectedLocationFilter}%`);
-    }
-
     const { data, error } = await query;
-    
-    if (error) {
-      console.error('Error fetching products:', error);
-    } else if (data) {
-      // Don't show sold products on the home feed (if the column exists and is true)
-      const availableData = data.filter(item => item.is_sold !== true);
-      applySort(availableData, sortOption);
+    if (!error && data) {
+      setProducts(data.filter(item => item.is_sold !== true));
     }
     setLoading(false);
   };
 
-  const applySort = (dataList: any[], option: string) => {
-    let sorted = [...dataList];
-    if (option === 'OLDEST') {
-      sorted.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    } else {
-      sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
-    setProducts(sorted);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts();
+    if (user) await fetchFavorites();
+    setRefreshing(false);
   };
 
-  useEffect(() => {
-    if (products.length > 0) {
-      applySort(products, sortOption);
-    }
-  }, [sortOption]);
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'Neighbor';
 
   const renderHeader = () => (
     <View>
-      <View style={styles.categoriesSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Browse categories</Text>
-          {selectedCategory && (
-            <TouchableOpacity onPress={() => setSelectedCategory(null)}>
-              <Text style={styles.seeAll}>Clear filter</Text>
-            </TouchableOpacity>
-          )}
+      {/* Header (Greeting & Location) */}
+      <View style={styles.headerTop}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.greetingText}>Hi, {userName} 👋</Text>
+          <TouchableOpacity style={styles.locationSelector} onPress={() => router.push('/location')}>
+            <Ionicons name="location" size={14} color={colors.primary} />
+            <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
+            <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
+          </TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesList}>
+        <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.notifBtn}>
+          <Ionicons name="notifications-outline" size={24} color={colors.textPrimary} />
+          {notifications.length > 0 && (
+            <View style={styles.notifBadge}>
+              <Text style={styles.notifBadgeText}>
+                {notifications.length > 9 ? '9+' : notifications.length}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Promotional Banner */}
+      <View style={styles.bannerContainer}>
+        <Text style={styles.bannerSubtitle}>💰 Make Extra Cash</Text>
+        <Text style={styles.bannerTitle}>Buy. Sell. Discover.{'\n'}Anything Around You.</Text>
+        <TouchableOpacity style={styles.bannerBtn} onPress={() => router.push('/(tabs)/post')}>
+          <Text style={styles.bannerBtnText}>Post Your Ad</Text>
+          <Ionicons name="arrow-forward-circle" size={18} color={colors.primary} />
+        </TouchableOpacity>
+        <Image 
+          source={require('../../assets/images/banner-illustration.png')} 
+          style={styles.bannerImage} 
+        />
+      </View>
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <TouchableOpacity style={styles.searchBar} onPress={() => router.push('/search')}>
+          <View style={styles.searchAiBadge}>
+            <Text style={styles.searchAiText}>AI</Text>
+          </View>
+          <Ionicons name="search" size={20} color={colors.primary} />
+          <Text style={styles.searchPlaceholder}>Search cars, phones, furniture...</Text>
+          <Ionicons name="mic-outline" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Categories */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <TouchableOpacity onPress={() => setSelectedCategory(null)}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
           {CATEGORIES.map(cat => {
             const isSelected = selectedCategory === cat.name;
             return (
-              <TouchableOpacity 
-                key={cat.id} 
+              <TouchableOpacity
+                key={cat.id}
                 style={styles.categoryItem}
                 onPress={() => setSelectedCategory(isSelected ? null : cat.name)}
               >
-                <View style={[styles.categoryIconCircle, isSelected && styles.categoryIconCircleActive]}>
-                  <Ionicons name={cat.icon as any} size={28} color={isSelected ? COLORS.white : COLORS.primary} />
+                <View style={[styles.categoryIcon, isSelected && styles.categoryIconActive]}>
+                  <Ionicons
+                    name={cat.icon as any}
+                    size={28}
+                    color={isSelected ? colors.surface : colors.primary}
+                  />
                 </View>
-                <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>{cat.name}</Text>
+                <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
+                  {cat.name}
+                </Text>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
-        <Text style={styles.sectionTitle}>
-          {selectedCategory ? `Showing ${selectedCategory}` : 'Recent Donations'}
+
+
+      {/* Results Header */}
+      <View style={styles.resultsHeader}>
+        <Text style={styles.resultsTitle}>
+          {selectedCategory ? `Showing ${selectedCategory}` : 'Recommended for you'}
         </Text>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setSortModalVisible(true)}>
-          <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.secondary, marginRight: 4 }}>
-            {sortOption === 'NEWEST' ? 'Newest' : 'Oldest'}
-          </Text>
-          <Ionicons name="filter" size={16} color={COLORS.secondary} />
+        <TouchableOpacity>
+          <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -257,171 +254,338 @@ export default function HomeFeedScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.locationContainer} onPress={() => router.push('/location')}>
-          <Ionicons name="location-outline" size={24} color={COLORS.primary} />
-          <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
-          <Ionicons name="chevron-down" size={20} color={COLORS.primary} />
-        </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/notifications')} style={{ position: 'relative' }}>
-            <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
-            {notifications.length > 0 && (
-              <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>
-                  {notifications.length > 9 ? '9+' : notifications.length}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-      </View>
-
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color={COLORS.textLight} />
-          <TextInput 
-            style={styles.searchInput}
-            placeholder="Find Clothes, Books, Food and more..."
-            placeholderTextColor={COLORS.textLight}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+      {/* Feed */}
+      {loading && !refreshing ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </View>
-
-      <View style={styles.content}>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />
-        ) : (
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            ListHeaderComponent={renderHeader}
-            columnWrapperStyle={styles.row}
-            contentContainerStyle={styles.listContent}
-            ListEmptyComponent={
-              <Text style={{ textAlign: 'center', marginTop: 40, color: COLORS.textLight }}>
-                No donations found in this area/category.
-              </Text>
-            }
-            renderItem={({ item }) => {
-              const timeStr = new Date(item.created_at).toLocaleDateString();
-              return (
-                <TouchableOpacity 
-                  style={styles.card}
-                  onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
-                >
-                  <Image source={{ uri: item.image_url }} style={styles.cardImage} />
-                  <TouchableOpacity style={styles.cardFav} onPress={() => toggleFavorite(item.id)}>
-                    <Ionicons 
-                      name={favorites.has(item.id) ? "heart" : "heart-outline"} 
-                      size={20} 
-                      color={favorites.has(item.id) ? "red" : COLORS.primary} 
-                    />
-                  </TouchableOpacity>
-                  <View style={styles.cardContent}>
-                    <Text style={styles.price}>FREE</Text>
-                    <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.location} numberOfLines={1}>{item.location.split(',')[0]}</Text>
-                      <Text style={styles.date}>{timeStr}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        )}
-      </View>
-
-      <Modal visible={sortModalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.sortModalContainer}>
-            <Text style={styles.modalTitle}>Sort By</Text>
-            
-            <TouchableOpacity 
-              style={styles.sortOptionRow} 
-              onPress={() => { setSortOption('NEWEST'); setSortModalVisible(false); }}
-            >
-              <Text style={[styles.sortOptionText, sortOption === 'NEWEST' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Date Published (Newest)</Text>
-              {sortOption === 'NEWEST' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.sortOptionRow} 
-              onPress={() => { setSortOption('OLDEST'); setSortModalVisible(false); }}
-            >
-              <Text style={[styles.sortOptionText, sortOption === 'OLDEST' && { color: COLORS.secondary, fontWeight: 'bold' }]}>Date Published (Oldest)</Text>
-              {sortOption === 'OLDEST' && <Ionicons name="checkmark" size={24} color={COLORS.secondary} />}
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.closeSortBtn} onPress={() => setSortModalVisible(false)}>
-              <Text style={styles.closeSortText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      ) : (
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          ListHeaderComponent={renderHeader}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
+          ListEmptyComponent={
+            <EmptyState
+              imageSource={require('../../assets/images/empty-state.png')}
+              title="No items found"
+              body="There are no items matching your search criteria."
+              ctaTitle="Clear Filters"
+              onCtaPress={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+              }}
+            />
+          }
+          renderItem={({ item }) => (
+            <View style={styles.cardWrapper}>
+              <DonationCard
+                id={item.id}
+                title={item.title}
+                imageUrl={item.image_url}
+                location={item.location}
+                condition={item.condition}
+                category={item.category}
+                createdAt={item.created_at}
+                isFavorite={favorites.has(item.id)}
+                onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
+                onFavoritePress={() => toggleFavorite(item.id)}
+              />
+            </View>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: COLORS.white },
-  locationContainer: { flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 16 },
-  locationText: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary, marginLeft: 8, marginRight: 4, flexShrink: 1 },
-  searchContainer: { backgroundColor: COLORS.white, paddingHorizontal: 16, paddingBottom: 16 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.white, borderWidth: 1, borderColor: COLORS.primary, borderRadius: 4, paddingHorizontal: 12, paddingVertical: 8 },
-  searchInput: { flex: 1, marginLeft: 8, fontSize: 16, color: COLORS.primary },
-  
-  gridText: { fontSize: 13, color: COLORS.primary, textAlign: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#E6FBFC', // Light cyan background matching reference
+  },
 
-  categoriesSection: { backgroundColor: COLORS.white, paddingVertical: 16 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary },
-  seeAll: { fontSize: 14, fontWeight: 'bold', color: COLORS.secondary },
-  categoriesList: { paddingHorizontal: 12 },
-  categoryItem: { alignItems: 'center', marginHorizontal: 8, width: 70 },
-  categoryIconCircle: { width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.gray, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
-  categoryIconCircleActive: { backgroundColor: COLORS.secondary },
-  categoryName: { fontSize: 12, color: COLORS.primary, textAlign: 'center' },
-  categoryNameActive: { fontWeight: 'bold', color: COLORS.secondary },
-
-  content: { flex: 1 },
-  listContent: { paddingBottom: 24, paddingTop: 8 },
-  row: { paddingHorizontal: 12, justifyContent: 'space-between' },
-  card: { width: '48%', backgroundColor: COLORS.white, borderRadius: 4, marginBottom: 12, overflow: 'hidden', borderWidth: 1, borderColor: COLORS.border },
-  cardImage: { width: '100%', height: 140, backgroundColor: '#e0e0e0' },
-  cardFav: { position: 'absolute', top: 8, right: 8, backgroundColor: COLORS.white, width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1.41 },
-  cardContent: { padding: 12 },
-  price: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary, marginBottom: 4 },
-  title: { fontSize: 14, color: COLORS.textLight, height: 40 },
-  cardFooter: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8, alignItems: 'center' },
-  location: { fontSize: 10, color: COLORS.textLight, flex: 1, marginRight: 8 },
-  date: { fontSize: 10, color: COLORS.textLight, fontWeight: '500' },
-  
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-  sortModalContainer: { backgroundColor: COLORS.white, borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20 },
-  sortOptionRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  sortOptionText: { fontSize: 16, color: COLORS.primary },
-  closeSortBtn: { marginTop: 16, alignItems: 'center', paddingVertical: 12, backgroundColor: COLORS.gray, borderRadius: 8 },
-  closeSortText: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary },
-  notificationBadge: {
+  // ─── Header ──────────────────────────────────────
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    paddingTop: spacing.large,
+    paddingBottom: spacing.small,
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  greetingText: {
+    ...typography.h3,
+    color: colors.textPrimary,
+    marginBottom: 2,
+  },
+  locationSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  locationText: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  notifBtn: {
+    position: 'relative',
+    padding: 4,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.sm,
+  },
+  notifBadge: {
     position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#F59E0B',
+    top: 0,
+    right: 0,
+    backgroundColor: colors.primary,
     borderRadius: 10,
-    minWidth: 20,
-    height: 20,
+    minWidth: 18,
+    height: 18,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.bg,
+    borderColor: colors.surface,
   },
-  notificationBadgeText: {
-    color: '#fff',
-    fontSize: 10,
+  notifBadgeText: {
+    color: colors.surface,
+    fontSize: 9,
     fontWeight: 'bold',
-  }
+  },
+
+  // ─── Banner ──────────────────────────────────────
+  bannerContainer: {
+    marginHorizontal: spacing.medium,
+    backgroundColor: colors.primary,
+    borderRadius: radius.xl,
+    padding: spacing.medium,
+    position: 'relative',
+    overflow: 'hidden',
+    height: 160,
+    justifyContent: 'center',
+    ...shadows.md,
+  },
+  bannerSubtitle: {
+    ...typography.caption,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '700',
+    marginBottom: spacing.micro,
+  },
+  bannerTitle: {
+    ...typography.h2,
+    color: colors.surface,
+    fontSize: 20,
+    marginBottom: spacing.small,
+    width: '60%',
+  },
+  bannerBtn: {
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: 8,
+    borderRadius: radius.full,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.tiny,
+  },
+  bannerBtnText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  bannerImage: {
+    position: 'absolute',
+    right: -20,
+    bottom: -10,
+    width: 180,
+    height: 180,
+    resizeMode: 'contain',
+  },
+
+  // ─── Top Bar ──────────────────────────────────────
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  greetingContainer: {
+    flex: 1,
+  },
+  greeting: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  userName: {
+    ...typography.h3,
+    color: colors.textPrimary,
+  },
+  topBarActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.small,
+  },
+  locationPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.highlight,
+    paddingHorizontal: spacing.small,
+    paddingVertical: spacing.micro,
+    borderRadius: radius.full,
+    gap: 4,
+    maxWidth: 140,
+  },
+
+
+  // ─── Search ──────────────────────────────────────
+  searchContainer: {
+    paddingHorizontal: spacing.medium,
+    marginTop: spacing.medium,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.full,
+    paddingHorizontal: spacing.small,
+    paddingVertical: 12,
+    gap: spacing.tiny,
+    ...shadows.sm,
+  },
+  searchAiBadge: {
+    backgroundColor: '#E6FBFC',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+  },
+  searchAiText: {
+    color: colors.primary,
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  searchPlaceholder: {
+    ...typography.bodySmall,
+    color: colors.textDisabled,
+    flex: 1,
+  },
+
+
+
+  // ─── Sections ────────────────────────────────────
+  section: {
+    paddingTop: spacing.large,
+    paddingBottom: spacing.tiny,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    marginBottom: spacing.small,
+  },
+  sectionTitle: {
+    ...typography.h3,
+    color: colors.textPrimary,
+  },
+  seeAllText: {
+    ...typography.bodySmall,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+
+  // ─── Categories ──────────────────────────────────
+  categoryScroll: {
+    paddingHorizontal: spacing.medium,
+    gap: spacing.medium,
+  },
+  categoryItem: {
+    alignItems: 'center',
+    width: 72,
+  },
+  categoryIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 20, // Soft rounded squares
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.tiny,
+    ...shadows.sm,
+  },
+  categoryIconActive: {
+    backgroundColor: colors.primary,
+  },
+  categoryName: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  categoryNameActive: {
+    color: colors.primary,
+  },
+
+
+
+  // ─── Results ─────────────────────────────────────
+  resultsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.medium,
+    paddingTop: spacing.large,
+    paddingBottom: spacing.small,
+  },
+  resultsTitle: {
+    ...typography.h3,
+    color: colors.textPrimary,
+  },
+  resultsCount: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+
+  // ─── Feed ────────────────────────────────────────
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listContent: {
+    paddingBottom: spacing.xxl,
+  },
+  row: {
+    paddingHorizontal: spacing.small,
+    gap: spacing.tiny,
+  },
+  cardWrapper: {
+    flex: 1,
+    maxWidth: '50%',
+    paddingHorizontal: spacing.micro,
+  },
 });
