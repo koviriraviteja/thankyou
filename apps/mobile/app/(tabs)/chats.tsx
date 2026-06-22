@@ -14,13 +14,15 @@ import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 
 export default function ChatsScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user } = useAuth();
   const [chats, setChats] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -167,7 +169,7 @@ function getTimeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString();
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

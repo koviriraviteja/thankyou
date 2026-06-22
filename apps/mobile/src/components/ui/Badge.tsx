@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { radius } from '../../theme/radius';
 import { spacing } from '../../theme/spacing';
@@ -20,15 +20,17 @@ interface BadgeProps {
   icon?: keyof typeof Ionicons.glyphMap;
 }
 
-const VARIANT_STYLES = {
+const getVariantStyles = (colors: any) => ({
   trust: { bg: '#ECFDF5', color: colors.success, iconColor: colors.success },
   category: { bg: colors.highlight, color: colors.primary, iconColor: colors.primary },
   condition: { bg: colors.highlight, color: colors.accent, iconColor: colors.accent },
   status: { bg: colors.highlight, color: colors.textSecondary, iconColor: colors.textSecondary },
-};
+});
 
 export function Badge({ label, variant = 'category', icon }: BadgeProps) {
-  const style = VARIANT_STYLES[variant];
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+  const style = getVariantStyles(colors)[variant];
 
   return (
     <View style={[styles.badge, { backgroundColor: style.bg }]}>
@@ -38,7 +40,7 @@ export function Badge({ label, variant = 'category', icon }: BadgeProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   badge: {
     flexDirection: 'row',
     alignItems: 'center',

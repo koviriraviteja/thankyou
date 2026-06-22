@@ -10,10 +10,11 @@ import { AuthProvider, useAuth } from '../src/context/AuthContext';
 import { NotificationProvider } from '../src/context/NotificationContext';
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { colors } from '../src/theme/colors';
+import { ThemeProvider, useTheme } from '../src/context/ThemeContext';
 
 function RootLayoutNav() {
   const { user, isLoading } = useAuth();
+  const { colors, theme } = useTheme();
   const segments = useSegments();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -36,6 +37,7 @@ function RootLayoutNav() {
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="search" options={{ presentation: 'fullScreenModal', headerShown: false }} />
+        <Stack.Screen name="categories" options={{ headerShown: false }} />
         <Stack.Screen name="product/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="edit-ad" options={{ headerShown: false }} />
@@ -57,10 +59,12 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <RootLayoutNav />
-      </NotificationProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <RootLayoutNav />
+        </NotificationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuth } from '../src/context/AuthContext';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -46,13 +46,15 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function SettingsScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user, logout } = useAuth();
   const [darkMode, setDarkMode] = useState(false);
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -129,7 +131,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

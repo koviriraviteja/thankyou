@@ -18,7 +18,7 @@ import { supabase } from '../../src/lib/supabase';
 import * as Location from 'expo-location';
 import { useAuth } from '../../src/context/AuthContext';
 import { useNotification } from '../../src/context/NotificationContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -44,6 +44,8 @@ const DISTANCE_FILTERS = ['1 km', '5 km', '10 km', '20 km'];
 const CONDITION_FILTERS = ['All', 'New', 'Like New', 'Good', 'Used'];
 
 export default function HomeFeedScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,7 +68,11 @@ export default function HomeFeedScreen() {
       setLocationName(params.newLocation as string);
       router.setParams({ newLocation: '' });
     }
-  }, [params.newLocation]);
+    if (params.category) {
+      setSelectedCategory(params.category as string);
+      router.setParams({ category: '' });
+    }
+  }, [params.newLocation, params.category]);
 
   const fetchCurrentLocation = async () => {
     setLocationName('Fetching location...');
@@ -181,10 +187,10 @@ export default function HomeFeedScreen() {
 
       {/* Promotional Banner */}
       <View style={styles.bannerContainer}>
-        <Text style={styles.bannerSubtitle}>💰 Make Extra Cash</Text>
-        <Text style={styles.bannerTitle}>Buy. Sell. Discover.{'\n'}Anything Around You.</Text>
+        <Text style={styles.bannerSubtitle}>❤️  Spread Kindness</Text>
+        <Text style={styles.bannerTitle}>Give Freely.{'\n'}Help Genuinely.</Text>
         <TouchableOpacity style={styles.bannerBtn} onPress={() => router.push('/(tabs)/post')}>
-          <Text style={styles.bannerBtnText}>Post Your Ad</Text>
+          <Text style={styles.bannerBtnText}>Give an Item</Text>
           <Ionicons name="arrow-forward-circle" size={18} color={colors.primary} />
         </TouchableOpacity>
         <Image 
@@ -209,7 +215,7 @@ export default function HomeFeedScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Categories</Text>
-          <TouchableOpacity onPress={() => setSelectedCategory(null)}>
+          <TouchableOpacity onPress={() => router.push('/categories')}>
             <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>
         </View>
@@ -245,7 +251,7 @@ export default function HomeFeedScreen() {
         <Text style={styles.resultsTitle}>
           {selectedCategory ? `Showing ${selectedCategory}` : 'Recommended for you'}
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/search')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
@@ -310,7 +316,7 @@ export default function HomeFeedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E6FBFC', // Light cyan background matching reference
@@ -394,19 +400,21 @@ const styles = StyleSheet.create({
   bannerTitle: {
     ...typography.h2,
     color: colors.surface,
-    fontSize: 20,
-    marginBottom: spacing.small,
+    fontSize: 22,
+    lineHeight: 28,
+    marginBottom: spacing.medium,
     width: '60%',
   },
   bannerBtn: {
     backgroundColor: colors.surface,
     paddingHorizontal: spacing.medium,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: radius.full,
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.tiny,
+    ...shadows.sm,
   },
   bannerBtnText: {
     ...typography.caption,

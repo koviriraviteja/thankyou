@@ -1,0 +1,212 @@
+/* ══════════════════════════════════════════════════════════════
+   Community / Gratitude Wall Page Styles
+   ══════════════════════════════════════════════════════════════ */
+
+.main {
+  min-height: 100vh;
+}
+
+.pageHeader {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-large) var(--space-medium);
+}
+
+.headerContent {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: var(--space-medium);
+}
+
+/* ─── Tabs ──────────────────────────────────────────────── */
+.tabContainer {
+  display: flex;
+  gap: var(--space-tiny);
+  margin-bottom: var(--space-large);
+  background: var(--color-surface);
+  padding: var(--space-tiny);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+}
+
+.tab {
+  flex: 1;
+  padding: var(--space-tiny) var(--space-medium);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+}
+
+.tabActive {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+/* ─── Notes Feed ────────────────────────────────────────── */
+.notesFeed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.noteCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-medium);
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.4s ease-out both;
+  transition: box-shadow 0.2s ease;
+}
+
+.noteCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  margin-bottom: var(--space-small);
+}
+
+.avatarCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.noteHeaderInfo {
+  flex: 1;
+}
+
+.noteSender {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.noteDate {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.ratingContainer {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  color: var(--color-gold);
+}
+
+.starEmpty {
+  color: var(--color-border-strong);
+}
+
+.noteMessage {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--space-small);
+}
+
+.itemTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-highlight);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: var(--space-small);
+}
+
+.noteActions {
+  display: flex;
+  gap: var(--space-large);
+  padding-top: var(--space-small);
+  border-top: 1px solid var(--color-divider);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.actionBtn:hover {
+  color: var(--color-accent);
+}
+
+/* ─── Write CTA ─────────────────────────────────────────── */
+.writeCta {
+  padding: var(--space-xl) 0;
+  display: flex;
+  justify-content: center;
+}
+
+.writeBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+  padding: var(--space-small) var(--space-large);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-fab);
+}
+
+.writeBtn:hover {
+  background: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+@media (min-width: 768px) {
+  .pageHeader {
+    padding: var(--space-xl) var(--space-large);
+  }
+
+  .pageTitle {
+    font-size: 28px;
+  }
+}

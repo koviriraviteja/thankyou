@@ -12,24 +12,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useNotification } from '../src/context/NotificationContext';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
 import { EmptyState } from '../src/components/ui/EmptyState';
 
-const NOTIFICATION_ICONS: Record<string, { icon: string; color: string; bg: string }> = {
+const getNotificationIcons = (colors: any): Record<string, { icon: string; color: string; bg: string }> => ({
   request: { icon: 'hand-left-outline', color: colors.primary, bg: colors.highlight },
   approved: { icon: 'checkmark-circle-outline', color: colors.success, bg: '#ECFDF5' },
   thanku: { icon: 'heart-outline', color: colors.coral, bg: '#FFF5F5' },
   system: { icon: 'information-circle-outline', color: colors.info, bg: '#EFF6FF' },
-};
+});
 
 export default function NotificationsScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { notifications } = useNotification();
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -54,7 +56,7 @@ export default function NotificationsScreen() {
           />
         }
         renderItem={({ item }) => {
-          const config = NOTIFICATION_ICONS[item.type] || NOTIFICATION_ICONS.system;
+          const config = getNotificationIcons(colors)[item.type] || getNotificationIcons(colors).system;
           return (
             <TouchableOpacity style={[styles.notifItem, !item.read && styles.notifUnread]}>
               <View style={[styles.notifIcon, { backgroundColor: config.bg }]}>
@@ -75,7 +77,7 @@ export default function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

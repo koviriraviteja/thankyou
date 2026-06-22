@@ -13,13 +13,15 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
 import { Button } from '../../src/components/ui/Button';
 
 export default function VerifyScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { phone } = useLocalSearchParams();
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +51,7 @@ export default function VerifyScreen() {
     try {
       const success = await verifyOtp(phone as string, otp);
       if (success) {
-        router.replace('/');
+        router.dismissAll();
       } else {
         setError('Invalid code. Please try again.');
       }
@@ -148,7 +150,7 @@ export default function VerifyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surface,

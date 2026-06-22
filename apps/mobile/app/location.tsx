@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -59,6 +59,8 @@ const STATES_DATA = [
 ];
 
 export default function LocationScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [locationSearchQuery, setLocationSearchQuery] = useState('');
   const [placesSuggestions, setPlacesSuggestions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -114,7 +116,7 @@ export default function LocationScreen() {
   const activeStateData = selectedState ? STATES_DATA.find(s => s.state === selectedState) : null;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         {/* Header */}
         <View style={styles.header}>
@@ -241,7 +243,7 @@ export default function LocationScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

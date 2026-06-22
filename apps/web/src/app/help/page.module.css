@@ -1,0 +1,168 @@
+/* ══════════════════════════════════════════════════════════════
+   Help Page Styles
+   ══════════════════════════════════════════════════════════════ */
+
+.main {
+  min-height: calc(100vh - var(--header-height));
+  background: var(--color-background);
+  padding: var(--space-medium) 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-medium);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-large);
+}
+
+.breadcrumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* ─── Header Section ────────────────────────────────────── */
+.headerSection {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-xxl);
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--color-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-medium);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-tiny);
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── FAQ Section ───────────────────────────────────────── */
+.faqSection {
+  margin-bottom: var(--space-xxxl);
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-large);
+  text-align: center;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.faqItem {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-large);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.faqQuestion {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-small);
+}
+
+.faqAnswer {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ─── Contact Section ───────────────────────────────────── */
+.contactSection {
+  margin-bottom: var(--space-xl);
+}
+
+.contactCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-medium);
+}
+
+@media (min-width: 600px) {
+  .contactCards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contactCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contactIcon {
+  color: var(--color-primary);
+  margin-bottom: var(--space-medium);
+}
+
+.contactTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-small);
+}
+
+.contactDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-large);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.contactLink {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--color-highlight);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.contactLink:hover {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}

@@ -9,7 +9,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { Button } from './Button';
@@ -26,13 +26,16 @@ interface EmptyStateProps {
 
 export function EmptyState({
   icon,
-  iconColor = colors.secondary,
+  iconColor,
   imageSource,
   title,
   body,
   ctaTitle,
   onCtaPress,
 }: EmptyStateProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+  const finalIconColor = iconColor || colors.secondary;
   return (
     <View style={styles.container}>
       {imageSource ? (
@@ -43,7 +46,7 @@ export function EmptyState({
         />
       ) : icon ? (
         <View style={styles.iconCircle}>
-          <Ionicons name={icon} size={48} color={iconColor} />
+          <Ionicons name={icon} size={48} color={finalIconColor} />
         </View>
       ) : null}
       <Text style={styles.title}>{title}</Text>
@@ -57,7 +60,7 @@ export function EmptyState({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingHorizontal: spacing.xl,

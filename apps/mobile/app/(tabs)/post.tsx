@@ -20,7 +20,7 @@ import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../src/lib/supabase';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -32,6 +32,8 @@ const CONDITIONS = ['New', 'Like New', 'Good', 'Used'];
 const TRANSPORT_TAGS = ['Fits in a bag', 'Fits in a sedan', 'Needs a truck'];
 
 export default function PostAdScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState('');
@@ -331,7 +333,7 @@ export default function PostAdScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surface,

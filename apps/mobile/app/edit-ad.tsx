@@ -14,13 +14,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../src/lib/supabase';
 import { useAuth } from '../src/context/AuthContext';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
 import { Button } from '../src/components/ui/Button';
 
 export default function EditAdScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { id } = useLocalSearchParams();
   const { user } = useAuth();
 
@@ -75,7 +77,7 @@ export default function EditAdScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -156,7 +158,7 @@ export default function EditAdScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surface,

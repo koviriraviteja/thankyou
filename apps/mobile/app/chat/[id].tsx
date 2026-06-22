@@ -15,13 +15,15 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
 import { shadows } from '../../src/theme/shadows';
 
 export default function ChatScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { id, productTitle, otherUser, productImage } = useLocalSearchParams();
   const { user } = useAuth();
   const [messages, setMessages] = useState<any[]>([]);
@@ -81,7 +83,7 @@ export default function ChatScreen() {
   }, [user?.id]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
@@ -158,7 +160,7 @@ export default function ChatScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

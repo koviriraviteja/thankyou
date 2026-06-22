@@ -8,12 +8,20 @@
 import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
-import { colors } from '../../src/theme/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../../src/context/ThemeContext';
 import { shadows } from '../../src/theme/shadows';
 import { useNotification } from '../../src/context/NotificationContext';
 
 export default function TabLayout() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { notifications, clearBadge } = useNotification();
+  const insets = useSafeAreaInsets();
+
+  // Dynamically calculate padding and height based on the device's safe area
+  const paddingBottom = Math.max(insets.bottom, 8);
+  const tabHeight = 56 + paddingBottom;
 
   return (
     <View style={{ flex: 1 }}>
@@ -23,8 +31,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
         tabBarStyle: {
-          height: Platform.OS === 'ios' ? 88 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 8,
+          height: tabHeight,
+          paddingBottom: paddingBottom,
           paddingTop: 8,
           backgroundColor: colors.surface,
           borderTopWidth: 1,
@@ -102,7 +110,7 @@ export default function TabLayout() {
       </Tabs>
       
       <TouchableOpacity 
-        style={styles.fab} 
+        style={[styles.fab, { bottom: tabHeight + 20 }]} 
         onPress={() => router.push('/(tabs)/post')}
       >
         <Ionicons name="add" size={32} color={colors.textOnPrimary} />
@@ -111,10 +119,9 @@ export default function TabLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 110 : 90,
     right: 20,
     width: 60,
     height: 60,

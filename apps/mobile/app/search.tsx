@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { supabase } from '../src/lib/supabase';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -22,6 +22,8 @@ const RECENT_SEARCHES = ['Sofa', 'Study Table', 'Books', 'Cycle'];
 const TRENDING_TAGS = ['Furniture', 'Electronics', 'Books', 'Clothing', 'Kitchen'];
 
 export default function SearchScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -41,7 +43,7 @@ export default function SearchScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Search Header */}
       <View style={styles.searchHeader}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -124,7 +126,7 @@ export default function SearchScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   searchHeader: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.medium,

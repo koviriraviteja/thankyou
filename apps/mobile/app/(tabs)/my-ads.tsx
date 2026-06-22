@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -26,6 +26,8 @@ import { EmptyState } from '../../src/components/ui/EmptyState';
 type ActiveTab = 'DONATIONS' | 'FAVORITES';
 
 export default function MyAdsScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>('DONATIONS');
   const [myAds, setMyAds] = useState<any[]>([]);
@@ -238,7 +240,7 @@ export default function MyAdsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

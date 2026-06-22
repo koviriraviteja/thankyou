@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -57,6 +57,8 @@ const MOCK_NOTES = [
 ];
 
 export default function CommunityScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [activeTab, setActiveTab] = useState<TabFilter>('All');
 
   const renderNote = ({ item }: { item: typeof MOCK_NOTES[0] }) => (
@@ -158,7 +160,7 @@ export default function CommunityScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

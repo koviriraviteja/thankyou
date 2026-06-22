@@ -16,7 +16,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -26,6 +26,8 @@ import { Button } from '../../src/components/ui/Button';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ProductDetailsScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { id } = useLocalSearchParams();
   const { user } = useAuth();
   const [product, setProduct] = useState<any>(null);
@@ -258,7 +260,7 @@ export default function ProductDetailsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
@@ -31,6 +31,7 @@ const VERIFICATION_ITEMS = [
 const MENU_ITEMS = [
   { id: '1', title: 'My Donation History', icon: 'heart-circle-outline', route: '/(tabs)/my-ads' },
   { id: '2', title: 'Impact Dashboard', icon: 'bar-chart-outline', route: '/impact' },
+  { id: 'referral', title: 'Invite Friends', icon: 'people-outline', route: '/referral' },
   { id: '3', title: 'Leaderboard', icon: 'trophy-outline', route: '/leaderboard' },
   { id: '4', title: 'Settings', icon: 'settings-outline', route: '/settings' },
   { id: '5', title: 'Help & Support', icon: 'help-circle-outline', route: '/help-center' },
@@ -38,6 +39,8 @@ const MENU_ITEMS = [
 ];
 
 export default function ProfileScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user, logout } = useAuth();
 
   const handleLogin = () => router.push('/(auth)/login');
@@ -183,7 +186,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TextInputProps, ViewStyle } from 'react-native';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { radius } from '../../theme/radius';
 import { spacing } from '../../theme/spacing';
@@ -18,6 +18,8 @@ interface InputProps extends TextInputProps {
 }
 
 export function Input({ label, error, containerStyle, ...props }: InputProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -39,7 +41,7 @@ export function Input({ label, error, containerStyle, ...props }: InputProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     marginBottom: spacing.medium,
   },

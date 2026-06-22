@@ -17,7 +17,7 @@ import { useAuth } from '../src/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -25,6 +25,8 @@ import { shadows } from '../src/theme/shadows';
 import { Button } from '../src/components/ui/Button';
 
 export default function EditProfileScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { user } = useAuth();
   const [name, setName] = useState(user?.user_metadata?.full_name || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -73,7 +75,7 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -161,7 +163,7 @@ export default function EditProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

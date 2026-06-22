@@ -47,16 +47,16 @@ export const colors = {
 // ─── Dark Mode Tokens ─────────────────────────────────────
 export const darkColors = {
   ...colors,
-  background: '#0F172A',    // Deep Navy
-  surface: '#1E293B',       // Slightly lighter
-  highlight: '#1A3A4A',
-  textPrimary: '#F1F5F9',
-  textSecondary: '#94A3B8',
-  textDisabled: '#475569',
+  background: '#1E293B',    // Navy
+  surface: '#293851',       // Slightly lighter
+  highlight: '#334563',
+  textPrimary: '#F9FAFB',
+  textSecondary: '#D1D5DB',
+  textDisabled: '#6B7280',
   textOnPrimary: '#111827',
-  border: '#334155',
-  borderStrong: '#475569',
-  divider: '#1E293B',
+  border: '#3A4B6B',
+  borderStrong: '#4B638A',
+  divider: '#334155',
   overlay: 'rgba(0, 0, 0, 0.7)',
   overlayLight: 'rgba(0, 0, 0, 0.5)',
 } as const;

@@ -5,6 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "androidStatusBar": {
+      "translucent": true,
+      "backgroundColor": "transparent"
+    },
     "icon": "./assets/logo.png",
     "splash": {
       "image": "./assets/logo.png",

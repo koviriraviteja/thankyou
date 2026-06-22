@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(data.session.user);
           }
 
-          router.replace('/(tabs)/');
+          router.dismissAll();
         }
       }
     } catch (error) {
@@ -113,7 +113,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyOtp = async (phoneNumber: string, otp: string) => {
     console.log(`Verifying mock OTP ${otp} for ${phoneNumber}`);
     if (otp === '123456') {
-      // Stub user since we don't have a real phone auth backed by supabase yet
+      // Create a mock user so the UI can render a logged-in state
+      const mockUser = {
+        id: 'mock-phone-user',
+        aud: 'authenticated',
+        role: 'authenticated',
+        phone: phoneNumber,
+        email: '',
+        app_metadata: { provider: 'phone' },
+        user_metadata: { full_name: 'Guest User' },
+        created_at: new Date().toISOString(),
+      } as any;
+      
+      setUser(mockUser);
       return true;
     }
     return false;

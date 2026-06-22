@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle, View } from 'react-native';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { radius } from '../../theme/radius';
 
@@ -40,12 +40,14 @@ export function Button({
   fullWidth = true,
   style,
 }: ButtonProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const isDisabled = disabled || loading;
 
   const containerStyle: ViewStyle[] = [
     styles.base,
     { height: HEIGHTS[size] },
-    variantStyles[variant].container,
+    getVariantStyles(colors)[variant].container,
     isDisabled && styles.disabled,
     fullWidth && styles.fullWidth,
     style as ViewStyle,
@@ -53,7 +55,7 @@ export function Button({
 
   const textStyle: TextStyle[] = [
     styles.text,
-    variantStyles[variant].text,
+    getVariantStyles(colors)[variant].text,
     size === 'sm' && styles.textSmall,
   ];
 
@@ -79,7 +81,7 @@ export function Button({
   );
 }
 
-const variantStyles = {
+const getVariantStyles = (colors: any) => ({
   primary: {
     container: {
       backgroundColor: colors.primary,
@@ -112,9 +114,9 @@ const variantStyles = {
       color: colors.surface,
     } as TextStyle,
   },
-};
+});
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   base: {
     borderRadius: radius.md,
     justifyContent: 'center',

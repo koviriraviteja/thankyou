@@ -7,7 +7,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { radius } from '../../theme/radius';
 
 interface SkeletonProps {
@@ -18,6 +18,8 @@ interface SkeletonProps {
 }
 
 export function Skeleton({ width, height, borderRadius = radius.sm, style }: SkeletonProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -49,6 +51,8 @@ export function Skeleton({ width, height, borderRadius = radius.sm, style }: Ske
 
 /** Pre-built skeleton for a DonationCard */
 export function CardSkeleton() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   return (
     <View style={styles.cardSkeleton}>
       <Skeleton width="100%" height={160} borderRadius={radius.md} />
@@ -63,6 +67,8 @@ export function CardSkeleton() {
 
 /** Pre-built skeleton for a list item row */
 export function ListSkeleton() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   return (
     <View style={styles.listSkeleton}>
       <Skeleton width={48} height={48} borderRadius={24} />
@@ -74,7 +80,7 @@ export function ListSkeleton() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   skeleton: {
     backgroundColor: colors.border,
   },

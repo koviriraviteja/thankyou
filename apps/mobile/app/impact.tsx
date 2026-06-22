@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -22,7 +22,7 @@ import { shadows } from '../src/theme/shadows';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const IMPACT_METRICS = [
+const getImpactMetrics = (colors: any) => [
   { value: '28', label: 'Items\nDonated', icon: 'gift', color: colors.primary },
   { value: '156', label: 'People\nHelped', icon: 'people', color: colors.coral },
   { value: '₹12,450', label: 'Money\nSaved', icon: 'cash', color: colors.success },
@@ -44,10 +44,12 @@ const MONTHLY_DATA = [
 ];
 
 export default function ImpactScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const maxValue = Math.max(...MONTHLY_DATA.map(d => d.value));
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -67,7 +69,7 @@ export default function ImpactScreen() {
 
         {/* Main Metrics */}
         <View style={styles.metricsRow}>
-          {IMPACT_METRICS.map((metric, i) => (
+          {getImpactMetrics(colors).map((metric, i) => (
             <View key={i} style={styles.metricCard}>
               <View style={[styles.metricIcon, { backgroundColor: `${metric.color}20` }]}>
                 <Ionicons name={metric.icon as any} size={22} color={metric.color} />
@@ -140,7 +142,7 @@ export default function ImpactScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

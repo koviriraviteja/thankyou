@@ -1,0 +1,194 @@
+/* ══════════════════════════════════════════════════════════════
+   My Giving Page Styles
+   ══════════════════════════════════════════════════════════════ */
+
+.main {
+  min-height: calc(100vh - var(--header-height));
+  background: var(--color-background);
+  padding: var(--space-medium) 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ─── Header & Tabs ─────────────────────────────────────── */
+.header {
+  padding: var(--space-medium);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.tabs {
+  display: flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.tab {
+  flex: 1;
+  padding: var(--space-small) 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+}
+
+.tabActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* ─── Content Grid ──────────────────────────────────────── */
+.content {
+  padding: var(--space-medium);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-medium);
+  border: 1px solid var(--color-border);
+}
+
+.cardBody {
+  display: flex;
+  gap: var(--space-medium);
+}
+
+.cardImage {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--color-highlight);
+}
+
+.cardInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-micro);
+}
+
+.statusPill {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: var(--space-micro);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.favIconBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* ─── Actions ───────────────────────────────────────────── */
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  margin-top: var(--space-medium);
+  padding-top: var(--space-medium);
+  border-top: 1px solid var(--color-divider);
+}
+
+.primaryAction {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.primaryAction:hover {
+  background: var(--color-accent);
+}
+
+.secondaryAction {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondaryAction:hover {
+  background: var(--color-highlight);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.dangerAction {
+  margin-left: auto;
+  background: transparent;
+  color: var(--color-error);
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.dangerAction:hover {
+  background: rgba(239, 68, 68, 0.1);
+}

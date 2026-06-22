@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/context/ThemeContext';
 import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
@@ -39,13 +39,15 @@ const LEADERBOARD = [
   { rank: 10, name: 'Suresh P.', count: '45 Donations', rating: '4.1' },
 ];
 
-const CROWN_COLORS = [colors.textDisabled, colors.gold, colors.textDisabled];
 
 export default function LeaderboardScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [activeTab, setActiveTab] = useState<LeaderboardTab>('Top Donors');
+  const CROWN_COLORS = [colors.textDisabled, colors.gold, colors.textDisabled];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -125,7 +127,7 @@ export default function LeaderboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

@@ -8,7 +8,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { radius } from '../../theme/radius';
@@ -50,6 +50,8 @@ export function DonationCard({
   price,
   originalPrice,
 }: DonationCardProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const timeStr = new Date(createdAt).toLocaleDateString();
 
   return (
@@ -103,7 +105,7 @@ export function DonationCard({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.md,

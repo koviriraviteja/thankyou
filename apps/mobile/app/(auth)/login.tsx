@@ -13,19 +13,21 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/theme/colors';
+import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
 import { Button } from '../../src/components/ui/Button';
 
 export default function OnboardingScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const { loginWithGoogle } = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Skip button */}
-      <TouchableOpacity style={styles.skipBtn} onPress={() => router.replace('/(tabs)/')}>
+      <TouchableOpacity style={styles.skipBtn} onPress={() => router.dismissAll()}>
         <Text style={styles.skipText}>Skip</Text>
       </TouchableOpacity>
 
@@ -90,7 +92,7 @@ export default function OnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surface,

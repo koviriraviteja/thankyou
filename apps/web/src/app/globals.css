@@ -1,0 +1,291 @@
+/* ══════════════════════════════════════════════════════════════
+   ThankU Design System — Global Styles (Web)
+   Ported from mobile theme tokens.
+   All colors/spacing reference CSS custom properties.
+   ══════════════════════════════════════════════════════════════ */
+
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Core Brand */
+  --color-primary: #5FD5E3;
+  --color-secondary: #23C7C9;
+  --color-accent: #FF8A00;
+
+  /* Semantic */
+  --color-success: #2ECC71;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* Emotional / Brand Accent */
+  --color-gold: #FFD166;
+  --color-coral: #FFB4A2;
+  --color-purple: #8B8CF7;
+
+  /* Surfaces */
+  --color-background: #F5FBFC;
+  --color-surface: #FFFFFF;
+  --color-highlight: #EAF7F8;
+
+  /* Text */
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-disabled: #9CA3AF;
+  --color-text-on-primary: #111827;
+
+  /* Borders */
+  --color-border: #DDEEEF;
+  --color-border-strong: #BBE1E3;
+  --color-divider: #F3F4F6;
+
+  /* Overlays */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-overlay-light: rgba(0, 0, 0, 0.3);
+
+  /* Spacing (8pt grid) */
+  --space-micro: 4px;
+  --space-tiny: 8px;
+  --space-small: 12px;
+  --space-medium: 16px;
+  --space-large: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-xxxl: 64px;
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(17, 24, 39, 0.04);
+  --shadow-md: 0 4px 12px rgba(17, 24, 39, 0.08);
+  --shadow-lg: 0 4px 16px rgba(17, 24, 39, 0.06);
+  --shadow-xl: 0 8px 24px rgba(17, 24, 39, 0.12);
+  --shadow-fab: 0 8px 16px rgba(0, 184, 212, 0.25);
+
+  /* Typography */
+  --font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Layout */
+  --header-height: 72px;
+  --max-width: 1280px;
+  --sidebar-width: 280px;
+}
+
+[data-theme='dark'] {
+  /* Surfaces */
+  --color-background: #1E293B;
+  --color-surface: #293851;
+  --color-highlight: #334563;
+
+  /* Text */
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-disabled: #6B7280;
+  --color-text-on-primary: #111827;
+
+  /* Borders */
+  --color-border: #3A4B6B;
+  --color-border-strong: #4B638A;
+  --color-divider: #334155;
+
+  /* Shadows (darker for dark mode) */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-fab: 0 8px 16px rgba(95, 213, 227, 0.15);
+}
+
+/* ─── CSS Reset ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ─── Typography Classes ────────────────────────────────────── */
+.text-display {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.96px;
+}
+
+.text-h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.32px;
+}
+
+.text-h2 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-body-small {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.text-label {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.32px;
+}
+
+.text-caption {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.24px;
+}
+
+/* ─── Utility Classes ───────────────────────────────────────── */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-medium);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-large);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 var(--space-xl);
+  }
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* ─── Selection Color ───────────────────────────────────────── */
+::selection {
+  background: var(--color-secondary);
+  color: var(--color-text-primary);
+}
+
+/* ─── Focus Styles ──────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ─── Animations ────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-highlight) 25%, var(--color-border) 50%, var(--color-highlight) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}

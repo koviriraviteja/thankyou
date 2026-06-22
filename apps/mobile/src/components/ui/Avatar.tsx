@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../context/ThemeContext';
 
 type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 type ImpactTier = 'seedling' | 'sapling' | 'oak' | 'forest' | null;
@@ -21,17 +21,19 @@ interface AvatarProps {
 const SIZES: Record<AvatarSize, number> = { sm: 32, md: 44, lg: 64, xl: 80 };
 const ICON_SIZES: Record<AvatarSize, number> = { sm: 14, md: 20, lg: 28, xl: 36 };
 
-const TIER_COLORS: Record<string, string> = {
+const getTierColors = (colors: any): Record<string, string> => ({
   seedling: '#86EFAC',
   sapling: colors.success,
   oak: colors.gold,
   forest: colors.purple,
-};
+});
 
 export function Avatar({ uri, size = 'md', tier = null }: AvatarProps) {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const dim = SIZES[size];
   const borderWidth = tier ? 3 : 0;
-  const borderColor = tier ? TIER_COLORS[tier] : 'transparent';
+  const borderColor = tier ? getTierColors(colors)[tier] : 'transparent';
 
   return (
     <View style={[styles.container, { width: dim, height: dim, borderRadius: dim / 2, borderWidth, borderColor }]}>
@@ -46,7 +48,7 @@ export function Avatar({ uri, size = 'md', tier = null }: AvatarProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
