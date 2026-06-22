@@ -6,6 +6,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  transpilePackages: ['recharts', 'react-smooth', 'react-transition-group'],
   images: {
     remotePatterns: [
       {
