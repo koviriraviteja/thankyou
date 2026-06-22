@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-background: #F5FBFC;
+    --color-surface: #FFFFFF;
+    --color-highlight: #EAF7F8;
+    
+    --color-text-primary: #111827;
+    --color-text-secondary: #4B5563;
+    --color-text-muted: #9CA3AF;
+    
+    --color-border: #E5E7EB;
+    --color-border-subtle: #F3F4F6;
+    
+    --shadow-warm-sm: 0 2px 8px rgba(17, 24, 39, 0.04);
+    --shadow-warm-md: 0 4px 12px rgba(17, 24, 39, 0.08);
+    --shadow-warm-lg: 0 4px 16px rgba(17, 24, 39, 0.06);
+  }
+
+  .dark {
+    --color-background: #111827;
+    --color-surface: #1F2937;
+    --color-highlight: #374151;
+    
+    --color-text-primary: #F9FAFB;
+    --color-text-secondary: #D1D5DB;
+    --color-text-muted: #9CA3AF;
+    
+    --color-border: #4B5563;
+    --color-border-subtle: #374151;
+    
+    --shadow-warm-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-warm-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-warm-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-secondary);
+  }
+
+  ::selection {
+    background-color: rgba(95, 213, 227, 0.2);
+    color: var(--color-text-primary);
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-text-muted);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary);
+  }
+}
+
+@layer components {
+  /* ─── Stat Card ─── */
+  .stat-card {
+    @apply bg-[var(--color-surface)] rounded-xl p-6 border border-[var(--color-border-subtle)] 
+           transition-all duration-300 ease-out hover:-translate-y-1;
+    box-shadow: var(--shadow-warm-md);
+  }
+  .stat-card:hover {
+    box-shadow: var(--shadow-warm-lg);
+  }
+
+  /* ─── Data Table Row ─── */
+  .table-row-hover {
+    @apply transition-colors duration-150 hover:bg-[var(--color-highlight)];
+  }
+
+  /* ─── Badge Variants ─── */
+  .badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-leaf-50 text-leaf-700 border border-leaf-200 dark:bg-leaf-900/50 dark:text-leaf-400 dark:border-leaf-800;
+  }
+  .badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/50 dark:text-amber-400 dark:border-amber-800;
+  }
+  .badge-error {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/50 dark:text-red-400 dark:border-red-800;
+  }
+  .badge-info {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/50 dark:text-blue-400 dark:border-blue-800;
+  }
+  .badge-neutral {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700;
+  }
+}
