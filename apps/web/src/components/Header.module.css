@@ -96,8 +96,8 @@
 
 /* ─── Search Bar ────────────────────────────────────────── */
 .searchContainer {
+  display: none;
   flex: 1;
-  display: flex;
   align-items: center;
   gap: var(--space-tiny);
   background: var(--color-background);
@@ -319,6 +319,10 @@
   }
 
   .locationSelector {
+    display: flex;
+  }
+
+  .searchContainer {
     display: flex;
   }
 
