@@ -1,0 +1,51 @@
+2026-06-22T18:48:17.163996Z  WARN build:build_inner: turborepo_repository::package_graph::builder: Unable to calculate transitive closures: Missing version from non-workspace package: 'node_modules/caniuse-lite'
+2026-06-22T18:48:17.168664Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies\\1.cookie"), AnchoredSystemPathBuf(".turbo\\cookies")}
+2026-06-22T18:48:17.168691Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:48:17.567375Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon")}
+2026-06-22T18:48:17.567405Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:48:20.873320Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\admin\\.next")}
+2026-06-22T18:48:20.873346Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/admin"), path: AnchoredSystemPathBuf("apps\\admin") }}))
+2026-06-22T18:48:21.066775Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\admin\\.next")}
+2026-06-22T18:48:21.066795Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/admin"), path: AnchoredSystemPathBuf("apps\\admin") }}))
+2026-06-22T18:48:21.299661Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:48:51.166484Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\.next")}
+2026-06-22T18:48:51.166515Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:48:51.681764Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\.next")}
+2026-06-22T18:48:51.681799Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:48:51.853118Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:48:52.069778Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\.next")}
+2026-06-22T18:48:52.069811Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:48:52.153665Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:49:30.567432Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\.next")}
+2026-06-22T18:49:30.567476Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:49:30.620674Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:49:30.868582Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\.next")}
+2026-06-22T18:49:30.868631Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:49:31.179355Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:49:49.281594Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon\\4e079bc0188198cc-turbo.log.2026-06-22")}
+2026-06-22T18:49:49.281621Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:50:06.566631Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules"), AnchoredSystemPathBuf("node_modules"), AnchoredSystemPathBuf("apps\\web")}
+2026-06-22T18:50:06.566686Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }, WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:50:06.698382Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:50:06.698589Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules")}
+2026-06-22T18:50:06.698609Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:50:06.698656Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:52:08.275513Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules"), AnchoredSystemPathBuf("node_modules")}
+2026-06-22T18:52:08.275564Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:54:23.378854Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\admin"), AnchoredSystemPathBuf("package-lock.json"), AnchoredSystemPathBuf("apps\\mobile\\node_modules"), AnchoredSystemPathBuf("packages\\db\\node_modules"), AnchoredSystemPathBuf("apps\\web\\node_modules"), AnchoredSystemPathBuf("packages\\api-client\\node_modules"), AnchoredSystemPathBuf("packages\\ui\\node_modules"), AnchoredSystemPathBuf("packages\\ui"), AnchoredSystemPathBuf("node_modules"), AnchoredSystemPathBuf("packages\\types\\node_modules"), AnchoredSystemPathBuf("apps\\admin\\node_modules")}
+2026-06-22T18:54:23.378920Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }, WorkspacePackage { name: Other("@olx-clone/ui"), path: AnchoredSystemPathBuf("packages\\ui") }, WorkspacePackage { name: Other("@olx-clone/api-client"), path: AnchoredSystemPathBuf("packages\\api-client") }, WorkspacePackage { name: Other("@olx-clone/db"), path: AnchoredSystemPathBuf("packages\\db") }, WorkspacePackage { name: Other("@thanku/mobile"), path: AnchoredSystemPathBuf("apps\\mobile") }, WorkspacePackage { name: Other("@olx-clone/admin"), path: AnchoredSystemPathBuf("apps\\admin") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }, WorkspacePackage { name: Other("@olx-clone/types"), path: AnchoredSystemPathBuf("packages\\types") }}))
+2026-06-22T18:54:23.420117Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2026-06-22T18:54:23.420751Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:54:25.467034Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("node_modules")}
+2026-06-22T18:54:25.467077Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:59:25.279124Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules")}
+2026-06-22T18:59:25.279258Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T18:59:53.304235Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T18:59:53.524575Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules"), AnchoredSystemPathBuf("node_modules")}
+2026-06-22T18:59:53.524613Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T18:59:53.526115Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-06-22T19:01:46.767327Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2026-06-22T19:01:46.767465Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-06-22T19:01:46.868550Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\web\\node_modules")}
+2026-06-22T19:01:46.868586Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@olx-clone/web"), path: AnchoredSystemPathBuf("apps\\web") }}))
+2026-06-22T19:01:47.768895Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
