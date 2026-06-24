@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { IoHeart, IoLogoGithub, IoLogoTwitter, IoLogoInstagram } from 'react-icons/io5';
+import { IoHeart, IoLogoGithub, IoLogoTwitter, IoLogoInstagram, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
 import Image from 'next/image';
 import styles from './Footer.module.css';
 
@@ -15,12 +15,13 @@ export default function Footer() {
             <span className={styles.logoText}>ThankU</span>
           </Link>
           <p className={styles.brandDesc}>
-            A community where giving creates happiness and gratitude grows. Every small act of kindness matters.
+            A social service employment platform where giving creates jobs and 
+            gratitude grows. Every donation builds livelihoods.
           </p>
           <div className={styles.socialLinks}>
-            <a href="#" className={styles.socialLink} aria-label="Twitter"><IoLogoTwitter size={18} /></a>
+            <a href="https://wa.me/1234567890" className={styles.socialLink} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><IoLogoWhatsapp size={18} /></a>
+            <a href="mailto:support@thanku.com" className={styles.socialLink} aria-label="Email"><IoMail size={18} /></a>
             <a href="#" className={styles.socialLink} aria-label="Instagram"><IoLogoInstagram size={18} /></a>
-            <a href="#" className={styles.socialLink} aria-label="GitHub"><IoLogoGithub size={18} /></a>
           </div>
         </div>
 
@@ -31,18 +32,20 @@ export default function Footer() {
             <Link href="/" className={styles.footerLink}>Browse Items</Link>
             <Link href="/community" className={styles.footerLink}>Community Wall</Link>
             <Link href="/post" className={styles.footerLink}>Donate an Item</Link>
+            <Link href="/leaderboard" className={styles.footerLink}>Donation Levels</Link>
           </div>
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>Support</h4>
             <Link href="/help" className={styles.footerLink}>Help Center</Link>
             <Link href="/safety" className={styles.footerLink}>Safety Tips</Link>
-            <Link href="#" className={styles.footerLink}>Contact Us</Link>
+            <a href="https://wa.me/1234567890" className={styles.footerLink} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a href="mailto:support@thanku.com" className={styles.footerLink}>Email Us</a>
           </div>
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>Legal</h4>
-            <Link href="#" className={styles.footerLink}>Terms of Service</Link>
-            <Link href="#" className={styles.footerLink}>Privacy Policy</Link>
-            <Link href="#" className={styles.footerLink}>Cookie Policy</Link>
+            <Link href="/terms" className={styles.footerLink}>Terms of Service</Link>
+            <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>
+            <Link href="/cookies" className={styles.footerLink}>Cookie Policy</Link>
           </div>
         </div>
       </div>

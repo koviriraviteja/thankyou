@@ -42,11 +42,11 @@ export default function DonationCard({
         <div className={styles.imageContainer}>
           <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
 
-          {/* Rating Badge */}
+          {/* Rating Badge with percentage tier */}
           {rating && (
             <div className={styles.ratingBadge}>
               <IoStar size={10} />
-              <span>{rating}</span>
+              <span>{rating} · {(parseFloat(rating) / 5 * 100).toFixed(0)}%</span>
             </div>
           )}
 

@@ -17,7 +17,6 @@
     "docker:reset": "docker-compose down -v && docker-compose up -d"
   },
   "dependencies": {
-    "@babel/runtime": "^8.0.0",
     "caniuse-lite": "^1.0.30001799",
     "dom-helpers": "^6.0.1"
   },
@@ -40,7 +39,7 @@
     "apps/*",
     "services/*"
   ],
-  "packageManager": "npm@10.0.0",
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { IoSearch, IoNotificationsOutline, IoChatbubbleEllipsesOutline, IoLocationOutline, IoChevronDown, IoAdd, IoPersonCircleOutline, IoMenuOutline, IoCloseOutline, IoMoonOutline, IoSunnyOutline } from 'react-icons/io5';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import LanguageSelector from './LanguageSelector';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -51,6 +52,8 @@ export default function Header() {
 
         {/* Right Section: Actions */}
         <div className={styles.desktopActions}>
+          <LanguageSelector />
+
           <button 
             className={styles.iconBtn} 
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

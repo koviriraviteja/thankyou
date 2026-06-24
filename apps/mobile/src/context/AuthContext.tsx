@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
+import Constants from 'expo-constants';
 
 // Required for web browser to close correctly on Expo Go
 WebBrowser.maybeCompleteAuthSession();
@@ -46,11 +47,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loginWithGoogle = async () => {
+    let browserOpen = false;
     try {
-      setIsLoading(true);
-      const redirectUrl = makeRedirectUri();
-      console.log('EXACT REDIRECT URL GENERATED:', redirectUrl);
-      
+      // In Expo Go: generates exp://IP:PORT/--/auth/callback
+      // In standalone build: generates thanku://auth/callback
+      // Both must be registered in Supabase → Auth → URL Configuration → Redirect URLs
+      const isExpoGo = Constants.appOwnership === 'expo';
+      const redirectUrl = isExpoGo
+        ? makeRedirectUri({ path: 'auth/callback' })
+        : makeRedirectUri({ scheme: 'thanku', path: 'auth/callback' });
+
+      console.log('Redirect URL:', redirectUrl);
+      console.log('Running in:', isExpoGo ? 'Expo Go' : 'Standalone Build');
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -62,47 +71,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error;
 
       if (data?.url) {
+        browserOpen = true;
         const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+        browserOpen = false;
+
         if (result.type === 'success' && result.url) {
-          console.log('Login successful via deep link, extracting session...');
-          
+          console.log('OAuth success, extracting session from:', result.url);
+
           const { params, errorCode } = QueryParams.getQueryParams(result.url);
-          
+
           if (errorCode) {
-            console.error('OAuth Error:', errorCode);
+            console.error('OAuth Error Code:', errorCode);
+            alert(`Google Sign-In failed: ${errorCode}`);
+            return;
           }
 
-          const accessToken = params.access_token;
-          const refreshToken = params.refresh_token;
-          const code = params.code;
-
-          console.log('Parsed token from URL:', !!accessToken);
+          const { code, access_token: accessToken, refresh_token: refreshToken } = params;
 
           if (code) {
-            const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code);
-            if (error) console.error('Code exchange error:', error);
-            else console.log('Session extracted via code!');
+            const { error: codeError } = await supabase.auth.exchangeCodeForSession(code);
+            if (codeError) throw codeError;
+            console.log('Session extracted via PKCE code exchange!');
           } else if (accessToken && refreshToken) {
-            const { data: sessionData, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-            if (error) console.error('Set session error:', error);
-            else console.log('Session extracted via tokens!');
+            const { error: tokenError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (tokenError) throw tokenError;
+            console.log('Session extracted via implicit tokens!');
+          } else {
+            console.warn('No code or tokens found in redirect URL.');
+            alert('Google Sign-In did not return valid credentials. Please try again.');
+            return;
           }
 
-          // Force a getSession to ensure context state updates
-          const { data } = await supabase.auth.getSession();
-          if (data.session) {
-            setSession(data.session);
-            setUser(data.session.user);
+          // Refresh context state
+          const { data: freshSession } = await supabase.auth.getSession();
+          if (freshSession.session) {
+            setSession(freshSession.session);
+            setUser(freshSession.session.user);
+            router.dismissAll();
           }
-
-          router.dismissAll();
+        } else if (result.type === 'cancel' || result.type === 'dismiss') {
+          // User closed the browser — this is expected, just do nothing
+          console.log('Google Sign-In cancelled by user.');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Google Sign-In Error:', error);
-      alert('Failed to sign in with Google');
-    } finally {
-      setIsLoading(false);
+      alert(error.message || 'Failed to sign in with Google. Please try again.');
     }
   };
 

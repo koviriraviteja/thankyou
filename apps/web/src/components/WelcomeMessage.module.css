@@ -1,0 +1,127 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-medium);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  animation: slideUp 0.4s ease-out;
+  box-shadow: var(--shadow-xl);
+}
+
+.closeBtn {
+  position: absolute;
+  top: var(--space-small);
+  right: var(--space-small);
+  color: var(--color-text-disabled);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.closeBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.iconContainer {
+  margin-bottom: var(--space-medium);
+}
+
+.icon {
+  color: var(--color-primary);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-small);
+}
+
+.message {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-large);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  margin-bottom: var(--space-medium);
+}
+
+.whatsappBtn,
+.emailBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-tiny);
+  padding: var(--space-small);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.whatsappBtn {
+  background: #25D366;
+  color: #fff;
+}
+
+.whatsappBtn:hover {
+  background: #1DA851;
+  transform: translateY(-1px);
+}
+
+.emailBtn {
+  background: var(--color-highlight);
+  color: var(--color-text-primary);
+}
+
+.emailBtn:hover {
+  background: var(--color-border);
+  transform: translateY(-1px);
+}
+
+.dismissBtn {
+  padding: var(--space-small) var(--space-large);
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.dismissBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}

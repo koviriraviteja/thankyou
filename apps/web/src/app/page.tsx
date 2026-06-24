@@ -7,7 +7,7 @@ import {
   IoHappyOutline, IoRestaurantOutline, IoFootballOutline,
   IoMedkitOutline, IoLeafOutline, IoNutritionOutline,
   IoCubeOutline, IoChevronForward, IoArrowForwardCircle, IoSparkles,
-  IoGridOutline,
+  IoGridOutline, IoCheckmarkCircle,
 } from 'react-icons/io5';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -136,13 +136,13 @@ export default function HomePage() {
             <div className={styles.heroOverlay}>
               <div className={styles.heroTag}>
                 <IoSparkles size={14} />
-                <span>Spread Kindness</span>
+                <span>Social Service Employment</span>
               </div>
               <h1 className={styles.heroTitle}>
-                Give Freely.<br />Help Genuinely.
+                Give Freely.<br />Create Employment.
               </h1>
               <p className={styles.heroSubtitle}>
-                A community where the things you no longer need become treasures for someone else.
+                A social service platform where your donations fund employment opportunities and build communities.
               </p>
               <div className={styles.heroActions}>
                 <Link href="/post" className={styles.heroCta}>
@@ -229,6 +229,34 @@ export default function HomePage() {
               </button>
             </div>
           )}
+        </section>
+
+        {/* ─── Mission Section ──────────────────────────────── */}
+        <section className={styles.missionSection} id="home-mission">
+          <div className={styles.missionContent}>
+            <div className={styles.missionIcon}>
+              <IoHappyOutline size={32} />
+            </div>
+            <h2 className={styles.missionTitle}>Our Mission: Social Service Employment</h2>
+            <p className={styles.missionDesc}>
+              We connect people who want to give with those who need, creating employment opportunities 
+              through community-driven donations. Every item donated helps build sustainable livelihoods.
+            </p>
+            <div className={styles.missionStats}>
+              <div className={styles.missionStat}>
+                <span className={styles.missionStatValue}>200</span>
+                <span className={styles.missionStatLabel}>Donation Levels</span>
+              </div>
+              <div className={styles.missionStat}>
+                <span className={styles.missionStatValue}>1%</span>
+                <span className={styles.missionStatLabel}>Rating Tiers</span>
+              </div>
+              <div className={styles.missionStat}>
+                <span className={styles.missionStatValue}>2-3%</span>
+                <span className={styles.missionStatLabel}>Validation Rate</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ─── Community CTA ────────────────────────────────── */}

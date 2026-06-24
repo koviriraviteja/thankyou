@@ -1,7 +1,3 @@
-/* ══════════════════════════════════════════════════════════════
-   Community / Gratitude Wall Page Styles
-   ══════════════════════════════════════════════════════════════ */
-
 .main {
   min-height: 100vh;
 }
@@ -30,12 +26,266 @@
 }
 
 .container {
-  max-width: 680px;
+  max-width: 800px;
   margin: 0 auto;
   padding: var(--space-medium);
 }
 
-/* ─── Tabs ──────────────────────────────────────────────── */
+/* ─── Mission Banner ──────────────────────────────────── */
+.missionBanner {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple) 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-large);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.missionBannerContent {
+  text-align: center;
+}
+
+.missionBannerTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: var(--space-tiny);
+}
+
+.missionBannerText {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ─── Impact Metrics ──────────────────────────────────── */
+.impactSection {
+  margin-bottom: var(--space-large);
+}
+
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-small);
+}
+
+.impactCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-tiny);
+  background: var(--color-surface);
+  padding: var(--space-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  animation: slideUp 0.5s ease-out both;
+}
+
+.impactCard:nth-child(1) { animation-delay: 0.05s; }
+.impactCard:nth-child(2) { animation-delay: 0.1s; }
+.impactCard:nth-child(3) { animation-delay: 0.15s; }
+.impactCard:nth-child(4) { animation-delay: 0.2s; }
+
+.impactIcon {
+  color: var(--color-primary);
+}
+
+.impactValue {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.impactLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Levels Section ──────────────────────────────────── */
+.levelsSection {
+  margin-bottom: var(--space-large);
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-tiny);
+}
+
+.sectionSubtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-medium);
+}
+
+.levelsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-small);
+}
+
+.levelCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-surface);
+  padding: var(--space-small);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: all 0.2s ease;
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.levelCard:nth-child(1) { animation-delay: 0.02s; }
+.levelCard:nth-child(2) { animation-delay: 0.04s; }
+.levelCard:nth-child(3) { animation-delay: 0.06s; }
+.levelCard:nth-child(4) { animation-delay: 0.08s; }
+.levelCard:nth-child(5) { animation-delay: 0.1s; }
+.levelCard:nth-child(6) { animation-delay: 0.12s; }
+.levelCard:nth-child(7) { animation-delay: 0.14s; }
+.levelCard:nth-child(8) { animation-delay: 0.16s; }
+.levelCard:nth-child(9) { animation-delay: 0.18s; }
+.levelCard:nth-child(10) { animation-delay: 0.2s; }
+
+.levelCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.levelIcon {
+  font-size: 24px;
+}
+
+.levelName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.levelNum {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.levelReq {
+  font-size: 10px;
+  color: var(--color-text-disabled);
+}
+
+/* ─── Rating Tiers Section ────────────────────────────── */
+.ratingTiersSection {
+  margin-bottom: var(--space-large);
+}
+
+.ratingTiers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+}
+
+.ratingTierCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  background: var(--color-surface);
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  animation: slideUp 0.4s ease-out both;
+}
+
+.ratingTierCard:nth-child(1) { animation-delay: 0.05s; }
+.ratingTierCard:nth-child(2) { animation-delay: 0.1s; }
+.ratingTierCard:nth-child(3) { animation-delay: 0.15s; }
+.ratingTierCard:nth-child(4) { animation-delay: 0.2s; }
+.ratingTierCard:nth-child(5) { animation-delay: 0.25s; }
+
+.ratingTierBar {
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: width 0.5s ease;
+}
+
+.ratingTierInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+  flex: 1;
+}
+
+.ratingTierPct {
+  font-size: 14px;
+  font-weight: 800;
+  min-width: 36px;
+}
+
+.ratingTierLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Validation Section ──────────────────────────────── */
+.validationSection {
+  margin-bottom: var(--space-large);
+}
+
+.validationCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-medium);
+  background: linear-gradient(135deg, var(--color-highlight) 0%, #F5F0FF 100%);
+  padding: var(--space-large);
+  border-radius: var(--radius-lg);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.validationIcon {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.validationContent {
+  flex: 1;
+}
+
+.validationTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-tiny);
+}
+
+.validationText {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-small);
+}
+
+.validationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-success);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ─── Tabs ────────────────────────────────────────────── */
 .tabContainer {
   display: flex;
   gap: var(--space-tiny);
@@ -67,7 +317,7 @@
   color: var(--color-text-on-primary);
 }
 
-/* ─── Notes Feed ────────────────────────────────────────── */
+/* ─── Notes Feed ──────────────────────────────────────── */
 .notesFeed {
   display: flex;
   flex-direction: column;
@@ -91,7 +341,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-small);
-  margin-bottom: var(--space-small);
+  margin-bottom: var(--space-tiny);
 }
 
 .avatarCircle {
@@ -109,15 +359,53 @@
   flex: 1;
 }
 
+.noteNameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .noteSender {
   font-size: 14px;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
+.validationBadgeSmall {
+  color: var(--color-success);
+  display: inline-flex;
+}
+
 .noteDate {
   font-size: 12px;
   color: var(--color-text-secondary);
+}
+
+.noteBadges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+}
+
+.donorLevelBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--color-highlight);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* ─── Rating Row ──────────────────────────────────────── */
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+  margin-bottom: var(--space-small);
 }
 
 .ratingContainer {
@@ -131,6 +419,12 @@
 
 .starEmpty {
   color: var(--color-border-strong);
+}
+
+.ratingPct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
 }
 
 .noteMessage {
@@ -174,7 +468,7 @@
   color: var(--color-accent);
 }
 
-/* ─── Write CTA ─────────────────────────────────────────── */
+/* ─── Write CTA ───────────────────────────────────────── */
 .writeCta {
   padding: var(--space-xl) 0;
   display: flex;
@@ -208,5 +502,23 @@
 
   .pageTitle {
     font-size: 28px;
+  }
+
+  .container {
+    padding: var(--space-large);
+  }
+
+  .levelsGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .impactGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .levelsGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

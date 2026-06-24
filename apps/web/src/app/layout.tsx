@@ -9,15 +9,16 @@ const outfit = Outfit({
 });
 import StoreProvider from '@/store/StoreProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import WelcomeMessage from '@/components/WelcomeMessage';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: 'ThankU — Give Freely. Help Genuinely.',
-  description: 'A community where giving creates happiness and gratitude grows. Donate items, help your neighbors, and make a difference.',
-  keywords: ['donate', 'free items', 'community', 'giving', 'ThankU', 'charity', 'neighbors'],
+  title: 'ThankU — Social Service Employment Platform',
+  description: 'A social service employment platform where giving creates jobs and builds communities. Donate items, support employment, and make a difference.',
+  keywords: ['donate', 'free items', 'community', 'giving', 'ThankU', 'social service', 'employment', 'charity'],
   openGraph: {
-    title: 'ThankU — Give Freely. Help Genuinely.',
-    description: 'A community where giving creates happiness and gratitude grows.',
+    title: 'ThankU — Social Service Employment Platform',
+    description: 'A social service employment platform where giving creates jobs and builds communities.',
     type: 'website',
   },
 };
@@ -33,6 +34,7 @@ export default function RootLayout({
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
           <StoreProvider>
             {children}
+            <WelcomeMessage />
           </StoreProvider>
         </ThemeProvider>
       </body>

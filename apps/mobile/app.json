@@ -13,7 +13,7 @@
     "splash": {
       "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#5ED6E3"
+      "backgroundColor": "#F6FEFF"
     },
     "ios": {
       "supportsTablet": true,
@@ -41,8 +41,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a8c65f4b-8531-4fc1-a2f3-377035f3b8a9"
+        "projectId": "f90b4b9f-2539-49ed-b974-1d2b766ba686"
       }
-    }
+    },
+    "owner": "ravitejakoviri"
   }
 }

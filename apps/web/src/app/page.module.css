@@ -331,6 +331,101 @@
   background: var(--color-accent);
 }
 
+/* ─── Mission Section ───────────────────────────────────── */
+.missionSection {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xxl) var(--space-medium);
+}
+
+.missionContent {
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-highlight) 0%, #F5F0FF 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xxl) var(--space-large);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.missionIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-large);
+  box-shadow: var(--shadow-fab);
+}
+
+.missionTitle {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-small);
+}
+
+.missionDesc {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 0 auto var(--space-xl);
+}
+
+.missionStats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.missionStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-tiny);
+}
+
+.missionStatValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.missionStatLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (min-width: 768px) {
+  .missionSection {
+    padding: var(--space-xxl) var(--space-large);
+  }
+
+  .missionContent {
+    padding: var(--space-xxl) var(--space-xxxl);
+  }
+
+  .missionTitle {
+    font-size: 32px;
+  }
+
+  .missionStatValue {
+    font-size: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .missionSection {
+    padding: var(--space-xxxl) var(--space-xl);
+  }
+}
+
 /* ─── Community CTA Section ─────────────────────────────── */
 .communityCta {
   max-width: var(--max-width);

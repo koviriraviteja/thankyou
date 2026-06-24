@@ -319,7 +319,7 @@ export default function HomeFeedScreen() {
 const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6FBFC', // Light cyan background matching reference
+    backgroundColor: colors.background,
   },
 
   // ─── Header ──────────────────────────────────────
@@ -485,7 +485,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...shadows.sm,
   },
   searchAiBadge: {
-    backgroundColor: '#E6FBFC',
+    backgroundColor: colors.highlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: radius.sm,
