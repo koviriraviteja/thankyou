@@ -231,6 +231,42 @@ export default function HomePage() {
           )}
         </section>
 
+        {/* ─── Featured Promotions & Ads ─────────────────────── */}
+        <section className={styles.section} id="home-promotions">
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Featured Promotions</h2>
+            <Link href="/" className={styles.seeAllLink}>
+              Sponsor Us <IoChevronForward size={14} />
+            </Link>
+          </div>
+          <div className={styles.adsCarousel}>
+            <div className={styles.adCard}>
+              <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=300&fit=crop" alt="Eco Store Ad" className={styles.adImage} />
+              <div className={styles.adOverlay}>
+                <span className={styles.adBadge}>Sponsored</span>
+                <h3 className={styles.adTitle}>Local Eco Store</h3>
+                <p className={styles.adDesc}>Get 20% off sustainable home goods.</p>
+              </div>
+            </div>
+            <div className={styles.adCard}>
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop" alt="Office Ad" className={styles.adImage} />
+              <div className={styles.adOverlay}>
+                <span className={styles.adBadge}>Partner NGO</span>
+                <h3 className={styles.adTitle}>Build A School</h3>
+                <p className={styles.adDesc}>Help us furnish 5 new classrooms.</p>
+              </div>
+            </div>
+            <div className={styles.adCard}>
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=300&fit=crop" alt="Corporate Sponsor Ad" className={styles.adImage} />
+              <div className={styles.adOverlay}>
+                <span className={styles.adBadge}>Sponsored</span>
+                <h3 className={styles.adTitle}>TechCorp Cares</h3>
+                <p className={styles.adDesc}>Matching all education donations today.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ─── Mission Section ──────────────────────────────── */}
         <section className={styles.missionSection} id="home-mission">
           <div className={styles.missionContent}>

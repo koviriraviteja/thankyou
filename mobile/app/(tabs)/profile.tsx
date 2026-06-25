@@ -31,6 +31,7 @@ const VERIFICATION_ITEMS = [
 const MENU_ITEMS = [
   { id: '1', title: 'My Donation History', icon: 'heart-circle-outline', route: '/(tabs)/my-ads' },
   { id: '2', title: 'Impact Dashboard', icon: 'bar-chart-outline', route: '/impact' },
+  { id: 'points', title: 'My Points & Limits', icon: 'star-outline', route: '/points' },
   { id: 'referral', title: 'Invite Friends', icon: 'people-outline', route: '/referral' },
   { id: '3', title: 'Leaderboard', icon: 'trophy-outline', route: '/leaderboard' },
   { id: '4', title: 'Settings', icon: 'settings-outline', route: '/settings' },

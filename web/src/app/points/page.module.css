@@ -1,0 +1,252 @@
+.main {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1.5fr;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Balance Card */
+.balanceCard {
+  background: linear-gradient(135deg, var(--color-primary), #0d9488);
+  border-radius: 1rem;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.balanceHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.starIcon {
+  color: #fef08a;
+}
+
+.balanceTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.balanceAmount {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+
+.balanceCurrency {
+  font-size: 1.5rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.levelInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.levelBadge {
+  background-color: white;
+  color: var(--color-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.levelText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Cards */
+.limitsCard, .historyCard {
+  background-color: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardIcon {
+  color: var(--color-primary);
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.infoIcon {
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+/* Limits */
+.limitItem {
+  margin-bottom: 1.5rem;
+}
+
+.limitTextRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.limitLabel {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.limitValue {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.progressBarBg {
+  height: 8px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.limitNote {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* History */
+.historyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.historyIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconEarned {
+  background-color: #ECFDF5;
+  color: #10B981;
+}
+
+.iconSpent {
+  background-color: #FEF2F2;
+  color: #EF4444;
+}
+
+.historyInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.historyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.historyDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0.125rem 0;
+}
+
+.historyDate {
+  font-size: 0.75rem;
+  color: var(--color-text-disabled);
+}
+
+.historyPoints {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.textEarned {
+  color: #10B981;
+}
+
+.textSpent {
+  color: #EF4444;
+}

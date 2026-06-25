@@ -11,6 +11,7 @@ import {
   StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
@@ -20,7 +21,9 @@ import { shadows } from '../../src/theme/shadows';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 import { Button } from '../../src/components/ui/Button';
 
-type TabFilter = 'All' | 'Received' | 'Given';
+type GratitudeFilter = 'All' | 'Received' | 'Given';
+type HelpFilter = 'All' | 'Urgent' | 'Education' | 'Medical';
+type ScreenMode = 'gratitude' | 'help';
 
 // Mock data for gratitude notes
 const MOCK_NOTES = [
@@ -56,10 +59,30 @@ const MOCK_NOTES = [
   },
 ];
 
+const MOCK_REQUESTS = [
+  {
+    id: 'req1',
+    userName: 'Ayesha Khan',
+    date: 'Just now',
+    urgency: 'High',
+    request: 'Hi neighbors, my washing machine just broke down and I have a toddler. Does anyone know a cheap repair person or have a spare small washer?',
+  },
+  {
+    id: 'req2',
+    userName: 'Ravi Kumar',
+    date: '2 hours ago',
+    urgency: 'Medium',
+    request: 'Looking for old 10th grade NCERT textbooks for my sister. We cannot afford new ones this year.',
+  },
+];
+
 export default function CommunityScreen() {
   const { colors } = useTheme();
   const styles = getStyles(colors);
-  const [activeTab, setActiveTab] = useState<TabFilter>('All');
+  
+  const [screenMode, setScreenMode] = useState<ScreenMode>('gratitude');
+  const [activeTab, setActiveTab] = useState<GratitudeFilter>('All');
+  const [requestTab, setRequestTab] = useState<HelpFilter>('All');
 
   const renderNote = ({ item }: { item: typeof MOCK_NOTES[0] }) => (
     <View style={styles.noteCard}>
@@ -107,55 +130,134 @@ export default function CommunityScreen() {
     </View>
   );
 
+  const renderRequest = ({ item }: { item: typeof MOCK_REQUESTS[0] }) => (
+    <View style={styles.requestCard}>
+      <View style={styles.requestHeader}>
+        <View style={styles.avatarCircle}>
+          <Ionicons name="person" size={18} color={colors.surface} />
+        </View>
+        <View style={styles.noteHeaderInfo}>
+          <Text style={styles.noteSender}>{item.userName}</Text>
+          <Text style={styles.noteDate}>{item.date}</Text>
+        </View>
+        <View style={[styles.urgencyBadge, item.urgency === 'High' && styles.urgencyHigh]}>
+          <Text style={[styles.urgencyText, item.urgency === 'High' && styles.urgencyTextHigh]}>
+            {item.urgency} Urgency
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.noteMessage}>{item.request}</Text>
+      
+      <TouchableOpacity style={styles.helpBtn}>
+        <Ionicons name="hand-right-outline" size={18} color={colors.surface} />
+        <Text style={styles.helpBtnText}>Help Them</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
+      {/* Header with Mode Toggle */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Gratitude Wall</Text>
-          <Text style={styles.headerSubtitle}>Kind words from our community</Text>
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity 
+            style={[styles.toggleBtn, screenMode === 'gratitude' && styles.toggleBtnActive]}
+            onPress={() => setScreenMode('gratitude')}
+          >
+            <Text style={[styles.toggleText, screenMode === 'gratitude' && styles.toggleTextActive]}>
+              🌟 Gratitude
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.toggleBtn, screenMode === 'help' && styles.toggleBtnActive]}
+            onPress={() => setScreenMode('help')}
+          >
+            <Text style={[styles.toggleText, screenMode === 'help' && styles.toggleTextActive]}>
+              🤝 Help Board
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Segmented Tabs */}
+      {/* Segmented Sub-Tabs */}
       <View style={styles.tabContainer}>
-        {(['All', 'Received', 'Given'] as TabFilter[]).map(tab => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.tabActive]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {screenMode === 'gratitude' ? (
+          (['All', 'Received', 'Given'] as GratitudeFilter[]).map(tab => (
+            <TouchableOpacity
+              key={tab}
+              style={[styles.tab, activeTab === tab && styles.tabActive]}
+              onPress={() => setActiveTab(tab)}
+            >
+              <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          ))
+        ) : (
+          (['All', 'Urgent', 'Education', 'Medical'] as HelpFilter[]).map(tab => (
+            <TouchableOpacity
+              key={tab}
+              style={[styles.tab, requestTab === tab && styles.tabActive]}
+              onPress={() => setRequestTab(tab)}
+            >
+              <Text style={[styles.tabText, requestTab === tab && styles.tabTextActive]}>
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          ))
+        )}
       </View>
 
-      {/* Notes Feed */}
-      <FlatList
-        data={MOCK_NOTES}
-        keyExtractor={(item) => item.id}
-        renderItem={renderNote}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <EmptyState
-            imageSource={require('../../assets/images/empty-state.png')}
-            title="Waiting for your first note"
-            body="When you give an item to a neighbor, they'll leave a ThankU note here. It's the best part of the app."
-          />
-        }
-        ListFooterComponent={
-          <View style={styles.ctaContainer}>
-            <Button
-              title="Write a ThankU Note"
-              onPress={() => {}}
-              icon={<Ionicons name="create-outline" size={20} color={colors.textOnPrimary} />}
+      {/* Notes / Requests Feed */}
+      {screenMode === 'gratitude' ? (
+        <FlatList
+          data={MOCK_NOTES}
+          keyExtractor={(item) => item.id}
+          renderItem={renderNote}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState
+              imageSource={require('../../assets/images/empty-state.png')}
+              title="Waiting for your first note"
+              body="When you give an item to a neighbor, they'll leave a ThankU note here. It's the best part of the app."
             />
-          </View>
-        }
-      />
+          }
+          ListFooterComponent={
+            <View style={styles.ctaContainer}>
+              <Button
+                title="Write a ThankU Note"
+                onPress={() => {}}
+                icon={<Ionicons name="create-outline" size={20} color={colors.textOnPrimary} />}
+              />
+            </View>
+          }
+        />
+      ) : (
+        <FlatList
+          data={MOCK_REQUESTS}
+          keyExtractor={(item) => item.id}
+          renderItem={renderRequest}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState
+              imageSource={require('../../assets/images/empty-state.png')}
+              title="No requests right now"
+              body="Check back later to see if anyone in your neighborhood needs help."
+            />
+          }
+          ListFooterComponent={
+            <View style={styles.ctaContainer}>
+              <Button
+                title="Ask for Help"
+                onPress={() => router.push('/create-request')}
+                icon={<Ionicons name="megaphone-outline" size={20} color={colors.textOnPrimary} />}
+              />
+            </View>
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -167,17 +269,34 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   header: {
     paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.medium,
+    paddingVertical: spacing.small,
     backgroundColor: colors.surface,
   },
-  headerTitle: {
-    ...typography.h2,
-    color: colors.textPrimary,
+  toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
+    padding: 4,
+    ...shadows.sm,
   },
-  headerSubtitle: {
-    ...typography.bodySmall,
+  toggleBtn: {
+    flex: 1,
+    paddingVertical: spacing.small,
+    alignItems: 'center',
+    borderRadius: radius.full,
+  },
+  toggleBtnActive: {
+    backgroundColor: colors.surface,
+    ...shadows.sm,
+  },
+  toggleText: {
+    ...typography.caption,
+    fontWeight: '600',
     color: colors.textSecondary,
-    marginTop: 2,
+  },
+  toggleTextActive: {
+    color: colors.primary,
+    fontWeight: '700',
   },
 
   // ─── Tabs ────────────────────────────────────────
@@ -290,4 +409,52 @@ const getStyles = (colors: any) => StyleSheet.create({
   ctaContainer: {
     paddingVertical: spacing.large,
   },
+
+  // ─── Requests ────────────────────────────────────
+  requestCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.medium,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+    ...shadows.sm,
+  },
+  requestHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.small,
+  },
+  urgencyBadge: {
+    backgroundColor: colors.highlight,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+  },
+  urgencyHigh: {
+    backgroundColor: '#FEF2F2',
+  },
+  urgencyText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  urgencyTextHigh: {
+    color: colors.error,
+  },
+  helpBtn: {
+    backgroundColor: colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.small,
+    borderRadius: radius.md,
+    marginTop: spacing.small,
+    gap: spacing.tiny,
+  },
+  helpBtnText: {
+    ...typography.body,
+    color: colors.surface,
+    fontWeight: '700',
+  },
 });
+

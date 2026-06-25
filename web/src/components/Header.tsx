@@ -104,9 +104,15 @@ export default function Header() {
               id="mobile-search-input"
             />
           </div>
+          <nav className={styles.desktopNav}>
+            <Link href="/community" className={styles.navLink}>Community</Link>
+            <Link href="/points" className={styles.navLink}>My Points</Link>
+            <Link href="/leaderboard" className={styles.navLink}>Leaderboard</Link>
+          </nav>
           <nav className={styles.mobileNav}>
             <Link href="/" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>Home</Link>
             <Link href="/community" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>Community</Link>
+            <Link href="/points" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>My Points</Link>
             <Link href="/messages" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>Messages</Link>
             <Link href="/my-giving" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>My Giving</Link>
             <Link href="/profile" className={styles.mobileNavItem} onClick={() => setMobileMenuOpen(false)}>Profile</Link>

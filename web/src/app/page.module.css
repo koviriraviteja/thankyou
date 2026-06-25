@@ -328,10 +328,78 @@
 }
 
 .emptyCta:hover {
-  background: var(--color-accent);
+  background-color: var(--color-primary);
+  color: #fff;
 }
 
-/* ─── Mission Section ───────────────────────────────────── */
+/* ─── Promotions & Ads ──────────────────────────────── */
+.adsCarousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+}
+
+.adsCarousel::-webkit-scrollbar {
+  display: none;
+}
+
+.adCard {
+  position: relative;
+  min-width: 300px;
+  max-width: 400px;
+  height: 200px;
+  flex: 1 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  scroll-snap-align: start;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.adImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.adBadge {
+  align-self: flex-start;
+  background-color: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.adTitle {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.adDesc {
+  color: rgba(255,255,255,0.9);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+}
+
+/* ─── Mission Section ───────────────────────────────── */
 .missionSection {
   max-width: var(--max-width);
   margin: 0 auto;

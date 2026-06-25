@@ -46,10 +46,9 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function SettingsScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark, setTheme } = useTheme();
   const styles = getStyles(colors);
   const { user, logout } = useAuth();
-  const [darkMode, setDarkMode] = useState(false);
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
 
@@ -109,8 +108,8 @@ export default function SettingsScreen() {
               <Ionicons name="moon-outline" size={20} color={colors.primary} />
               <Text style={styles.settingText}>Dark Mode</Text>
               <Switch
-                value={darkMode}
-                onValueChange={setDarkMode}
+                value={isDark}
+                onValueChange={(val) => setTheme(val ? 'dark' : 'light')}
                 trackColor={{ false: colors.border, true: colors.primary }}
                 thumbColor={colors.surface}
               />

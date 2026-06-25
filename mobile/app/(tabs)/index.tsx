@@ -12,6 +12,7 @@ import {
   TouchableOpacity, Image, ActivityIndicator, RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Video, ResizeMode } from 'expo-av';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
@@ -258,6 +259,82 @@ export default function HomeFeedScreen() {
     </View>
   );
 
+  const renderFooter = () => (
+    <View style={styles.promoContainer}>
+      <Text style={styles.promoLabel}>Sponsored / Promotions</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.adsScroll}>
+        
+        {/* Column 1 */}
+        <View style={styles.adColumn}>
+          <View style={styles.adCard}>
+            <Image 
+              source={{ uri: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600&auto=format&fit=crop' }} 
+              style={styles.adMedia} 
+            />
+            <View style={styles.adContent}>
+              <Text style={styles.adTitle}>Summer Sale Extravaganza</Text>
+              <Text style={styles.adDesc}>Get up to 70% off on your favorite brands.</Text>
+              <TouchableOpacity style={styles.promoBtn}>
+                <Text style={styles.promoBtnText}>Shop Now</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.adCard}>
+            <Image 
+              source={{ uri: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop' }} 
+              style={styles.adMedia} 
+            />
+            <View style={styles.adContent}>
+              <Text style={styles.adTitle}>Tech Gadgets</Text>
+              <Text style={styles.adDesc}>Latest smart watches and accessories on discount.</Text>
+              <TouchableOpacity style={styles.promoBtn}>
+                <Text style={styles.promoBtnText}>Explore</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Column 2 */}
+        <View style={styles.adColumn}>
+          <View style={styles.adCard}>
+            <Video
+              source={{ uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+              style={styles.adMedia}
+              useNativeControls={false}
+              resizeMode={ResizeMode.COVER}
+              isLooping
+              shouldPlay
+              isMuted
+            />
+            <View style={styles.adContent}>
+              <Text style={styles.adTitle}>ThankU Premium</Text>
+              <Text style={styles.adDesc}>Boost your posts and reach more neighbors instantly!</Text>
+              <TouchableOpacity style={styles.promoBtn}>
+                <Text style={styles.promoBtnText}>Upgrade</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.adCard}>
+            <Image 
+              source={{ uri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' }} 
+              style={styles.adMedia} 
+            />
+            <View style={styles.adContent}>
+              <Text style={styles.adTitle}>Sneaker Drops</Text>
+              <Text style={styles.adDesc}>Exclusive early access to limited edition sneakers.</Text>
+              <TouchableOpacity style={styles.promoBtn}>
+                <Text style={styles.promoBtnText}>View Drops</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+      </ScrollView>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Feed */}
@@ -274,6 +351,7 @@ export default function HomeFeedScreen() {
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          ListFooterComponent={renderFooter}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -596,4 +674,64 @@ const getStyles = (colors: any) => StyleSheet.create({
     maxWidth: '50%',
     paddingHorizontal: spacing.micro,
   },
+
+  // ─── Promo Footer ────────────────────────────────
+  promoContainer: {
+    paddingTop: spacing.large,
+    paddingBottom: spacing.xxl,
+  },
+  promoLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: spacing.tiny,
+    paddingHorizontal: spacing.medium,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  adsScroll: {
+    paddingHorizontal: spacing.medium,
+    gap: spacing.medium,
+  },
+  adColumn: {
+    gap: spacing.medium,
+  },
+  adCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    width: 280,
+    overflow: 'hidden',
+    ...shadows.sm,
+  },
+  adMedia: {
+    width: '100%',
+    height: 140,
+    backgroundColor: colors.border,
+  },
+  adContent: {
+    padding: spacing.medium,
+  },
+  adTitle: {
+    ...typography.body,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 2,
+  },
+  adDesc: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: spacing.small,
+  },
+  promoBtn: {
+    backgroundColor: colors.highlight,
+    paddingHorizontal: spacing.small,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+    alignSelf: 'flex-start',
+  },
+  promoBtnText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '700',
+  },
 });
+

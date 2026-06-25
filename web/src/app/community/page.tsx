@@ -64,8 +64,15 @@ const IMPACT_METRICS = [
   { value: '3%', label: 'Validation Rate', icon: IoCheckmarkCircle },
 ];
 
+const MOCK_REQUESTS = [
+  { id: 'req1', userName: 'Ayesha Khan', date: 'Just now', urgency: 'High', request: 'Hi neighbors, my washing machine just broke down and I have a toddler. Does anyone know a cheap repair person or have a spare small washer?' },
+  { id: 'req2', userName: 'Ravi Kumar', date: '2 hours ago', urgency: 'Medium', request: 'Looking for old 10th grade NCERT textbooks for my sister. We cannot afford new ones this year.' },
+];
+
 export default function CommunityPage() {
+  const [screenMode, setScreenMode] = useState<'gratitude' | 'help'>('gratitude');
   const [activeTab, setActiveTab] = useState<TabFilter>('All');
+  const [requestTab, setRequestTab] = useState<'All' | 'Urgent' | 'Education' | 'Medical'>('All');
 
   const getLevelInfo = (levelNum: number) => {
     return DONATION_LEVELS.find(l => l.level === levelNum) || DONATION_LEVELS[0];
@@ -165,94 +172,148 @@ export default function CommunityPage() {
             </div>
           </section>
 
-          {/* Tabs */}
-          <div className={styles.tabContainer}>
-            {(['All', 'Received', 'Given'] as TabFilter[]).map(tab => (
-              <button
-                key={tab}
-                className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
+          {/* Dual-Mode Toggle */}
+          <div className={styles.modeToggleContainer}>
+            <button 
+              className={`${styles.modeToggleBtn} ${screenMode === 'gratitude' ? styles.modeToggleActive : ''}`}
+              onClick={() => setScreenMode('gratitude')}
+            >
+              🌟 Gratitude Wall
+            </button>
+            <button 
+              className={`${styles.modeToggleBtn} ${screenMode === 'help' ? styles.modeToggleActive : ''}`}
+              onClick={() => setScreenMode('help')}
+            >
+              🤝 Help Board
+            </button>
           </div>
 
-          {/* Notes Feed */}
+          {/* Tabs */}
+          <div className={styles.tabContainer}>
+            {screenMode === 'gratitude' ? (
+              (['All', 'Received', 'Given'] as TabFilter[]).map(tab => (
+                <button
+                  key={tab}
+                  className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))
+            ) : (
+              (['All', 'Urgent', 'Education', 'Medical']).map(tab => (
+                <button
+                  key={tab}
+                  className={`${styles.tab} ${requestTab === tab ? styles.tabActive : ''}`}
+                  onClick={() => setRequestTab(tab as any)}
+                >
+                  {tab}
+                </button>
+              ))
+            )}
+          </div>
+
+          {/* Feed */}
           <div className={styles.notesFeed}>
-            {MOCK_NOTES.map((note, i) => {
-              const level = getLevelInfo(note.donorLevel);
-              return (
+            {screenMode === 'gratitude' ? (
+              MOCK_NOTES.map((note, i) => {
+                const level = getLevelInfo(note.donorLevel);
+                return (
+                  <article
+                    key={note.id}
+                    className={styles.noteCard}
+                    style={{ animationDelay: `${i * 0.08}s` }}
+                  >
+                    <div className={styles.noteHeader}>
+                      <div className={styles.avatarCircle}>
+                        <IoPerson size={18} color="#fff" />
+                      </div>
+                      <div className={styles.noteHeaderInfo}>
+                        <div className={styles.noteNameRow}>
+                          <p className={styles.noteSender}>{note.senderName}</p>
+                          {note.validationBadge && (
+                            <span className={styles.validationBadgeSmall} title="Validated Donor">
+                              <IoCheckmarkCircle size={14} />
+                            </span>
+                          )}
+                        </div>
+                        <p className={styles.noteDate}>{note.date}</p>
+                      </div>
+                      <div className={styles.noteBadges}>
+                        <span className={styles.donorLevelBadge} title={level.title}>
+                          {level.icon} Lvl.{level.level}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.ratingRow}>
+                      <div className={styles.ratingContainer}>
+                        {Array.from({ length: 5 }).map((_, idx) => (
+                          idx < note.rating
+                            ? <IoStar key={idx} size={14} className={styles.starFilled} />
+                            : <IoStarOutline key={idx} size={14} className={styles.starEmpty} />
+                        ))}
+                      </div>
+                      <span className={styles.ratingPct}>{(note.rating / 5 * 100).toFixed(0)}%</span>
+                    </div>
+                    <p className={styles.noteMessage}>{note.message}</p>
+                    <div className={styles.itemTag}>
+                      <IoGiftOutline size={14} />
+                      <span>{note.itemName}</span>
+                    </div>
+                    <div className={styles.noteActions}>
+                      <button className={styles.actionBtn}>
+                        <IoHeart size={18} />
+                        <span>Applaud</span>
+                      </button>
+                      <button className={styles.actionBtn}>
+                        <IoShareOutline size={18} />
+                        <span>Share</span>
+                      </button>
+                    </div>
+                  </article>
+                );
+              })
+            ) : (
+              MOCK_REQUESTS.map((req, i) => (
                 <article
-                  key={note.id}
-                  className={styles.noteCard}
+                  key={req.id}
+                  className={styles.requestCard}
                   style={{ animationDelay: `${i * 0.08}s` }}
                 >
-                  {/* Header */}
                   <div className={styles.noteHeader}>
                     <div className={styles.avatarCircle}>
                       <IoPerson size={18} color="#fff" />
                     </div>
                     <div className={styles.noteHeaderInfo}>
-                      <div className={styles.noteNameRow}>
-                        <p className={styles.noteSender}>{note.senderName}</p>
-                        {note.validationBadge && (
-                          <span className={styles.validationBadgeSmall} title="Validated Donor">
-                            <IoCheckmarkCircle size={14} />
-                          </span>
-                        )}
-                      </div>
-                      <p className={styles.noteDate}>{note.date}</p>
+                      <p className={styles.noteSender}>{req.userName}</p>
+                      <p className={styles.noteDate}>{req.date}</p>
                     </div>
-                    <div className={styles.noteBadges}>
-                      <span className={styles.donorLevelBadge} title={level.title}>
-                        {level.icon} Lvl.{level.level}
-                      </span>
+                    <div className={`${styles.urgencyBadge} ${req.urgency === 'High' ? styles.urgencyHigh : ''}`}>
+                      {req.urgency} Urgency
                     </div>
                   </div>
-
-                  {/* Rating with percentage */}
-                  <div className={styles.ratingRow}>
-                    <div className={styles.ratingContainer}>
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        i < note.rating
-                          ? <IoStar key={i} size={14} className={styles.starFilled} />
-                          : <IoStarOutline key={i} size={14} className={styles.starEmpty} />
-                      ))}
-                    </div>
-                    <span className={styles.ratingPct}>{(note.rating / 5 * 100).toFixed(0)}%</span>
-                  </div>
-
-                  {/* Message */}
-                  <p className={styles.noteMessage}>{note.message}</p>
-
-                  {/* Item Tag */}
-                  <div className={styles.itemTag}>
-                    <IoGiftOutline size={14} />
-                    <span>{note.itemName}</span>
-                  </div>
-
-                  {/* Actions */}
-                  <div className={styles.noteActions}>
-                    <button className={styles.actionBtn}>
-                      <IoHeart size={18} />
-                      <span>Applaud</span>
-                    </button>
-                    <button className={styles.actionBtn}>
-                      <IoShareOutline size={18} />
-                      <span>Share</span>
-                    </button>
-                  </div>
+                  <p className={styles.noteMessage}>{req.request}</p>
+                  <button className={styles.helpBtn}>
+                    <IoHeart size={18} />
+                    <span>Help Them</span>
+                  </button>
                 </article>
-              );
-            })}
+              ))
+            )}
           </div>
 
           {/* Write CTA */}
           <div className={styles.writeCta}>
-            <button className={styles.writeBtn}>
+            <button 
+              className={styles.writeBtn}
+              onClick={() => {
+                if (screenMode === 'help') {
+                  window.location.href = '/create-request';
+                }
+              }}
+            >
               <IoCreateOutline size={20} />
-              Write a ThankU Note
+              {screenMode === 'help' ? 'Ask for Help' : 'Write a ThankU Note'}
             </button>
           </div>
         </div>
