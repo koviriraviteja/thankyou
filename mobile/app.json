@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "ThankU",
+    "slug": "thanku",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "androidStatusBar": {
+      "translucent": true,
+      "backgroundColor": "#00000000"
+    },
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F6FEFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.thanku.app"
+    },
+    "android": {
+      "package": "com.thanku.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#5ED6E3"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "scheme": "thanku",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image-picker",
+      "expo-location"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f90b4b9f-2539-49ed-b974-1d2b766ba686"
+      }
+    },
+    "owner": "ravitejakoviri"
+  }
+}

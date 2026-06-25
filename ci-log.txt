@@ -1,0 +1,27 @@
+npm verbose cli C:\nvm4w\nodejs\node.exe C:\nvm4w\nodejs\node_modules\npm\bin\npm-cli.js
+npm info using npm@11.6.2
+npm info using node@v22.19.0
+npm verbose title npm ci
+npm verbose argv "ci" "--loglevel" "verbose"
+npm verbose logfile logs-max:10 dir:C:\Users\kovir\AppData\Local\npm-cache\_logs\2026-06-24T21_00_44_223Z-
+npm verbose logfile C:\Users\kovir\AppData\Local\npm-cache\_logs\2026-06-24T21_00_44_223Z-debug-0.log
+npm http cache https://registry.npmjs.org/zod 29ms (cache hit)
+npm verbose stack TypeError: Invalid Version: 
+npm verbose stack     at new SemVer (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\semver\classes\semver.js:40:13)
+npm verbose stack     at compare (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\semver\functions\compare.js:5:32)
+npm verbose stack     at Object.eq (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\semver\functions\eq.js:4:29)
+npm verbose stack     at Node.canDedupe (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\node.js:1140:32)
+npm verbose stack     at PlaceDep.pruneDedupable (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:426:14)
+npm verbose stack     at PlaceDep.pruneDedupable (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:450:16)
+npm verbose stack     at new PlaceDep (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:219:12)
+npm verbose stack     at #buildDepStep (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:945:18)
+npm verbose stack     at async Arborist.buildIdealTree (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:182:7)
+npm verbose stack     at async CI.exec (C:\Users\kovir\AppData\Local\nvm\v22.19.0\node_modules\npm\lib\commands\ci.js:63:5)
+npm error Invalid Version: 
+npm verbose cwd C:\Users\kovir\OneDrive\Desktop\OLX_CLONE
+npm verbose os Windows_NT 10.0.26200
+npm verbose node v22.19.0
+npm verbose npm  v11.6.2
+npm verbose exit 1
+npm verbose code 1
+npm error A complete log of this run can be found in: C:\Users\kovir\AppData\Local\npm-cache\_logs\2026-06-24T21_00_44_223Z-debug-0.log

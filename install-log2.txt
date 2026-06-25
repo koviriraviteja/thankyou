@@ -1,0 +1,75 @@
+npm verbose cli C:\nvm4w\nodejs\node.exe C:\nvm4w\nodejs\node_modules\npm\bin\npm-cli.js
+npm info using npm@11.6.2
+npm info using node@v22.19.0
+npm verbose title npm install
+npm verbose argv "install" "--loglevel" "verbose"
+npm verbose logfile logs-max:10 dir:C:\Users\kovir\AppData\Local\npm-cache\_logs\2026-06-24T20_57_36_754Z-
+npm verbose logfile C:\Users\kovir\AppData\Local\npm-cache\_logs\2026-06-24T20_57_36_754Z-debug-0.log
+npm verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+npm verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+npm http fetch GET 200 https://registry.npmjs.org/turbo-darwin-64 502ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/turbo-darwin-arm64 404ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/turbo-linux-64 459ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/turbo-linux-arm64 430ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/turbo-windows-arm64 373ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/zod 222ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/js-yaml 152ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/esprima 201ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/semver 231ms (cache miss)
+npm http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 464ms
+npm http cache https://registry.npmjs.org/js-yaml 87ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/metro 587ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz 406ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/semver/-/semver-6.3.1.tgz 477ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/metro-symbolicate 700ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/uuid 261ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/minimatch 318ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/postcss 376ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/js-yaml/-/js-yaml-3.14.2.tgz 848ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/metro-symbolicate/-/metro-symbolicate-0.83.7.tgz 319ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/turbo 999ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/next 1901ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fcli 434ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/metro/-/metro-0.83.7.tgz 8908ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@typescript-eslint%2ftypescript-estree 7879ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@istanbuljs%2fload-nyc-config 52ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fmetro-config 514ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/tailwindcss 1005ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/xcode 253ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@typescript-eslint%2ftype-utils 1244ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@typescript-eslint%2futils 20358ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@typescript-eslint%2fparser 22663ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/babel-plugin-istanbul 39ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo 312ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fconfig-plugins 266ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@typescript-eslint%2feslint-plugin 1209ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@jest%2ftransform 107ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/babel-jest 117ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fprebuild-config 154ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fconfig 455ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-native 404ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-constants 174ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-asset 126ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-auth-session 311ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-linking 334ms (cache miss)
+
+removed 751 packages, changed 5 packages, and audited 1147 packages in 2m
+
+118 packages are looking for funding
+  run `npm fund` for details
+
+27 vulnerabilities (20 moderate, 6 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm verbose cwd C:\Users\kovir\OneDrive\Desktop\OLX_CLONE
+npm verbose os Windows_NT 10.0.26200
+npm verbose node v22.19.0
+npm verbose npm  v11.6.2
+npm verbose exit 0
+npm info ok
