@@ -12,6 +12,8 @@ import { Image } from 'expo-image';
 import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
+import { shadows } from '../../theme/shadows';
+import { radius } from '../../theme/radius';
 import { Button } from './Button';
 
 interface EmptyStateProps {
@@ -41,8 +43,8 @@ export function EmptyState({
       {imageSource ? (
         <Image 
           source={imageSource} 
-          style={{ width: 160, height: 160, marginBottom: spacing.medium }} 
-          contentFit="contain" 
+          style={{ width: 160, height: 160, marginBottom: spacing.medium, borderRadius: radius.xl }} 
+          contentFit="cover" 
         />
       ) : icon ? (
         <View style={styles.iconCircle}>
@@ -75,6 +77,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.large,
   },
+
   title: {
     ...typography.h3,
     color: colors.textPrimary,

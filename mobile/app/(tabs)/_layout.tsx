@@ -40,16 +40,27 @@ export default function TabLayout() {
   const paddingBottom = Math.max(insets.bottom, 8);
   const tabHeight = 56 + paddingBottom;
 
+  const currentTab = segments[segments.length - 1];
+  let fabText = 'Donate';
+  let fabIcon = 'heart';
+
+  if (currentTab === 'community') {
+    if (params.communityMode === 'help') {
+      fabText = 'Help';
+      fabIcon = 'hand-right';
+    } else {
+      fabText = 'Note';
+      fabIcon = 'create';
+    }
+  }
+
   const handleFabPress = () => {
-    const currentTab = segments[segments.length - 1];
     if (currentTab === 'community') {
       if (params.communityMode === 'help') {
         router.push('/create-request');
       } else {
         router.push('/write-note');
       }
-    } else if (currentTab === 'chats') {
-      Alert.alert('New Message', 'Start a new conversation.');
     } else {
       router.push('/(tabs)/post');
     }
@@ -150,9 +161,9 @@ export default function TabLayout() {
           style={styles.fab} 
           onPress={handleFabPress}
         >
-          <Ionicons name="heart" size={26} color={colors.textOnPrimary} />
+          <Ionicons name={fabIcon as any} size={26} color={colors.textOnPrimary} />
         </TouchableOpacity>
-        <Text style={styles.fabText}>Donate</Text>
+        <Text style={styles.fabText}>{fabText}</Text>
       </View>
     </View>
   );

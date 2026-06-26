@@ -166,7 +166,10 @@ export default function CommunityScreen() {
         <View style={styles.toggleContainer}>
           <TouchableOpacity 
             style={[styles.toggleBtn, screenMode === 'gratitude' && styles.toggleBtnActive]}
-            onPress={() => setScreenMode('gratitude')}
+            onPress={() => {
+              setScreenMode('gratitude');
+              router.setParams({ communityMode: 'gratitude' });
+            }}
           >
             <Text style={[styles.toggleText, screenMode === 'gratitude' && styles.toggleTextActive]}>
               🌟 Gratitude
@@ -174,7 +177,10 @@ export default function CommunityScreen() {
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.toggleBtn, screenMode === 'help' && styles.toggleBtnActive]}
-            onPress={() => setScreenMode('help')}
+            onPress={() => {
+              setScreenMode('help');
+              router.setParams({ communityMode: 'help' });
+            }}
           >
             <Text style={[styles.toggleText, screenMode === 'help' && styles.toggleTextActive]}>
               🤝 Help Board
