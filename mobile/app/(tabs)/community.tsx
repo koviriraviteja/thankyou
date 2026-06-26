@@ -11,7 +11,7 @@ import {
   StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
@@ -77,12 +77,16 @@ const MOCK_REQUESTS = [
 ];
 
 export default function CommunityScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   
   const [screenMode, setScreenMode] = useState<ScreenMode>('gratitude');
   const [activeTab, setActiveTab] = useState<GratitudeFilter>('All');
   const [requestTab, setRequestTab] = useState<HelpFilter>('All');
+
+  React.useEffect(() => {
+    router.setParams({ communityMode: screenMode });
+  }, [screenMode]);
 
   const renderNote = ({ item }: { item: typeof MOCK_NOTES[0] }) => (
     <View style={styles.noteCard}>
@@ -227,7 +231,7 @@ export default function CommunityScreen() {
             <View style={styles.ctaContainer}>
               <Button
                 title="Write a ThankU Note"
-                onPress={() => {}}
+                onPress={() => router.push('/write-note')}
                 icon={<Ionicons name="create-outline" size={20} color={colors.textOnPrimary} />}
               />
             </View>

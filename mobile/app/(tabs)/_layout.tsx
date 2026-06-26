@@ -5,23 +5,55 @@
  * Uses ThankU Cyan palette, Ionicons, notification badges.
  */
 
-import { Tabs, router } from 'expo-router';
+import { Tabs, router, useSegments, useGlobalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Platform, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../src/context/ThemeContext';
 import { shadows } from '../../src/theme/shadows';
 import { useNotification } from '../../src/context/NotificationContext';
+
+const TabIcon = ({ name, focused, color, colors }: { name: any, focused: boolean, color: string, colors: any }) => (
+  <View style={[
+    {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 56,
+      height: 32,
+      borderRadius: 16,
+    },
+    { backgroundColor: focused ? colors.highlight : 'transparent' }
+  ]}>
+    <Ionicons name={name} size={22} color={color} />
+  </View>
+);
 
 export default function TabLayout() {
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const { notifications, clearBadge } = useNotification();
   const insets = useSafeAreaInsets();
+  const segments = useSegments();
+  const params = useGlobalSearchParams();
 
   // Dynamically calculate padding and height based on the device's safe area
   const paddingBottom = Math.max(insets.bottom, 8);
   const tabHeight = 56 + paddingBottom;
+
+  const handleFabPress = () => {
+    const currentTab = segments[segments.length - 1];
+    if (currentTab === 'community') {
+      if (params.communityMode === 'help') {
+        router.push('/create-request');
+      } else {
+        router.push('/write-note');
+      }
+    } else if (currentTab === 'chats') {
+      Alert.alert('New Message', 'Start a new conversation.');
+    } else {
+      router.push('/(tabs)/post');
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -35,14 +67,17 @@ export default function TabLayout() {
           paddingBottom: paddingBottom,
           paddingTop: 8,
           backgroundColor: colors.surface,
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          ...shadows.lg,
+          borderTopWidth: 0,
+          elevation: 20,
+          shadowColor: colors.textPrimary,
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 12,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-          marginTop: 2,
+          fontSize: 10,
+          fontWeight: '700',
+          marginTop: 4,
         },
       }}
     >
@@ -51,7 +86,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+            <TabIcon name={focused ? 'home' : 'home-outline'} focused={focused} color={color} colors={colors} />
           ),
         }}
       />
@@ -60,7 +95,7 @@ export default function TabLayout() {
         options={{
           title: 'Community',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
+            <TabIcon name={focused ? 'people' : 'people-outline'} focused={focused} color={color} colors={colors} />
           ),
         }}
       />
@@ -77,12 +112,12 @@ export default function TabLayout() {
           tabBarBadge: notifications.length > 0 ? notifications.length : undefined,
           tabBarBadgeStyle: {
             backgroundColor: colors.gold,
-            color: colors.textPrimary,
+            color: '#FFFFFF',
             fontSize: 10,
             fontWeight: 'bold',
           },
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'} size={22} color={color} />
+            <TabIcon name={focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'} focused={focused} color={color} colors={colors} />
           ),
         }}
         listeners={{
@@ -94,7 +129,7 @@ export default function TabLayout() {
         options={{
           title: 'My Giving',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'heart' : 'heart-outline'} size={22} color={color} />
+            <TabIcon name={focused ? 'heart' : 'heart-outline'} focused={focused} color={color} colors={colors} />
           ),
         }}
       />
@@ -103,26 +138,34 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'person' : 'person-outline'} size={22} color={color} />
+            <TabIcon name={focused ? 'person' : 'person-outline'} focused={focused} color={color} colors={colors} />
           ),
         }}
       />
       </Tabs>
       
-      <TouchableOpacity 
-        style={[styles.fab, { bottom: tabHeight + 20 }]} 
-        onPress={() => router.push('/(tabs)/post')}
-      >
-        <Ionicons name="add" size={32} color={colors.textOnPrimary} />
-      </TouchableOpacity>
+      {/* Main FAB */}
+      <View style={[styles.fabWrapper, { bottom: tabHeight + 20 }]}>
+        <TouchableOpacity 
+          style={styles.fab} 
+          onPress={handleFabPress}
+        >
+          <Ionicons name="heart" size={26} color={colors.textOnPrimary} />
+        </TouchableOpacity>
+        <Text style={styles.fabText}>Donate</Text>
+      </View>
     </View>
   );
 }
 
 const getStyles = (colors: any) => StyleSheet.create({
-  fab: {
+  fabWrapper: {
     position: 'absolute',
     right: 20,
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  fab: {
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -130,5 +173,12 @@ const getStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     ...shadows.lg,
+    marginBottom: 4,
+  },
+  fabText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    textAlign: 'center',
   },
 });

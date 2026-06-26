@@ -40,7 +40,7 @@ const MENU_ITEMS = [
 ];
 
 export default function ProfileScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const { user, logout } = useAuth();
 
@@ -49,6 +49,13 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
+        {/* Background Watermark */}
+        <Image 
+          source={require('../../assets/logo.png')}
+          style={[styles.watermark, { opacity: isDark ? 0.05 : 0.25 }]}
+          pointerEvents="none"
+        />
+
         <View style={styles.loginPrompt}>
           <View style={styles.loginIllustration}>
             <Ionicons name="person-circle-outline" size={80} color={colors.secondary} />
@@ -192,8 +199,21 @@ const getStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  watermark: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [
+      { translateX: -150 },
+      { translateY: -150 }
+    ],
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
+    zIndex: -1,
+  },
 
-  // ─── Login Prompt ────────────────────────────────
+  // ─── Unauthenticated State ────────────────────────────────
   loginPrompt: {
     flex: 1,
     justifyContent: 'center',

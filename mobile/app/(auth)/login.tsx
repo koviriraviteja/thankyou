@@ -7,11 +7,10 @@
  */
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useAuth } from '../../src/context/AuthContext';
 import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
@@ -20,7 +19,7 @@ import { radius } from '../../src/theme/radius';
 import { Button } from '../../src/components/ui/Button';
 
 export default function OnboardingScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const { loginWithGoogle } = useAuth();
 
@@ -35,9 +34,11 @@ export default function OnboardingScreen() {
       <View style={styles.heroSection}>
         {/* Logo & Brand */}
         <View style={styles.logoContainer}>
-          <View style={styles.logoIcon}>
-            <Ionicons name="heart" size={32} color={colors.surface} />
-          </View>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.brandName}>ThankU</Text>
         </View>
 
@@ -45,10 +46,10 @@ export default function OnboardingScreen() {
 
         {/* Illustration */}
         <View style={styles.illustrationContainer}>
-          <Image 
-            source={require('../../assets/images/onboarding-hero.png')} 
-            style={{ width: 280, height: 280 }} 
-            contentFit="contain" 
+          <Image
+            source={require('../../assets/images/onboarding-hero.png')}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode="contain"
           />
         </View>
       </View>
@@ -119,13 +120,9 @@ const getStyles = (colors: any) => StyleSheet.create({
     gap: spacing.tiny,
     marginBottom: spacing.tiny,
   },
-  logoIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.md,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+  logoImage: {
+    width: 56,
+    height: 56,
   },
   brandName: {
     ...typography.h1,
@@ -141,6 +138,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: spacing.medium,
   },
 
 

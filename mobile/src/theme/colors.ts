@@ -1,5 +1,5 @@
 /**
- * ThankU Design System — Color Tokens
+ * ThankU Design System — Color Tokens (High-Contrast Modern)
  * Source of Truth: 03-SPATIAL-DESIGN.md
  *
  * All colors in the app MUST reference these tokens.
@@ -8,56 +8,59 @@
 
 export const colors = {
   // ─── Core Brand ───────────────────────────────────────
-  primary: '#5ED6E3',       // Soft Cyan — Primary actions, active tabs, main branding
-  secondary: '#A8EEF4',     // Muted Cyan — Secondary buttons, subtle highlights
-  accent: '#00B8D4',        // Deep Cyan — Hover states, text links, high-emphasis icons
+  primary: '#0F172A',       // Luxury Midnight Slate — Primary buttons, active tabs
+  secondary: '#5ED6E3',     // Logo Cyan — Secondary accents, badges
+  accent: '#D4AF37',        // Champagne Gold — High-end accents
 
   // ─── Semantic ─────────────────────────────────────────
-  success: '#2ECC71',       // Emerald — Completed pickups, verified states
-  warning: '#F59E0B',       // Amber — Pending actions, expiring time slots
-  error: '#EF4444',         // Soft Red — ONLY for destructive actions (Delete, Report)
-  info: '#3B82F6',          // Calm Blue — Tooltips, neutral information
+  success: '#059669',       // Deep Emerald
+  warning: '#D97706',       // Deep Amber
+  error: '#DC2626',         // Classic Red
+  info: '#2563EB',          // Royal Blue
 
   // ─── Emotional / Brand Accent ─────────────────────────
-  gold: '#FFD166',          // Gratitude Gold — Gratitude Wall, Applaud, Leaderboard crowns
-  coral: '#FFB4A2',         // Kindness Coral — Human warmth, heart icons, empathy UI
-  purple: '#8B8CF7',        // Community Purple — Local Hero badges, milestones
+  gold: '#D4AF37',          // Champagne Gold
+  coral: '#E17055',         // Soft Terracotta
+  purple: '#6D28D9',        // Deep Royal Purple
 
   // ─── Surfaces ─────────────────────────────────────────
-  background: '#F6FEFF',    // Icy White — Absolute base layer
-  surface: '#FFFFFF',       // Pure White — Cards, modals, bottom sheets
-  highlight: '#DDFBFF',     // Ultra-light Cyan — Selected states, active list items
+  background: '#FAFAFA',    // Ultra-light Platinum Gray — High-end background
+  surface: '#FFFFFF',       // Pure White — Cards, modals
+  highlight: '#F1F5F9',     // Slate 100 — Selected states
 
   // ─── Text ─────────────────────────────────────────────
-  textPrimary: '#111827',   // Deep Slate — Headings, core body text. Never use #000
-  textSecondary: '#6B7280', // Cool Gray — Metadata, timestamps, placeholders
-  textDisabled: '#9CA3AF',  // Light Gray — Disabled buttons, empty states
-  textOnPrimary: '#111827', // Dark Slate on Cyan buttons — WCAG AA compliance
+  textPrimary: '#111827',   // Deep Slate — Headings, core body text
+  textSecondary: '#6B7280', // Cool Gray — Metadata, timestamps
+  textDisabled: '#9CA3AF',  // Light Gray — Disabled buttons
+  textOnPrimary: '#FFFFFF', // Pure White on Midnight Slate buttons
 
   // ─── Borders ──────────────────────────────────────────
-  border: '#E6F7FA',        // Soft Cyan tint — Default card & input borders
-  borderStrong: '#B0E8F0',  // Slightly stronger for focus states
+  border: '#E5E7EB',        // Crisp Platinum — Default card borders
+  borderStrong: '#D1D5DB',  // Slate 300
   divider: '#F3F4F6',       // Section dividers
 
   // ─── Overlays ─────────────────────────────────────────
-  overlay: 'rgba(0, 0, 0, 0.5)',
-  overlayLight: 'rgba(0, 0, 0, 0.3)',
+  overlay: 'rgba(10, 12, 16, 0.6)',
+  overlayLight: 'rgba(10, 12, 16, 0.3)',
 } as const;
 
-// ─── Dark Mode Tokens ─────────────────────────────────────
+// ─── Dark Mode Tokens (Linear Inspired) ───────────────────
 export const darkColors = {
   ...colors,
-  background: '#1E293B',    // Navy
-  surface: '#293851',       // Slightly lighter
-  highlight: '#334563',
-  textPrimary: '#F9FAFB',
-  textSecondary: '#D1D5DB',
-  textDisabled: '#6B7280',
-  textOnPrimary: '#111827',
-  border: '#3A4B6B',
-  borderStrong: '#4B638A',
-  divider: '#334155',
-  overlay: 'rgba(0, 0, 0, 0.7)',
+  primary: '#00E5FF',       // Neon Cyan — High-contrast for dark mode
+  secondary: '#00B8D4',     // Deep Cyan
+  accent: '#1DE9B6',        // Vibrant Teal
+  background: '#0A0C10',    // Ultra Deep Slate / Midnight
+  surface: '#111827',       // Dark Slate — Cards, modals
+  highlight: '#1F2937',     // Elevated Slate
+  textPrimary: '#F9FAFB',   // Pure White text
+  textSecondary: '#9CA3AF', // Muted Gray
+  textDisabled: '#4B5563',  // Dark Gray
+  textOnPrimary: '#0A0C10', // Dark Slate on Neon buttons
+  border: '#1F2937',        // Subtle dark borders
+  borderStrong: '#374151',  // Stronger dark borders
+  divider: '#111827',       // Section dividers
+  overlay: 'rgba(0, 0, 0, 0.8)',
   overlayLight: 'rgba(0, 0, 0, 0.5)',
 } as const;
 

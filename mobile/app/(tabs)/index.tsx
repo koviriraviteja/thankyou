@@ -14,6 +14,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import * as Location from 'expo-location';
@@ -28,24 +29,24 @@ import { DonationCard } from '../../src/components/ui/Card';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 
 const CATEGORIES = [
-  { id: '1', name: 'Furniture', icon: 'bed-outline' },
-  { id: '2', name: 'Electronics', icon: 'tv-outline' },
-  { id: '3', name: 'Books', icon: 'book-outline' },
-  { id: '4', name: 'Clothing', icon: 'shirt-outline' },
-  { id: '5', name: 'Toys', icon: 'happy-outline' },
-  { id: '6', name: 'Kitchen', icon: 'restaurant-outline' },
-  { id: '7', name: 'Sports', icon: 'football-outline' },
-  { id: '8', name: 'Medical', icon: 'medkit-outline' },
-  { id: '9', name: 'Nature/Plants', icon: 'leaf-outline' },
-  { id: '10', name: 'Food', icon: 'nutrition-outline' },
-  { id: '11', name: 'Miscellaneous', icon: 'cube-outline' },
+  { id: '1', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
+  { id: '2', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
+  { id: '3', name: 'Books', image: require('../../assets/images/categories/books.png') },
+  { id: '4', name: 'Clothing', image: require('../../assets/images/categories/clothing.png') },
+  { id: '5', name: 'Toys', image: require('../../assets/images/categories/toys.png') },
+  { id: '6', name: 'Kitchen', image: require('../../assets/images/categories/kitchen.png') },
+  { id: '7', name: 'Sports', image: require('../../assets/images/categories/sports.png') },
+  { id: '8', name: 'Medical', image: require('../../assets/images/categories/medical.png') },
+  { id: '9', name: 'Nature/Plants', image: require('../../assets/images/categories/plants.png') },
+  { id: '10', name: 'Food', image: require('../../assets/images/categories/food.png') },
+  { id: '11', name: 'Miscellaneous', image: require('../../assets/images/categories/misc.png') },
 ];
 
 const DISTANCE_FILTERS = ['1 km', '5 km', '10 km', '20 km'];
 const CONDITION_FILTERS = ['All', 'New', 'Like New', 'Good', 'Used'];
 
 export default function HomeFeedScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -187,7 +188,11 @@ export default function HomeFeedScreen() {
       </View>
 
       {/* Promotional Banner */}
-      <View style={styles.bannerContainer}>
+      <LinearGradient 
+        colors={[colors.primary, colors.secondary]}
+        start={{x: 0, y: 0}} end={{x: 1, y: 1}}
+        style={styles.bannerContainer}
+      >
         <Text style={styles.bannerSubtitle}>❤️  Spread Kindness</Text>
         <Text style={styles.bannerTitle}>Give Freely.{'\n'}Help Genuinely.</Text>
         <TouchableOpacity style={styles.bannerBtn} onPress={() => router.push('/(tabs)/post')}>
@@ -198,14 +203,18 @@ export default function HomeFeedScreen() {
           source={require('../../assets/images/banner-illustration.png')} 
           style={styles.bannerImage} 
         />
-      </View>
+      </LinearGradient>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TouchableOpacity style={styles.searchBar} onPress={() => router.push('/search')}>
-          <View style={styles.searchAiBadge}>
+          <LinearGradient 
+            colors={[colors.accent, colors.primary]} 
+            start={{x: 0, y: 0}} end={{x: 1, y: 1}} 
+            style={styles.searchAiBadge}
+          >
             <Text style={styles.searchAiText}>AI</Text>
-          </View>
+          </LinearGradient>
           <Ionicons name="search" size={20} color={colors.primary} />
           <Text style={styles.searchPlaceholder}>Search cars, phones, furniture...</Text>
           <Ionicons name="mic-outline" size={20} color={colors.textSecondary} />
@@ -230,11 +239,7 @@ export default function HomeFeedScreen() {
                 onPress={() => setSelectedCategory(isSelected ? null : cat.name)}
               >
                 <View style={[styles.categoryIcon, isSelected && styles.categoryIconActive]}>
-                  <Ionicons
-                    name={cat.icon as any}
-                    size={28}
-                    color={isSelected ? colors.surface : colors.primary}
-                  />
+                  <Image source={cat.image} style={styles.categoryImage} />
                 </View>
                 <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
                   {cat.name}
@@ -261,7 +266,9 @@ export default function HomeFeedScreen() {
 
   const renderFooter = () => (
     <View style={styles.promoContainer}>
-      <Text style={styles.promoLabel}>Sponsored / Promotions</Text>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Sponsored / Promotions</Text>
+      </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.adsScroll}>
         
         {/* Column 1 */}
@@ -337,6 +344,12 @@ export default function HomeFeedScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <Image 
+        source={require('../../assets/logo.png')}
+        style={[styles.watermark, { opacity: isDark ? 0.05 : 0.25 }]}
+        pointerEvents="none"
+      />
+
       {/* Feed */}
       {loading && !refreshing ? (
         <View style={styles.loadingContainer}>
@@ -390,6 +403,20 @@ export default function HomeFeedScreen() {
           )}
         />
       )}
+
+      {/* Local Food Category Shortcut (Only on Home Page) */}
+      <View style={styles.foodFabWrapper}>
+        <TouchableOpacity 
+          style={[styles.foodFab, selectedCategory === 'Food' && styles.foodFabActive]} 
+          onPress={() => setSelectedCategory(selectedCategory === 'Food' ? null : 'Food')}
+        >
+          <Image 
+            source={require('../../assets/images/categories/food.png')} 
+            style={{ width: '100%', height: '100%', resizeMode: 'cover' }} 
+          />
+        </TouchableOpacity>
+        <Text style={styles.foodFabText}>Food</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -398,6 +425,49 @@ const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  watermark: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [
+      { translateX: -150 },
+      { translateY: -150 }
+    ],
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
+    zIndex: -1,
+  },
+  foodFabWrapper: {
+    position: 'absolute',
+    right: 20, // Align exactly with the 60px main FAB
+    bottom: 96, // Sit above the main FAB
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  foodFab: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.md,
+    marginBottom: 4,
+  },
+  foodFabActive: {
+    borderColor: colors.primary,
+    borderWidth: 2,
+  },
+  foodFabText: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 
   // ─── Header ──────────────────────────────────────
@@ -460,7 +530,6 @@ const getStyles = (colors: any) => StyleSheet.create({
   // ─── Banner ──────────────────────────────────────
   bannerContainer: {
     marginHorizontal: spacing.medium,
-    backgroundColor: colors.primary,
     borderRadius: radius.xl,
     padding: spacing.medium,
     position: 'relative',
@@ -563,13 +632,12 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...shadows.sm,
   },
   searchAiBadge: {
-    backgroundColor: colors.highlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: radius.sm,
   },
   searchAiText: {
-    color: colors.primary,
+    color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 12,
   },
@@ -607,6 +675,10 @@ const getStyles = (colors: any) => StyleSheet.create({
   categoryScroll: {
     paddingHorizontal: spacing.medium,
     gap: spacing.medium,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start',
+    height: 230, // Forces items to wrap after 2 rows
   },
   categoryItem: {
     alignItems: 'center',
@@ -615,15 +687,24 @@ const getStyles = (colors: any) => StyleSheet.create({
   categoryIcon: {
     width: 64,
     height: 64,
-    borderRadius: 20, // Soft rounded squares
+    borderRadius: 24, // Soft rounded squares
     backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.tiny,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
     ...shadows.sm,
   },
   categoryIconActive: {
-    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+    borderWidth: 2,
+  },
+  categoryImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   categoryName: {
     ...typography.caption,
@@ -680,14 +761,6 @@ const getStyles = (colors: any) => StyleSheet.create({
     paddingTop: spacing.large,
     paddingBottom: spacing.xxl,
   },
-  promoLabel: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginBottom: spacing.tiny,
-    paddingHorizontal: spacing.medium,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
   adsScroll: {
     paddingHorizontal: spacing.medium,
     gap: spacing.medium,
@@ -699,6 +772,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
     width: 280,
+    height: 270, // Enforce fixed height so rows align perfectly
     overflow: 'hidden',
     ...shadows.sm,
   },
@@ -709,6 +783,8 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   adContent: {
     padding: spacing.medium,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   adTitle: {
     ...typography.body,

@@ -240,7 +240,8 @@ export default function ProductDetailsScreen() {
           </Text>
         </View>
 
-        <View style={{ height: 120 }} />
+        {/* Spacer for Bottom Bar */}
+        <View style={{ height: 180 }} />
       </ScrollView>
 
       {/* Bottom Action Bar */}
@@ -411,6 +412,8 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...typography.body,
     color: colors.textSecondary,
     lineHeight: 24,
+    textAlign: 'left',
+    flexWrap: 'wrap',
   },
 
   // ─── Donor ───────────────────────────────────────

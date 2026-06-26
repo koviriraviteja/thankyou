@@ -26,7 +26,7 @@ import { EmptyState } from '../../src/components/ui/EmptyState';
 type ActiveTab = 'DONATIONS' | 'FAVORITES';
 
 export default function MyAdsScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>('DONATIONS');
@@ -176,7 +176,6 @@ export default function MyAdsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Giving</Text>
       </View>
@@ -210,7 +209,7 @@ export default function MyAdsScreen() {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <EmptyState
-              imageSource={require('../../assets/images/empty-state.png')}
+              imageSource={require('../../assets/images/givings_empty.png')}
               title="No donations yet"
               body="You haven't posted any items yet. Start sharing and make someone's day!"
               ctaTitle="Donate Your First Item"
@@ -227,7 +226,7 @@ export default function MyAdsScreen() {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <EmptyState
-              imageSource={require('../../assets/images/empty-state.png')}
+              imageSource={require('../../assets/images/givings_empty.png')}
               title="No saved items"
               body="Items you love will appear here. Start exploring!"
               ctaTitle="Explore Items"

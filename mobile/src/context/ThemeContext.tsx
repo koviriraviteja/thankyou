@@ -10,14 +10,14 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'light',
-  colors: lightColors,
-  isDark: false,
+  theme: 'dark',
+  colors: darkColors as unknown as ColorTokens,
+  isDark: true,
   setTheme: () => {},
 });
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<ColorSchemeName>('light');
+  const [theme, setTheme] = useState<ColorSchemeName>('dark');
 
 
   const isDark = theme === 'dark';

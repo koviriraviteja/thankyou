@@ -8,18 +8,20 @@ import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { shadows } from '../src/theme/shadows';
 
+import { Image } from 'react-native';
+
 const CATEGORIES = [
-  { id: '1', name: 'Furniture', icon: 'bed-outline' },
-  { id: '2', name: 'Electronics', icon: 'tv-outline' },
-  { id: '3', name: 'Books', icon: 'book-outline' },
-  { id: '4', name: 'Clothing', icon: 'shirt-outline' },
-  { id: '5', name: 'Toys', icon: 'happy-outline' },
-  { id: '6', name: 'Kitchen', icon: 'restaurant-outline' },
-  { id: '7', name: 'Sports', icon: 'football-outline' },
-  { id: '8', name: 'Medical', icon: 'medkit-outline' },
-  { id: '9', name: 'Nature/Plants', icon: 'leaf-outline' },
-  { id: '10', name: 'Food', icon: 'nutrition-outline' },
-  { id: '11', name: 'Miscellaneous', icon: 'cube-outline' },
+  { id: '1', name: 'Furniture', image: require('../assets/images/categories/furniture.png') },
+  { id: '2', name: 'Electronics', image: require('../assets/images/categories/electronics.png') },
+  { id: '3', name: 'Books', image: require('../assets/images/categories/books.png') },
+  { id: '4', name: 'Clothing', image: require('../assets/images/categories/clothing.png') },
+  { id: '5', name: 'Toys', image: require('../assets/images/categories/toys.png') },
+  { id: '6', name: 'Kitchen', image: require('../assets/images/categories/kitchen.png') },
+  { id: '7', name: 'Sports', image: require('../assets/images/categories/sports.png') },
+  { id: '8', name: 'Medical', image: require('../assets/images/categories/medical.png') },
+  { id: '9', name: 'Nature/Plants', image: require('../assets/images/categories/plants.png') },
+  { id: '10', name: 'Food', image: require('../assets/images/categories/food.png') },
+  { id: '11', name: 'Miscellaneous', image: require('../assets/images/categories/misc.png') },
 ];
 
 export default function CategoriesScreen() {
@@ -57,7 +59,7 @@ export default function CategoriesScreen() {
             onPress={() => handleCategoryPress(item.name)}
           >
             <View style={styles.iconContainer}>
-              <Ionicons name={item.icon as any} size={32} color={colors.primary} />
+              <Image source={item.image} style={styles.categoryImage} />
             </View>
             <Text style={styles.categoryName} numberOfLines={2} adjustsFontSizeToFit>
               {item.name}
@@ -115,7 +117,13 @@ const getStyles = (colors: any) => StyleSheet.create({
     marginBottom: spacing.small,
     borderWidth: 1,
     borderColor: colors.border,
+    overflow: 'hidden',
     ...shadows.sm,
+  },
+  categoryImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   categoryName: {
     ...typography.caption,

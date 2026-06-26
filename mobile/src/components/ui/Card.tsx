@@ -110,6 +110,8 @@ const getStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.md,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
     ...shadows.sm,
     marginBottom: spacing.small,
   },
@@ -162,7 +164,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: spacing.micro,
     fontWeight: '600',
-    height: 38,
+    minHeight: 44, // 2 lines of bodySmall (lineHeight ~22.4)
   },
   priceRow: {
     flexDirection: 'row',

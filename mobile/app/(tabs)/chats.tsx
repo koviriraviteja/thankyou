@@ -21,7 +21,7 @@ import { radius } from '../../src/theme/radius';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 
 export default function ChatsScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const { user } = useAuth();
   const [chats, setChats] = useState<any[]>([]);
@@ -90,7 +90,7 @@ export default function ChatsScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <EmptyState
-            imageSource={require('../../assets/images/empty-state.png')}
+            imageSource={require('../../assets/images/messages_empty.png')}
             title="No messages yet"
             body="When you message someone about an item, your conversations will appear here."
             ctaTitle="Browse Items"

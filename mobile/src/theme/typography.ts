@@ -1,5 +1,5 @@
 /**
- * ThankU Design System — Typography Tokens
+ * ThankU Design System — Typography Tokens (High-Contrast Modern)
  * Source of Truth: 03-SPATIAL-DESIGN.md
  *
  * Font: Plus Jakarta Sans (bundled via expo-font)
@@ -24,12 +24,12 @@ export const fontFamilyFallback = {
 } as const;
 
 export const typography = {
-  /** 48px Bold — Impact metrics ("124 kg") */
+  /** 48px Bold — Impact metrics ("124 kg"). Tighter tracking for modern feel. */
   display: {
     fontFamily: fontFamily.bold,
     fontSize: 48,
     lineHeight: 48 * 1.1,
-    letterSpacing: -0.02 * 48,
+    letterSpacing: -0.04 * 48, // Tighter tracking
     fontWeight: '700',
   } as TextStyle,
 
@@ -38,7 +38,7 @@ export const typography = {
     fontFamily: fontFamily.bold,
     fontSize: 32,
     lineHeight: 32 * 1.2,
-    letterSpacing: -0.01 * 32,
+    letterSpacing: -0.03 * 32, // Sleek, editorial tracking
     fontWeight: '700',
   } as TextStyle,
 
@@ -47,6 +47,7 @@ export const typography = {
     fontFamily: fontFamily.semiBold,
     fontSize: 24,
     lineHeight: 24 * 1.3,
+    letterSpacing: -0.02 * 24,
     fontWeight: '600',
   } as TextStyle,
 
@@ -55,6 +56,7 @@ export const typography = {
     fontFamily: fontFamily.semiBold,
     fontSize: 18,
     lineHeight: 18 * 1.4,
+    letterSpacing: -0.01 * 18,
     fontWeight: '600',
   } as TextStyle,
 
@@ -62,7 +64,8 @@ export const typography = {
   body: {
     fontFamily: fontFamily.regular,
     fontSize: 16,
-    lineHeight: 16 * 1.5,
+    lineHeight: 16 * 1.6, // Slightly taller line height for breathing room
+    letterSpacing: 0,
     fontWeight: '400',
   } as TextStyle,
 
@@ -70,7 +73,8 @@ export const typography = {
   bodySmall: {
     fontFamily: fontFamily.medium,
     fontSize: 14,
-    lineHeight: 14 * 1.5,
+    lineHeight: 14 * 1.6,
+    letterSpacing: 0,
     fontWeight: '500',
   } as TextStyle,
 
@@ -79,7 +83,7 @@ export const typography = {
     fontFamily: fontFamily.semiBold,
     fontSize: 16,
     lineHeight: 16 * 1.0,
-    letterSpacing: 0.02 * 16,
+    letterSpacing: 0.03 * 16, // Slightly more tracked out for buttons
     fontWeight: '600',
   } as TextStyle,
 
@@ -88,7 +92,7 @@ export const typography = {
     fontFamily: fontFamily.medium,
     fontSize: 12,
     lineHeight: 12 * 1.4,
-    letterSpacing: 0.02 * 12,
+    letterSpacing: 0.04 * 12, // Technical, precise caption tracking
     fontWeight: '500',
   } as TextStyle,
 } as const;

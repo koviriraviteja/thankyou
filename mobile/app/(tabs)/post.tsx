@@ -32,7 +32,7 @@ const CONDITIONS = ['New', 'Like New', 'Good', 'Used'];
 const TRANSPORT_TAGS = ['Fits in a bag', 'Fits in a sedan', 'Needs a truck'];
 
 export default function PostAdScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const styles = getStyles(colors);
   const { user } = useAuth();
   const [step, setStep] = useState(1);
@@ -336,7 +336,7 @@ export default function PostAdScreen() {
 const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
