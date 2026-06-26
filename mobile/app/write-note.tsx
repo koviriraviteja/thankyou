@@ -117,11 +117,13 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...typography.h1,
     color: colors.textPrimary,
     marginBottom: spacing.tiny,
+    textAlign: 'center',
   },
   subtitle: {
     ...typography.body,
     color: colors.textSecondary,
     marginBottom: spacing.xl,
+    textAlign: 'center',
   },
   ratingSection: {
     marginBottom: spacing.large,

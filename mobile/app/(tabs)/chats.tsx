@@ -92,7 +92,7 @@ export default function ChatsScreen() {
           <EmptyState
             imageSource={require('../../assets/images/messages_empty.png')}
             title="No messages yet"
-            body="When you message someone about an item, your conversations will appear here."
+            body="When you message someone or receive a message, it will appear here."
             ctaTitle="Browse Items"
             onCtaPress={() => router.push('/(tabs)/')}
           />

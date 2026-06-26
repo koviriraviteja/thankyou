@@ -52,8 +52,7 @@ export default function ProfileScreen() {
         {/* Background Watermark */}
         <Image 
           source={require('../../assets/logo.png')}
-          style={[styles.watermark, { opacity: isDark ? 0.05 : 0.25 }]}
-          pointerEvents="none"
+          style={[styles.watermark as any, { opacity: isDark ? 0.05 : 0.25 }]}
         />
 
         <View style={styles.loginPrompt}>
@@ -82,7 +81,7 @@ export default function ProfileScreen() {
         <View style={styles.profileHeader}>
           <View style={styles.avatarSection}>
             {user.user_metadata?.avatar_url ? (
-              <Image source={{ uri: user.user_metadata.avatar_url }} style={styles.avatar} />
+              <Image source={{ uri: user.user_metadata.avatar_url }} style={styles.avatar as any} />
             ) : (
               <View style={styles.avatar}>
                 <Ionicons name="person" size={36} color={colors.surface} />

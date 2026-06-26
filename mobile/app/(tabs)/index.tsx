@@ -201,7 +201,7 @@ export default function HomeFeedScreen() {
         </TouchableOpacity>
         <Image 
           source={require('../../assets/images/banner-illustration.png')} 
-          style={styles.bannerImage} 
+          style={styles.bannerImage as any} 
         />
       </LinearGradient>
 
@@ -239,7 +239,7 @@ export default function HomeFeedScreen() {
                 onPress={() => setSelectedCategory(isSelected ? null : cat.name)}
               >
                 <View style={[styles.categoryIcon, isSelected && styles.categoryIconActive]}>
-                  <Image source={cat.image} style={styles.categoryImage} />
+                  <Image source={cat.image} style={styles.categoryImage as any} />
                 </View>
                 <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
                   {cat.name}
@@ -276,7 +276,7 @@ export default function HomeFeedScreen() {
           <View style={styles.adCard}>
             <Image 
               source={{ uri: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia} 
+              style={styles.adMedia as any} 
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Summer Sale Extravaganza</Text>
@@ -290,7 +290,7 @@ export default function HomeFeedScreen() {
           <View style={styles.adCard}>
             <Image 
               source={{ uri: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia} 
+              style={styles.adMedia as any} 
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Tech Gadgets</Text>
@@ -326,7 +326,7 @@ export default function HomeFeedScreen() {
           <View style={styles.adCard}>
             <Image 
               source={{ uri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia} 
+              style={styles.adMedia as any} 
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Sneaker Drops</Text>
@@ -346,8 +346,7 @@ export default function HomeFeedScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <Image 
         source={require('../../assets/logo.png')}
-        style={[styles.watermark, { opacity: isDark ? 0.05 : 0.25 }]}
-        pointerEvents="none"
+        style={[styles.watermark as any, { opacity: isDark ? 0.05 : 0.25 }]}
       />
 
       {/* Feed */}
@@ -412,7 +411,7 @@ export default function HomeFeedScreen() {
         >
           <Image 
             source={require('../../assets/images/categories/food.png')} 
-            style={{ width: '100%', height: '100%', resizeMode: 'cover' }} 
+            style={{ width: '100%', height: '100%', resizeMode: 'cover' } as any} 
           />
         </TouchableOpacity>
         <Text style={styles.foodFabText}>Food</Text>

@@ -21,12 +21,12 @@ import { radius } from '../src/theme/radius';
 import { shadows } from '../src/theme/shadows';
 
 const POPULAR_CITIES = [
-  { name: 'Mumbai', image: require('../assets/logo.png') },
-  { name: 'Delhi', image: require('../assets/logo.png') },
-  { name: 'Bangalore', image: require('../assets/logo.png') },
-  { name: 'Hyderabad', image: require('../assets/logo.png') },
-  { name: 'Ahmedabad', image: require('../assets/logo.png') },
-  { name: 'Chennai', image: require('../assets/logo.png') },
+  { name: 'Mumbai', image: require('../assets/images/city-mumbai-dark.png') },
+  { name: 'Delhi', image: require('../assets/images/city-delhi-dark.png') },
+  { name: 'Bangalore', image: require('../assets/images/city-bangalore-dark.png') },
+  { name: 'Hyderabad', image: require('../assets/images/city-hyderabad-dark.png') },
+  { name: 'Ahmedabad', image: require('../assets/images/city-ahmedabad-dark.png') },
+  { name: 'Chennai', image: require('../assets/images/city-chennai-dark.png') },
 ];
 
 const STATES_DATA = [
@@ -204,7 +204,13 @@ export default function LocationScreen() {
                         {POPULAR_CITIES.map(city => (
                           <TouchableOpacity key={city.name} style={styles.gridItem} onPress={() => handleSelect(city.name)}>
                             <View style={[styles.cityIconCircle, { padding: 0, overflow: 'hidden' }]}>
-                              <Image source={city.image} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                              <Image 
+                                source={city.image} 
+                                style={[
+                                  { width: '100%', height: '100%', resizeMode: 'cover' },
+                                  city.name === 'Chennai' && { transform: [{ scale: 1.25 }] }
+                                ]} 
+                              />
                             </View>
                             <Text style={styles.gridText}>{city.name}</Text>
                           </TouchableOpacity>
