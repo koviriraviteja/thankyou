@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThankU App Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            font-family: monospace;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .category-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        .category-card h3 {
+            margin-top: 0;
+            color: #2980b9;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .category-card ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #e74c3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ThankU App: Categories & Upload Mechanics</h1>
+
+    <div class="section">
+        <h2>1. Item Upload Procedure</h2>
+        <p>Below is the step-by-step procedure of how an item is posted:</p>
+
+        <ol>
+            <li><strong>Step 1: Category Selection:</strong> The user selects a single top-level category from the list.</li>
+            <li><strong>Step 2: Form Details:</strong> 
+                <ul>
+                    <li>Location is auto-detected via GPS.</li>
+                    <li>Up to 4 images can be selected from the user's device.</li>
+                    <li>Text details (Title, Description, Condition, Transportation) are filled out.</li>
+                </ul>
+            </li>
+            <li><strong>Image Processing & Storage:</strong> 
+                <p>The app processes the selected images and securely uploads them to the cloud storage system under a unique user folder.</p>
+            </li>
+            <li><strong>Record Creation:</strong>
+                <p>Once all images are successfully uploaded, a new public listing record is created in the main database containing all the item's details.</p>
+            </li>
+        </ol>
+
+        <h3>Information Saved for Each Item</h3>
+        <ul>
+            <li><strong>Title:</strong> The name of the item.</li>
+            <li><strong>Description:</strong> Additional details provided by the user.</li>
+            <li><strong>Price:</strong> Always set to "Free".</li>
+            <li><strong>Location:</strong> The city or neighborhood name.</li>
+            <li><strong>GPS Coordinates:</strong> Exact latitude and longitude for mapping.</li>
+            <li><strong>Category:</strong> The main classification of the item.</li>
+            <li><strong>Condition:</strong> The physical state of the item (e.g., Good, New).</li>
+            <li><strong>Transportation:</strong> How the item can be moved (e.g., fits in a car).</li>
+            <li><strong>Images:</strong> The main cover photo and all additional photos.</li>
+            <li><strong>User Details:</strong> A secure link to the profile of the person donating.</li>
+            <li><strong>Expiry Time:</strong> Specifically for food items, indicating how long it is safe to consume.</li>
+        </ul>
+
+    </div>
+
+    <div class="section">
+        <h2>2. Master Category & Subtypes List</h2>
+        <p>Currently, the app only supports 11 hardcoded top-level categories with <strong>no subtypes</strong>. Below is the proposed comprehensive list of subtypes that should be implemented dynamically via a database (e.g., Supabase <code>categories</code> table).</p>
+
+        <div class="category-grid">
+            
+            <div class="category-card">
+                <h3>🛏️ Furniture</h3>
+                <ul>
+                    <li>Seating (Sofas, Chairs, Recliners)</li>
+                    <li>Tables (Dining, Coffee, Desks)</li>
+                    <li>Storage (Wardrobes, Cabinets)</li>
+                    <li>Beds & Mattresses</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>📺 Electronics</h3>
+                <ul>
+                    <li>Mobile & Accessories</li>
+                    <li>Computers & Laptops</li>
+                    <li>Home Appliances (ACs, Washers)</li>
+                    <li>Entertainment (TVs, Gaming)</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>📚 Books</h3>
+                <ul>
+                    <li>Educational & Textbooks</li>
+                    <li>Fiction</li>
+                    <li>Non-Fiction</li>
+                    <li>Children's Books & Comics</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>👕 Clothing</h3>
+                <ul>
+                    <li>Men's Wear</li>
+                    <li>Women's Wear</li>
+                    <li>Kids & Babies</li>
+                    <li>Accessories & Footwear</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>🧸 Toys</h3>
+                <ul>
+                    <li>Infant/Toddler Play</li>
+                    <li>Action Figures & Dolls</li>
+                    <li>Educational & Puzzles</li>
+                    <li>Outdoor (Bicycles, Ride-ons)</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>🍳 Kitchen</h3>
+                <ul>
+                    <li>Cookware</li>
+                    <li>Tableware</li>
+                    <li>Storage Containers</li>
+                    <li>Small Appliances</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>⚽ Sports</h3>
+                <ul>
+                    <li>Fitness Gear (Dumbbells, Mats)</li>
+                    <li>Racket Sports</li>
+                    <li>Team Sports</li>
+                    <li>Outdoor & Camping Gear</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>🩺 Medical</h3>
+                <ul>
+                    <li>Monitoring Devices (Oximeters)</li>
+                    <li>Mobility Aids (Wheelchairs)</li>
+                    <li>Supplies (First Aid Kits)</li>
+                    <li>Support & Braces</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>🌿 Nature/Plants</h3>
+                <ul>
+                    <li>Indoor Plants</li>
+                    <li>Outdoor/Garden Plants</li>
+                    <li>Supplies (Planters, Soil)</li>
+                    <li>Seeds & Cuttings</li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h3>🍎 Food</h3>
+                <ul>
+                    <li><strong>Cooked/Event Leftovers (Time Sensitive)</strong></li>
+                    <li>Fresh Vegetables & Fruits</li>
+                    <li>Non-Perishables (Canned, Grains)</li>
+                    <li>Packaged Snacks</li>
+                    <li>Beverages</li>
+                </ul>
+                <p style="font-size: 0.9em; color: #e74c3c; margin-top: 10px;">
+                    <em>Note: The main concept for Food includes donating leftover cooked food from home functions or events. This requires a "Consume By" or expiry time field due to its highly time-sensitive nature.</em>
+                </p>
+            </div>
+
+            <div class="category-card">
+                <h3>📦 Miscellaneous (Other)</h3>
+                <ul>
+                    <li>Art & Craft Supplies</li>
+                    <li>Musical Instruments</li>
+                    <li>Pet Supplies</li>
+                    <li>Stationery</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
