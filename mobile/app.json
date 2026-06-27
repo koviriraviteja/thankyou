@@ -42,8 +42,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "170b1fb5-a886-4dec-a487-f64bffc3e8d0"
+        "projectId": "f90b4b9f-2539-49ed-b974-1d2b766ba686"
       }
-    }
+    },
+    "owner": "ravitejakoviri"
   }
 }
