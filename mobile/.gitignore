@@ -1,0 +1,23 @@
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+# Android/iOS native code (Expo managed workflow ignores these)
+android/
+ios/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
