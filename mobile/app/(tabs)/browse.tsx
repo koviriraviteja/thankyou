@@ -8,15 +8,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 const CATEGORIES = [
-  { id: '1', name: 'Electronics', image: require('../assets/images/categories/electronics.png') },
-  { id: '2', name: 'Home & Kitchen', image: require('../assets/images/categories/kitchen.png') },
-  { id: '3', name: 'Books & Stationery', image: require('../assets/images/categories/books.png') },
-  { id: '4', name: 'Furniture', image: require('../assets/images/categories/furniture.png') },
-  { id: '5', name: 'Fashion & Accessories', image: require('../assets/images/categories/clothing.png') },
-  { id: '6', name: 'Sports & Fitness', image: require('../assets/images/categories/sports.png') },
-  { id: '7', name: 'Kids & Toys', image: require('../assets/images/categories/toys.png') },
-  { id: '8', name: 'Vehicles', image: require('../assets/images/categories/medical.png') }, 
-  { id: '9', name: 'Others', image: require('../assets/images/categories/misc.png') },
+  { id: '1', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
+  { id: '2', name: 'Home & Kitchen', image: require('../../assets/images/categories/kitchen.png') },
+  { id: '3', name: 'Books & Stationery', image: require('../../assets/images/categories/books.png') },
+  { id: '4', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
+  { id: '5', name: 'Fashion & Accessories', image: require('../../assets/images/categories/clothing.png') },
+  { id: '6', name: 'Sports & Fitness', image: require('../../assets/images/categories/sports.png') },
+  { id: '7', name: 'Kids & Toys', image: require('../../assets/images/categories/toys.png') },
+  { id: '8', name: 'Vehicles', image: require('../../assets/images/categories/medical.png') }, 
+  { id: '9', name: 'Others', image: require('../../assets/images/categories/misc.png') },
 ];
 
 export default function CategoriesScreen() {
@@ -50,7 +50,7 @@ export default function CategoriesScreen() {
           </TouchableOpacity>
         </View>
         <Image 
-          source={require('../assets/images/onboarding-hero.png')} 
+          source={require('../../assets/images/onboarding-hero.png')} 
           style={styles.promoImage} 
           resizeMode="contain" 
         />
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     color: '#1C1C1E',
   },
   listContent: {
-    padding: 20,
+    padding: 16,
     paddingBottom: 40,
   },
   row: {

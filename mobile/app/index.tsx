@@ -1,81 +1,77 @@
+/**
+ * ThankU — Initial Router
+ * 
+ * Flow:
+ * - First time ever opening app → Onboarding splash screens
+ * - Returning user (logged in) → Home directly
+ * - Returning user (not logged in, already seen onboarding) → Phone login
+ */
+
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated, Image } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../src/context/AuthContext';
-import { useTheme } from '../src/context/ThemeContext';
-import { typography } from '../src/theme/typography';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function WelcomeSplashScreen() {
+const ONBOARDING_KEY = 'thanku_onboarding_seen';
+
+export default function RootIndex() {
   const { user, isLoading } = useAuth();
-  const { colors } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Only proceed once auth state is resolved
     if (isLoading) return;
 
-    // Fade in animation
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 800,
+      duration: 600,
       useNativeDriver: true,
     }).start();
 
-    // Navigate to Home Feed after 2.5 seconds
-    const timer = setTimeout(() => {
-      router.replace('/(tabs)');
-    }, 2500);
+    const navigate = async () => {
+      if (user) {
+        // Already logged in → skip onboarding, go home
+        router.replace('/(tabs)');
+        return;
+      }
 
+      // Check if user has already seen onboarding before
+      const seen = await AsyncStorage.getItem(ONBOARDING_KEY);
+      if (seen) {
+        // Seen before → go straight to login
+        router.replace('/(auth)/phone');
+      } else {
+        // First time → show onboarding splash
+        router.replace('/(auth)/login');
+      }
+    };
+
+    const timer = setTimeout(navigate, 1800);
     return () => clearTimeout(timer);
-  }, [isLoading, fadeAnim]);
-
-  if (isLoading) {
-    return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Ionicons name="heart" size={60} color={colors.primary} />
-      </View>
-    );
-  }
-
-  const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'Neighbor';
-  const greeting = user 
-    ? `Welcome back, ${userName}! 👋`
-    : 'Welcome to ThankU!\nReady to spread kindness? 💛';
+  }, [isLoading, user]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
-        <View style={[styles.iconContainer, { backgroundColor: colors.highlight }]}>
-          <Ionicons name="heart" size={64} color={colors.primary} />
-        </View>
-        <Text style={[styles.greeting, { color: colors.textPrimary }]}>
-          {greeting}
-        </Text>
+    <View style={styles.container}>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
       </Animated.View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
   },
-  iconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  greeting: {
-    ...typography.h2,
-    textAlign: 'center',
-    lineHeight: 36,
+  logo: {
+    width: 220,
+    height: 220,
   },
 });

@@ -1,37 +1,23 @@
-/**
- * ThankU — My Donations / Giving Screen
- *
- * Matches Reference Image: Screen 16 (Donation Tracking)
- * Features: Donation timeline tracker, status badges,
- * DONATIONS / FAVORITES tabs, mark as donated.
- */
-
 import React, { useState } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity, FlatList, Image,
-  ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
-import { useTheme } from '../../src/context/ThemeContext';
-import { typography } from '../../src/theme/typography';
-import { spacing } from '../../src/theme/spacing';
-import { radius } from '../../src/theme/radius';
-import { shadows } from '../../src/theme/shadows';
-import { EmptyState } from '../../src/components/ui/EmptyState';
 
-type ActiveTab = 'DONATIONS' | 'FAVORITES';
+import { LinearGradient } from 'expo-linear-gradient';
+
+type ActiveTab = 'ACTIVE' | 'SOLD' | 'EXPIRED';
 
 export default function MyAdsScreen() {
-  const { colors, isDark } = useTheme();
-  const styles = getStyles(colors);
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<ActiveTab>('DONATIONS');
-  const [myAds, setMyAds] = useState<any[]>([]);
-  const [favoriteAds, setFavoriteAds] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('ACTIVE');
+  const [activeAds, setActiveAds] = useState<any[]>([]);
+  const [soldAds, setSoldAds] = useState<any[]>([]);
+  const [expiredAds, setExpiredAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useFocusEffect(
@@ -48,345 +34,292 @@ export default function MyAdsScreen() {
       .select('*')
       .eq('seller_id', user?.id)
       .order('created_at', { ascending: false });
-    if (data) setMyAds(data);
-
-    const { data: favData } = await supabase
-      .from('favorites')
-      .select('product:product_id(*)')
-      .eq('user_id', user?.id)
-      .order('created_at', { ascending: false });
-    if (favData) setFavoriteAds(favData.map(f => f.product).filter(Boolean));
+      
+    if (data) {
+      setActiveAds(data.filter(item => !item.is_sold));
+      setSoldAds(data.filter(item => item.is_sold));
+      setExpiredAds([]); // Placeholder for expired
+    }
     setLoading(false);
   };
 
-  const markAsDonated = async (productId: string) => {
-    Alert.alert(
-      'Mark as Donated? 🎉',
-      'This will mark the item as successfully given away.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Confirm',
-          onPress: async () => {
-            await supabase.from('products').update({ is_sold: true }).eq('id', productId);
-            fetchMyAds();
-          },
-        },
-      ]
-    );
-  };
-
-  const confirmDelete = (productId: string) => {
-    Alert.alert(
-      'Delete Donation',
-      'Are you sure? This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await supabase.from('favorites').delete().eq('product_id', productId);
-            await supabase.from('products').delete().eq('id', productId);
-            fetchMyAds();
-          },
-        },
-      ]
-    );
-  };
-
-  const removeFavorite = async (productId: string) => {
-    await supabase.from('favorites').delete().match({ user_id: user?.id, product_id: productId });
-    fetchMyAds();
-  };
-
-  const getStatusConfig = (item: any) => {
-    if (item.is_sold) return { label: 'Donated 🎉', color: colors.success, bg: '#ECFDF5' };
-    return { label: 'Active', color: colors.primary, bg: colors.highlight };
-  };
-
-  const renderDonation = ({ item }: { item: any }) => {
-    const status = getStatusConfig(item);
-    const timeStr = new Date(item.created_at).toLocaleDateString();
-
+  const renderItem = ({ item }: { item: any }) => {
     return (
-      <View style={styles.donationCard}>
-        <View style={styles.cardRow}>
-          <Image source={{ uri: item.image_url }} style={styles.cardImage} />
-          <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
-            <View style={[styles.statusPill, { backgroundColor: status.bg }]}>
-              <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+      <View style={styles.cardContainer}>
+        <View style={styles.cardImageContainer}>
+          <Image source={{ uri: item.image_url || 'https://via.placeholder.com/150' }} style={styles.cardImage} />
+        </View>
+        <View style={styles.cardContent}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
+            <TouchableOpacity style={styles.optionsBtn}>
+              <Ionicons name="ellipsis-vertical" size={20} color="#8E8E93" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.cardCondition}>{item.condition || 'Good Condition'}</Text>
+          <Text style={styles.cardFreeText}>FREE</Text>
+          
+          <View style={styles.cardStats}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={styles.cardStatsText}>Views{'\n'}<Text style={{fontWeight: 'bold', color: '#1C1C1E'}}>12</Text></Text>
             </View>
-            <View style={styles.cardMeta}>
-              <Ionicons name="location-outline" size={12} color={colors.textSecondary} />
-              <Text style={styles.cardMetaText}>{item.location?.split(',')[0]}</Text>
-              <Text style={styles.cardMetaText}>• {timeStr}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginLeft: 20}}>
+              <Text style={styles.cardStatsText}>Chats{'\n'}<Text style={{fontWeight: 'bold', color: '#1C1C1E'}}>0</Text></Text>
             </View>
           </View>
         </View>
-
-        {/* Action Row */}
-        <View style={styles.actionRow}>
-          {!item.is_sold && (
-            <>
-              <TouchableOpacity
-                style={styles.actionBtnPrimary}
-                onPress={() => markAsDonated(item.id)}
-              >
-                <Ionicons name="checkmark-circle-outline" size={16} color={colors.surface} />
-                <Text style={styles.actionBtnPrimaryText}>Mark Donated</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.actionBtnGhost}
-                onPress={() => router.push({ pathname: '/edit-ad', params: { id: item.id } })}
-              >
-                <Text style={styles.actionBtnGhostText}>Edit</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          <TouchableOpacity
-            style={styles.actionBtnDanger}
-            onPress={() => confirmDelete(item.id)}
-          >
-            <Ionicons name="trash-outline" size={14} color={colors.error} />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };
 
-  const renderFavorite = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.donationCard}
-      onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
-    >
-      <View style={styles.cardRow}>
-        <Image source={{ uri: item.image_url }} style={styles.cardImage} />
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
-          <Text style={styles.cardSubtitle}>{item.location}</Text>
-        </View>
-        <TouchableOpacity style={styles.favBtn} onPress={() => removeFavorite(item.id)}>
-          <Ionicons name="heart" size={22} color={colors.coral} />
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
+  const currentData = activeTab === 'ACTIVE' ? activeAds : (activeTab === 'SOLD' ? soldAds : expiredAds);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Giving</Text>
+        <TouchableOpacity style={{ width: 40 }}>
+          <Ionicons name="menu" size={28} color="#1C1C1E" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Listings</Text>
+        <View style={styles.headerIcons}>
+          <TouchableOpacity style={styles.headerIconBtn}>
+            <Ionicons name="reorder-four" size={28} color="#1C1C1E" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabContainer}>
-        {(['DONATIONS', 'FAVORITES'] as ActiveTab[]).map(tab => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.tabActive]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-              {tab === 'DONATIONS' ? 'My Donations' : 'Saved Items'}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'ACTIVE' && styles.tabActive]}
+          onPress={() => setActiveTab('ACTIVE')}
+        >
+          <Text style={[styles.tabText, activeTab === 'ACTIVE' && styles.tabTextActive]}>
+            Active ({activeAds.length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'SOLD' && styles.tabActive]}
+          onPress={() => setActiveTab('SOLD')}
+        >
+          <Text style={[styles.tabText, activeTab === 'SOLD' && styles.tabTextActive]}>
+            Sold ({soldAds.length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'EXPIRED' && styles.tabActive]}
+          onPress={() => setActiveTab('EXPIRED')}
+        >
+          <Text style={[styles.tabText, activeTab === 'EXPIRED' && styles.tabTextActive]}>
+            Expired ({expiredAds.length})
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Content */}
-      {loading ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      ) : activeTab === 'DONATIONS' ? (
-        <FlatList
-          data={myAds}
-          keyExtractor={item => item.id}
-          renderItem={renderDonation}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <EmptyState
-              imageSource={require('../../assets/images/givings_empty.png')}
-              title="No donations yet"
-              body="You haven't posted any items yet. Start sharing and make someone's day!"
-              ctaTitle="Donate Your First Item"
-              onCtaPress={() => router.push('/(tabs)/post')}
-            />
-          }
-        />
-      ) : (
-        <FlatList
-          data={favoriteAds}
-          keyExtractor={item => item.id}
-          renderItem={renderFavorite}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <EmptyState
-              imageSource={require('../../assets/images/givings_empty.png')}
-              title="No saved items"
-              body="Items you love will appear here. Start exploring!"
-              ctaTitle="Explore Items"
-              onCtaPress={() => router.push('/(tabs)/')}
-            />
-          }
-        />
-      )}
+      {/* List */}
+      <FlatList
+        data={currentData}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={styles.emptyContainer}>
+              <Ionicons name="albums-outline" size={64} color="#E5E5EA" />
+              <Text style={styles.emptyText}>You don't have any {activeTab.toLowerCase()} listings yet.</Text>
+            </View>
+          ) : null
+        }
+      />
+      
+      {/* Bottom Button */}
+      <View style={styles.bottomBtnContainer}>
+        <TouchableOpacity style={styles.postBtn} onPress={() => router.push('/(tabs)/post')}>
+          <LinearGradient
+            colors={['#0066FF', '#34C759']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 28 }]}
+          />
+          <Ionicons name="add" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+          <Text style={styles.postBtnText}>Post New Item</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
 
-const getStyles = (colors: any) => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#FAFAFA',
   },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  // ─── Header ──────────────────────────────────────
   header: {
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.medium,
-    backgroundColor: colors.surface,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
   },
   headerTitle: {
-    ...typography.h2,
-    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1C1C1E',
   },
-
-  // ─── Tabs ────────────────────────────────────────
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  headerIconBtn: {
+    marginLeft: 16,
+  },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#F0F0F0',
   },
   tab: {
     flex: 1,
-    paddingVertical: spacing.small,
+    paddingVertical: 16,
     alignItems: 'center',
-    borderBottomWidth: 3,
+    borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: colors.primary,
+    borderBottomColor: '#0066FF',
   },
   tabText: {
-    ...typography.bodySmall,
-    color: colors.textSecondary,
+    fontSize: 14,
     fontWeight: '600',
+    color: '#8E8E93',
   },
   tabTextActive: {
-    color: colors.primary,
-    fontWeight: '700',
+    color: '#0066FF',
   },
-
-  // ─── Cards ───────────────────────────────────────
   listContent: {
-    padding: spacing.medium,
-    gap: spacing.small,
+    padding: 16,
+    paddingBottom: 100,
   },
-  donationCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.medium,
-    ...shadows.sm,
-  },
-  cardRow: {
+  
+  // ─── Item Card ───────────────────────────────────────
+  cardContainer: {
     flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  cardImageContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#F5F5F5',
   },
   cardImage: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.md,
-    backgroundColor: colors.highlight,
-    marginRight: spacing.small,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
-  cardInfo: {
+  cardContent: {
     flex: 1,
+    marginLeft: 16,
     justifyContent: 'center',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   cardTitle: {
-    ...typography.bodySmall,
-    color: colors.textPrimary,
-    fontWeight: '600',
-    marginBottom: spacing.micro,
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1C1C1E',
+    marginBottom: 4,
   },
-  cardSubtitle: {
-    ...typography.caption,
-    color: colors.textSecondary,
+  optionsBtn: {
+    padding: 4,
+    marginRight: -4,
+    marginTop: -4,
   },
-  statusPill: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: spacing.tiny,
-    paddingVertical: 2,
-    borderRadius: radius.full,
-    marginBottom: spacing.micro,
+  cardCondition: {
+    fontSize: 12,
+    color: '#8E8E93',
+    marginBottom: 6,
   },
-  statusText: {
-    ...typography.caption,
-    fontWeight: '700',
-    fontSize: 10,
+  cardFreeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#34C759',
+    marginBottom: 12,
   },
-  cardMeta: {
+  cardStats: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    marginTop: 8,
   },
-  cardMetaText: {
-    ...typography.caption,
-    color: colors.textSecondary,
-  },
-  favBtn: {
-    padding: spacing.micro,
-    justifyContent: 'center',
+  cardStatsText: {
+    fontSize: 10,
+    color: '#8E8E93',
   },
 
-  // ─── Actions ─────────────────────────────────────
-  actionRow: {
-    flexDirection: 'row',
+  // ─── Empty State ─────────────────────────────────────
+  emptyContainer: {
     alignItems: 'center',
-    marginTop: spacing.small,
-    paddingTop: spacing.small,
-    borderTopWidth: 1,
-    borderTopColor: colors.divider,
-    gap: spacing.tiny,
+    justifyContent: 'center',
+    paddingTop: 80,
   },
-  actionBtnPrimary: {
-    flexDirection: 'row',
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1C1C1E',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyDesc: {
+    fontSize: 14,
+    color: '#8E8E93',
+    textAlign: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#8E8E93',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  bottomBtnContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
     alignItems: 'center',
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.small,
-    paddingVertical: spacing.tiny,
-    borderRadius: radius.sm,
-    gap: 4,
   },
-  actionBtnPrimaryText: {
-    ...typography.caption,
-    color: colors.surface,
-    fontWeight: '700',
+  postBtn: {
+    flexDirection: 'row',
+    height: 56,
+    width: '100%',
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  actionBtnGhost: {
-    paddingHorizontal: spacing.small,
-    paddingVertical: spacing.tiny,
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  actionBtnGhostText: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    fontWeight: '600',
-  },
-  actionBtnDanger: {
-    marginLeft: 'auto',
-    padding: spacing.tiny,
+  postBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

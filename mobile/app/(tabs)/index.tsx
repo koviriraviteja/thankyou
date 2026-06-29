@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, Text, View, FlatList, TextInput, ScrollView,
-  TouchableOpacity, Image, ActivityIndicator, RefreshControl,
+  TouchableOpacity, Image, ImageBackground, ActivityIndicator, RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, ResizeMode } from 'expo-av';
@@ -29,17 +29,15 @@ import { DonationCard } from '../../src/components/ui/Card';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 
 const CATEGORIES = [
-  { id: '1', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
-  { id: '2', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
-  { id: '3', name: 'Books', image: require('../../assets/images/categories/books.png') },
-  { id: '4', name: 'Clothing', image: require('../../assets/images/categories/clothing.png') },
-  { id: '5', name: 'Toys', image: require('../../assets/images/categories/toys.png') },
-  { id: '6', name: 'Kitchen', image: require('../../assets/images/categories/kitchen.png') },
-  { id: '7', name: 'Sports', image: require('../../assets/images/categories/sports.png') },
-  { id: '8', name: 'Medical', image: require('../../assets/images/categories/medical.png') },
-  { id: '9', name: 'Nature/Plants', image: require('../../assets/images/categories/plants.png') },
-  { id: '10', name: 'Food', image: require('../../assets/images/categories/food.png') },
-  { id: '11', name: 'Miscellaneous', image: require('../../assets/images/categories/misc.png') },
+  { id: '1', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
+  { id: '2', name: 'Home & Kitchen', image: require('../../assets/images/categories/kitchen.png') },
+  { id: '3', name: 'Books & Stationery', image: require('../../assets/images/categories/books.png') },
+  { id: '5', name: 'Fashion & Accessories', image: require('../../assets/images/categories/clothing.png') },
+  { id: '4', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
+  { id: '6', name: 'Sports & Fitness', image: require('../../assets/images/categories/sports.png') },
+  { id: '7', name: 'Kids & Toys', image: require('../../assets/images/categories/toys.png') },
+  { id: '8', name: 'Vehicles', image: require('../../assets/images/categories/medical.png') },
+  { id: '9', name: 'Others', image: require('../../assets/images/categories/misc.png') },
 ];
 
 const DISTANCE_FILTERS = ['1 km', '5 km', '10 km', '20 km'];
@@ -164,17 +162,19 @@ export default function HomeFeedScreen() {
   const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'Neighbor';
 
   const renderHeader = () => (
-    <View>
-      {/* Header (Greeting & Location) */}
-      <View style={styles.headerTop}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.greetingText}>Hi, {userName} 👋</Text>
-          <TouchableOpacity style={styles.locationSelector} onPress={() => router.push('/location')}>
-            <Ionicons name="location" size={14} color={colors.primary} />
-            <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
-            <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
-          </TouchableOpacity>
+    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+      {/* Top Bar: Menu | Logo | Notification */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.medium }}>
+        <TouchableOpacity>
+          <Ionicons name="menu" size={28} color={colors.textPrimary} />
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ fontSize: 26, fontWeight: '900', color: '#4BC6D3', letterSpacing: -0.5 }}>
+            THANK<Text style={{ color: '#FEBA35' }}>U</Text>
+          </Text>
         </View>
+
         <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.notifBtn}>
           <Ionicons name="notifications-outline" size={24} color={colors.textPrimary} />
           {notifications.length > 0 && (
@@ -187,67 +187,68 @@ export default function HomeFeedScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Promotional Banner */}
-      <LinearGradient 
-        colors={[colors.primary, colors.secondary]}
-        start={{x: 0, y: 0}} end={{x: 1, y: 1}}
-        style={styles.bannerContainer}
-      >
-        <Text style={styles.bannerSubtitle}>❤️  Spread Kindness</Text>
-        <Text style={styles.bannerTitle}>Give Freely.{'\n'}Help Genuinely.</Text>
-        <TouchableOpacity style={styles.bannerBtn} onPress={() => router.push('/(tabs)/post')}>
-          <Text style={styles.bannerBtnText}>Give an Item</Text>
-          <Ionicons name="arrow-forward-circle" size={18} color={colors.primary} />
-        </TouchableOpacity>
-        <Image 
-          source={require('../../assets/images/banner-illustration.png')} 
-          style={styles.bannerImage as any} 
-        />
-      </LinearGradient>
+      {/* Greeting */}
+      <View style={{ marginBottom: spacing.medium }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.textPrimary }}>Hello, {userName}! 👋</Text>
+        <Text style={{ fontSize: 14, color: colors.textSecondary, marginTop: 4 }}>What are you looking for today?</Text>
+      </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TouchableOpacity style={styles.searchBar} onPress={() => router.push('/search')}>
-          <LinearGradient 
-            colors={[colors.accent, colors.primary]} 
-            start={{x: 0, y: 0}} end={{x: 1, y: 1}} 
-            style={styles.searchAiBadge}
-          >
-            <Text style={styles.searchAiText}>AI</Text>
-          </LinearGradient>
-          <Ionicons name="search" size={20} color={colors.primary} />
-          <Text style={styles.searchPlaceholder}>Search cars, phones, furniture...</Text>
-          <Ionicons name="mic-outline" size={20} color={colors.textSecondary} />
+          <Ionicons name="search" size={20} color={colors.textSecondary} style={{ marginRight: 8 }} />
+          <Text style={styles.searchPlaceholder} numberOfLines={1}>Search for items, people or categories...</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Categories */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Categories</Text>
-          <TouchableOpacity onPress={() => router.push('/categories')}>
-            <Text style={styles.seeAllText}>See All</Text>
+      {/* Promotional Banner */}
+      <ImageBackground
+        source={require('../../assets/images/banner-bg-v3.png')}
+        style={[styles.bannerContainer, { borderRadius: 24, marginBottom: 12, overflow: 'hidden' }]}
+        imageStyle={{ resizeMode: 'cover' }}
+      >
+        <View style={{ padding: 16, width: '65%', zIndex: 1, justifyContent: 'center' }}>
+          <Text style={[styles.bannerTitle, { fontSize: 18, color: '#1C1C1E', lineHeight: 26, fontWeight: '900', marginBottom: 8 }]}>
+            Give what you{'\n'}don't need.{'\n'}Get what you{'\n'}truly need. <Text style={{ color: '#34C759' }}>💚</Text>
+          </Text>
+          <TouchableOpacity style={[styles.bannerBtn, { backgroundColor: '#0066FF', width: 110, paddingVertical: 8, marginTop: 4, borderRadius: 20, alignItems: 'center' }]} onPress={() => router.push('/categories')}>
+            <Text style={[styles.bannerBtnText, { color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }]}>Explore Now</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
-          {CATEGORIES.map(cat => {
+      </ImageBackground>
+
+      {/* Categories */}
+      <View style={styles.section}>
+        <View style={styles.categoriesRow}>
+          {CATEGORIES.slice(0, 4).map(cat => {
             const isSelected = selectedCategory === cat.name;
             return (
               <TouchableOpacity
                 key={cat.id}
-                style={styles.categoryItem}
+                style={styles.categoryItemFlex}
                 onPress={() => setSelectedCategory(isSelected ? null : cat.name)}
               >
                 <View style={[styles.categoryIcon, isSelected && styles.categoryIconActive]}>
                   <Image source={cat.image} style={styles.categoryImage as any} />
                 </View>
-                <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
+                <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]} numberOfLines={2}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
             );
           })}
-        </ScrollView>
+          <TouchableOpacity
+            style={styles.categoryItemFlex}
+            onPress={() => router.push('/categories')}
+          >
+            <View style={styles.categoryIcon}>
+              <Ionicons name="ellipsis-horizontal" size={24} color="#1C1C1E" />
+            </View>
+            <Text style={styles.categoryName} numberOfLines={2}>
+              More
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
 
@@ -270,13 +271,13 @@ export default function HomeFeedScreen() {
         <Text style={styles.sectionTitle}>Sponsored / Promotions</Text>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.adsScroll}>
-        
+
         {/* Column 1 */}
         <View style={styles.adColumn}>
           <View style={styles.adCard}>
-            <Image 
-              source={{ uri: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia as any} 
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600&auto=format&fit=crop' }}
+              style={styles.adMedia as any}
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Summer Sale Extravaganza</Text>
@@ -288,9 +289,9 @@ export default function HomeFeedScreen() {
           </View>
 
           <View style={styles.adCard}>
-            <Image 
-              source={{ uri: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia as any} 
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop' }}
+              style={styles.adMedia as any}
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Tech Gadgets</Text>
@@ -324,9 +325,9 @@ export default function HomeFeedScreen() {
           </View>
 
           <View style={styles.adCard}>
-            <Image 
-              source={{ uri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' }} 
-              style={styles.adMedia as any} 
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' }}
+              style={styles.adMedia as any}
             />
             <View style={styles.adContent}>
               <Text style={styles.adTitle}>Sneaker Drops</Text>
@@ -344,7 +345,7 @@ export default function HomeFeedScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <Image 
+      <Image
         source={require('../../assets/logo.png')}
         style={[styles.watermark as any, { opacity: isDark ? 0.05 : 0.25 }]}
       />
@@ -403,19 +404,7 @@ export default function HomeFeedScreen() {
         />
       )}
 
-      {/* Local Food Category Shortcut (Only on Home Page) */}
-      <View style={styles.foodFabWrapper}>
-        <TouchableOpacity 
-          style={[styles.foodFab, selectedCategory === 'Food' && styles.foodFabActive]} 
-          onPress={() => setSelectedCategory(selectedCategory === 'Food' ? null : 'Food')}
-        >
-          <Image 
-            source={require('../../assets/images/categories/food.png')} 
-            style={{ width: '100%', height: '100%', resizeMode: 'cover' } as any} 
-          />
-        </TouchableOpacity>
-        <Text style={styles.foodFabText}>Food</Text>
-      </View>
+
     </SafeAreaView>
   );
 }
@@ -437,36 +426,6 @@ const getStyles = (colors: any) => StyleSheet.create({
     height: 300,
     resizeMode: 'contain',
     zIndex: -1,
-  },
-  foodFabWrapper: {
-    position: 'absolute',
-    right: 20, // Align exactly with the 60px main FAB
-    bottom: 96, // Sit above the main FAB
-    alignItems: 'center',
-    zIndex: 100,
-  },
-  foodFab: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...shadows.md,
-    marginBottom: 4,
-  },
-  foodFabActive: {
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  foodFabText: {
-    ...typography.caption,
-    color: colors.textPrimary,
-    fontWeight: '700',
-    textAlign: 'center',
   },
 
   // ─── Header ──────────────────────────────────────
@@ -528,12 +487,10 @@ const getStyles = (colors: any) => StyleSheet.create({
 
   // ─── Banner ──────────────────────────────────────
   bannerContainer: {
-    marginHorizontal: spacing.medium,
     borderRadius: radius.xl,
-    padding: spacing.medium,
     position: 'relative',
     overflow: 'hidden',
-    height: 160,
+    minHeight: 160,
     justifyContent: 'center',
     ...shadows.md,
   },
@@ -617,18 +574,27 @@ const getStyles = (colors: any) => StyleSheet.create({
 
   // ─── Search ──────────────────────────────────────
   searchContainer: {
-    paddingHorizontal: spacing.medium,
-    marginTop: spacing.medium,
+    marginTop: spacing.small,
+    marginBottom: spacing.small,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: radius.full,
-    paddingHorizontal: spacing.small,
-    paddingVertical: 12,
+    paddingLeft: spacing.medium,
+    paddingRight: spacing.small,
+    paddingVertical: 10,
     gap: spacing.tiny,
     ...shadows.sm,
+  },
+  filterIconContainer: {
+    backgroundColor: '#0066FF',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   searchAiBadge: {
     paddingHorizontal: 8,
@@ -650,7 +616,7 @@ const getStyles = (colors: any) => StyleSheet.create({
 
   // ─── Sections ────────────────────────────────────
   section: {
-    paddingTop: spacing.large,
+    paddingTop: 0,
     paddingBottom: spacing.tiny,
   },
   sectionHeader: {
@@ -671,30 +637,31 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
 
   // ─── Categories ──────────────────────────────────
-  categoryScroll: {
-    paddingHorizontal: spacing.medium,
-    gap: spacing.medium,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    alignContent: 'flex-start',
-    height: 230, // Forces items to wrap after 2 rows
+  categoriesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.tiny,
   },
-  categoryItem: {
+  categoryItemFlex: {
     alignItems: 'center',
-    width: 72,
+    width: '19.5%',
   },
   categoryIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 24, // Soft rounded squares
-    backgroundColor: colors.surface,
+    width: 60,
+    height: 60,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.tiny,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.border,
-    ...shadows.sm,
+    borderColor: '#F0F0F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
   },
   categoryIconActive: {
     borderColor: colors.primary,
@@ -707,6 +674,7 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   categoryName: {
     ...typography.caption,
+    fontSize: 10,
     color: colors.textPrimary,
     fontWeight: '600',
     textAlign: 'center',
@@ -722,7 +690,6 @@ const getStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.medium,
     paddingTop: spacing.large,
     paddingBottom: spacing.small,
   },
@@ -746,7 +713,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   row: {
-    paddingHorizontal: spacing.small,
+    paddingHorizontal: 12, // 12px + 4px from cardWrapper = 16px total margin
     gap: spacing.tiny,
   },
   cardWrapper: {

@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ActivityIndicator,
+  KeyboardAvoidingView, Platform, ActivityIndicator, Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,6 +23,7 @@ export default function PhoneLoginScreen() {
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -45,7 +46,7 @@ export default function PhoneLoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
@@ -55,12 +56,51 @@ export default function PhoneLoginScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
 
+        {/* Logo + Tagline */}
+        <View style={styles.logoSection}>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.tagline}>నాకు అనవసరం... మీకు అవసరం.</Text>
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Enter your phone number</Text>
+          <Text style={styles.title}>Sign in to ThankU</Text>
           <Text style={styles.subtitle}>
             We'll send a verification code to confirm it's you
           </Text>
+        </View>
+
+        {/* Referral Code — shared, applies to both Google and Phone */}
+        <View style={styles.inputSection}>
+          <Text style={styles.inputLabel}>Referral Code (Optional)</Text>
+          <View style={[styles.inputContainer, { paddingHorizontal: spacing.medium }]}>
+            <Ionicons name="ticket-outline" size={16} color={colors.textSecondary} style={{ marginRight: 4 }} />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter referral code"
+              placeholderTextColor={colors.textDisabled}
+              autoCapitalize="characters"
+              value={referralCode}
+              onChangeText={setReferralCode}
+            />
+          </View>
+        </View>
+
+        {/* Google Sign In */}
+        <TouchableOpacity style={styles.googleBtn} onPress={() => router.push('/(tabs)')}>
+          <Ionicons name="logo-google" size={20} color="#EA4335" />
+          <Text style={styles.googleBtnText}>Continue with Google</Text>
+        </TouchableOpacity>
+
+        {/* Divider */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.dividerLine} />
         </View>
 
         {/* Phone Input */}
@@ -88,9 +128,6 @@ export default function PhoneLoginScreen() {
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
         </View>
 
-        {/* Spacer */}
-        <View style={{ flex: 1 }} />
-
         {/* CTA */}
         <View style={styles.ctaSection}>
           <Button
@@ -116,14 +153,29 @@ const getStyles = (colors: any) => StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: spacing.large,
+    justifyContent: 'space-between',
   },
   backBtn: {
     paddingVertical: spacing.small,
     alignSelf: 'flex-start',
   },
+  logoSection: {
+    alignItems: 'center',
+    paddingVertical: spacing.medium,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+  },
+  tagline: {
+    fontSize: 13,
+    color: '#4BC6D3',
+    fontWeight: '700',
+    marginTop: 4,
+  },
   header: {
-    marginTop: spacing.large,
-    marginBottom: spacing.xl,
+    marginTop: spacing.small,
+    marginBottom: spacing.medium,
   },
   title: {
     ...typography.h1,
@@ -134,6 +186,44 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...typography.body,
     color: colors.textSecondary,
     lineHeight: 24,
+  },
+  googleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    gap: spacing.small,
+    marginBottom: spacing.medium,
+  },
+  googleBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.large,
+    gap: spacing.small,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
+  },
+  dividerText: {
+    color: colors.textSecondary,
+    fontSize: 14,
+  },
+  inputLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: spacing.tiny,
+    fontWeight: '600',
   },
   inputSection: {
     marginBottom: spacing.large,

@@ -1,9 +1,3 @@
-/**
- * ThankU — Notifications Screen
- *
- * Shows donation requests, approvals, ThankU notes, and system alerts.
- */
-
 import React from 'react';
 import {
   StyleSheet, Text, View, FlatList, TouchableOpacity,
@@ -12,33 +6,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useNotification } from '../src/context/NotificationContext';
-import { useTheme } from '../src/context/ThemeContext';
-import { typography } from '../src/theme/typography';
-import { spacing } from '../src/theme/spacing';
-import { radius } from '../src/theme/radius';
 import { EmptyState } from '../src/components/ui/EmptyState';
 
-const getNotificationIcons = (colors: any): Record<string, { icon: string; color: string; bg: string }> => ({
-  request: { icon: 'hand-left-outline', color: colors.primary, bg: colors.highlight },
-  approved: { icon: 'checkmark-circle-outline', color: colors.success, bg: '#ECFDF5' },
-  thanku: { icon: 'heart-outline', color: colors.coral, bg: '#FFF5F5' },
-  system: { icon: 'information-circle-outline', color: colors.info, bg: '#EFF6FF' },
+const getNotificationIcons = (): Record<string, { icon: string; color: string; bg: string }> => ({
+  request: { icon: 'hand-left-outline', color: '#0066FF', bg: '#E5F0FF' },
+  approved: { icon: 'checkmark-circle-outline', color: '#34C759', bg: '#ECFDF5' },
+  thanku: { icon: 'heart-outline', color: '#FF3B30', bg: '#FFF5F5' },
+  system: { icon: 'information-circle-outline', color: '#8E8E93', bg: '#F5F5F5' },
 });
 
 export default function NotificationsScreen() {
-  const { colors } = useTheme();
-  const styles = getStyles(colors);
   const { notifications } = useNotification();
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <TouchableOpacity>
+        <TouchableOpacity style={styles.markAllBtn}>
           <Text style={styles.markAll}>Mark all read</Text>
         </TouchableOpacity>
       </View>
@@ -56,7 +44,7 @@ export default function NotificationsScreen() {
           />
         }
         renderItem={({ item }) => {
-          const config = getNotificationIcons(colors)[item.type] || getNotificationIcons(colors).system;
+          const config = getNotificationIcons()[item.type] || getNotificationIcons().system;
           return (
             <TouchableOpacity style={[styles.notifItem, !item.read && styles.notifUnread]}>
               <View style={[styles.notifIcon, { backgroundColor: config.bg }]}>
@@ -77,27 +65,29 @@ export default function NotificationsScreen() {
   );
 }
 
-const getStyles = (colors: any) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#FAFAFA' },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: spacing.medium, paddingVertical: spacing.small,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border,
+    paddingHorizontal: 20, paddingVertical: 12,
+    backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#F0F0F0',
   },
-  headerTitle: { ...typography.h3, color: colors.textPrimary },
-  markAll: { ...typography.caption, color: colors.accent, fontWeight: '600' },
-  list: { paddingVertical: spacing.tiny },
+  backBtn: { width: 40 },
+  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#1C1C1E', flex: 1, textAlign: 'center' },
+  markAllBtn: { width: 90, alignItems: 'flex-end' },
+  markAll: { fontSize: 12, color: '#0066FF', fontWeight: '600' },
+  list: { paddingVertical: 8 },
   notifItem: {
-    flexDirection: 'row', padding: spacing.medium, backgroundColor: colors.surface,
-    borderBottomWidth: 1, borderBottomColor: colors.divider,
+    flexDirection: 'row', padding: 16, backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1, borderBottomColor: '#F0F0F0',
   },
-  notifUnread: { backgroundColor: colors.highlight },
+  notifUnread: { backgroundColor: '#F5F9FF' },
   notifIcon: {
     width: 44, height: 44, borderRadius: 22, justifyContent: 'center',
-    alignItems: 'center', marginRight: spacing.small,
+    alignItems: 'center', marginRight: 12,
   },
-  notifContent: { flex: 1 },
-  notifTitle: { ...typography.bodySmall, color: colors.textPrimary, fontWeight: '700' },
-  notifBody: { ...typography.bodySmall, color: colors.textSecondary, marginTop: 2, lineHeight: 20 },
-  notifTime: { ...typography.caption, color: colors.textDisabled, marginTop: spacing.micro },
+  notifContent: { flex: 1, justifyContent: 'center' },
+  notifTitle: { fontSize: 14, color: '#1C1C1E', fontWeight: 'bold' },
+  notifBody: { fontSize: 14, color: '#8E8E93', marginTop: 4, lineHeight: 20 },
+  notifTime: { fontSize: 12, color: '#C7C7CC', marginTop: 4 },
 });

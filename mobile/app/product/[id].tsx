@@ -11,7 +11,7 @@ import {
   StyleSheet, Text, View, Image, ScrollView, TouchableOpacity,
   ActivityIndicator, Share, Dimensions, FlatList,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
@@ -20,6 +20,7 @@ import { useTheme } from '../../src/context/ThemeContext';
 import { typography } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
+import { LinearGradient } from 'expo-linear-gradient';
 import { shadows } from '../../src/theme/shadows';
 import { Button } from '../../src/components/ui/Button';
 
@@ -34,6 +35,7 @@ export default function ProductDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (id) fetchProductDetails();
@@ -135,9 +137,9 @@ export default function ProductDetailsScreen() {
   const dateStr = new Date(product.created_at).toLocaleDateString();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       {/* Floating Header */}
-      <SafeAreaView style={styles.floatingHeader} edges={['top']}>
+      <View style={[styles.floatingHeader, { top: insets.top + 12 }]}>
         <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </TouchableOpacity>
@@ -153,7 +155,7 @@ export default function ProductDetailsScreen() {
             />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Image Carousel */}
@@ -183,53 +185,45 @@ export default function ProductDetailsScreen() {
 
         {/* Title & Info */}
         <View style={styles.detailsCard}>
-          <View style={styles.titleRow}>
-            <View style={styles.freeBadge}>
-              <Text style={styles.freeBadgeText}>FREE</Text>
-            </View>
-            {product.condition && (
-              <View style={styles.conditionBadge}>
-                <Text style={styles.conditionText}>{product.condition}</Text>
-              </View>
-            )}
-          </View>
           <Text style={styles.itemTitle}>{product.title}</Text>
-          <View style={styles.locationRow}>
-            <Ionicons name="location" size={14} color={colors.primary} />
-            <Text style={styles.locationText}>{product.location}</Text>
-            <Text style={styles.dateText}>• {dateStr}</Text>
+          <View style={styles.titleRow}>
+            {product.condition && (
+              <Text style={styles.conditionText}>{product.condition}</Text>
+            )}
+            <Text style={styles.freeBadgeText}>FREE</Text>
           </View>
+          <View style={[styles.locationRow, { flexDirection: 'column', alignItems: 'flex-start', marginTop: 8, gap: 6 }]}>
+            <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+              <Ionicons name="location-outline" size={16} color="#8E8E93" />
+              <Text style={styles.locationText}>2.5 km away • {product.location || 'Hyderabad, TS'}</Text>
+            </View>
+            <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+              <Ionicons name="time-outline" size={16} color="#8E8E93" />
+              <Text style={styles.dateText}>Posted {dateStr}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Donor Card */}
+        <View style={styles.donorCard}>
+          <View style={styles.donorAvatar}>
+            <Ionicons name="person" size={24} color="#C7C7CC" />
+          </View>
+          <View style={styles.donorInfo}>
+            <Text style={styles.donorName}>Rahul Sharma</Text>
+            <Text style={styles.donorSince}>Member since Jan 2023</Text>
+          </View>
+          <TouchableOpacity style={styles.donorChatBtn} onPress={startChat}>
+            <Ionicons name="chatbubble-ellipses-outline" size={20} color="#0066FF" />
+          </TouchableOpacity>
         </View>
 
         {/* Description */}
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>About this item</Text>
+          <Text style={styles.sectionTitle}>Description</Text>
           <Text style={styles.descriptionText}>
             {product.description || 'No description provided by the donor.'}
           </Text>
-        </View>
-
-        {/* Donor Card */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Donor</Text>
-          <TouchableOpacity style={styles.donorRow}>
-            <View style={styles.donorAvatar}>
-              <Ionicons name="person" size={24} color={colors.surface} />
-            </View>
-            <View style={styles.donorInfo}>
-              <View style={styles.donorNameRow}>
-                <Text style={styles.donorName}>Verified Donor</Text>
-                <Ionicons name="shield-checkmark" size={16} color={colors.success} style={{ marginLeft: 4 }} />
-              </View>
-              <View style={styles.donorStars}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Ionicons key={i} name="star" size={12} color={colors.gold} />
-                ))}
-                <Text style={styles.donorRating}>4.8</Text>
-              </View>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textDisabled} />
-          </TouchableOpacity>
         </View>
 
         {/* Safety Notice */}
@@ -246,18 +240,21 @@ export default function ProductDetailsScreen() {
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.chatSmallBtn} onPress={startChat}>
-          <Ionicons name="chatbubble-outline" size={22} color={colors.primary} />
+        <TouchableOpacity style={styles.chatOutlineBtn} onPress={startChat}>
+          <Ionicons name="chatbubble-outline" size={20} color="#0066FF" style={{marginRight: 8}} />
+          <Text style={styles.chatOutlineBtnText}>Chat</Text>
         </TouchableOpacity>
-        <View style={{ flex: 1 }}>
-          <Button
-            title="Request Item"
-            onPress={startChat}
-            icon={<Ionicons name="hand-left-outline" size={20} color={colors.textOnPrimary} />}
+        <TouchableOpacity style={styles.interestedBtn} onPress={startChat}>
+          <LinearGradient
+            colors={['#0066FF', '#34C759']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: radius.full }]}
           />
-        </View>
+          <Text style={styles.interestedBtnText}>I'm Interested</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -296,8 +293,8 @@ const getStyles = (colors: any) => StyleSheet.create({
     zIndex: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: spacing.medium,
-    paddingBottom: spacing.tiny,
   },
   headerBtn: {
     width: 40,
@@ -310,6 +307,7 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   headerRight: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.tiny,
   },
   scrollContent: {
@@ -417,15 +415,20 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
 
   // ─── Donor ───────────────────────────────────────
-  donorRow: {
+  donorCard: {
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: spacing.medium,
+    padding: spacing.medium,
+    borderRadius: radius.md,
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: spacing.small,
   },
   donorAvatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: colors.secondary,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.small,
@@ -433,25 +436,25 @@ const getStyles = (colors: any) => StyleSheet.create({
   donorInfo: {
     flex: 1,
   },
-  donorNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   donorName: {
     ...typography.body,
-    color: colors.textPrimary,
+    color: '#1C1C1E',
     fontWeight: '700',
   },
-  donorStars: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 1,
+  donorSince: {
+    ...typography.caption,
+    color: '#8E8E93',
     marginTop: 2,
   },
-  donorRating: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    marginLeft: 4,
+  donorChatBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#0066FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
 
   // ─── Safety ──────────────────────────────────────
@@ -485,16 +488,36 @@ const getStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    gap: spacing.small,
+    gap: spacing.medium,
     ...shadows.sheet,
   },
-  chatSmallBtn: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.md,
+  chatOutlineBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    height: 48,
+    borderRadius: radius.full,
     borderWidth: 1.5,
-    borderColor: colors.primary,
+    borderColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
+  chatOutlineBtnText: {
+    color: '#0066FF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  interestedBtn: {
+    flex: 1,
+    height: 48,
+    borderRadius: radius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  interestedBtnText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
+  }
 });

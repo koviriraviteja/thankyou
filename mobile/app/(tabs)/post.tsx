@@ -1,11 +1,3 @@
-/**
- * ThankU — Donate Item Screen
- *
- * Matches Reference Images with ThankU branding.
- * Features: Category selection, photo upload, AI-friendly form,
- * condition pills, transportation tag, location auto-detect.
- */
-
 import React, { useState } from 'react';
 import {
   StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView,
@@ -20,30 +12,22 @@ import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../src/lib/supabase';
-import { useTheme } from '../../src/context/ThemeContext';
-import { typography } from '../../src/theme/typography';
+import { LinearGradient } from 'expo-linear-gradient';
 import { spacing } from '../../src/theme/spacing';
 import { radius } from '../../src/theme/radius';
-import { shadows } from '../../src/theme/shadows';
-import { Button } from '../../src/components/ui/Button';
 
 const CATEGORIES = ['Furniture', 'Electronics', 'Books', 'Clothing', 'Toys', 'Kitchen', 'Sports', 'Medical', 'Nature/Plants', 'Food', 'Miscellaneous'];
 const CONDITIONS = ['New', 'Like New', 'Good', 'Used'];
-const TRANSPORT_TAGS = ['Fits in a bag', 'Fits in a sedan', 'Needs a truck'];
 
 export default function PostAdScreen() {
-  const { colors, isDark } = useTheme();
-  const styles = getStyles(colors);
   const { user } = useAuth();
-  const [step, setStep] = useState(1);
-  const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [condition, setCondition] = useState('Good');
-  const [transportTag, setTransportTag] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
@@ -94,7 +78,7 @@ export default function PostAdScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsMultipleSelection: true,
-      selectionLimit: 12 - images.length,
+      selectionLimit: 5 - images.length,
       quality: 0.8,
     });
     if (!result.canceled) setImages([...images, ...result.assets.map(a => a.uri)]);
@@ -103,8 +87,8 @@ export default function PostAdScreen() {
   const removeImage = (index: number) => setImages(images.filter((_, i) => i !== index));
 
   const handlePost = async () => {
-    if (!title || !location) {
-      Alert.alert('Missing Details', 'Please fill in the title and location to continue.');
+    if (!title || !location || !category) {
+      Alert.alert('Missing Details', 'Please fill in the title, category, and location to continue.');
       return;
     }
     if (!user) {
@@ -147,11 +131,10 @@ export default function PostAdScreen() {
       if (dbError) throw dbError;
 
       setIsLoading(false);
-      Alert.alert('Item Posted! 🎉', 'Your donation is now live. You\'re awesome!', [
+      Alert.alert('Item Posted! 🎉', 'Your donation is now live.', [
         {
           text: 'View My Donations',
           onPress: () => {
-            setStep(1);
             setImages([]);
             setTitle('');
             setDescription('');
@@ -167,37 +150,6 @@ export default function PostAdScreen() {
     }
   };
 
-  // ─── Step 1: Category Selection ────────────────────
-  if (step === 1) {
-    return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="close" size={24} color={colors.textPrimary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>What are you donating?</Text>
-          <View style={{ width: 24 }} />
-        </View>
-        <ScrollView style={styles.content}>
-          {CATEGORIES.map((cat) => (
-            <TouchableOpacity
-              key={cat}
-              style={styles.categoryItem}
-              onPress={() => { setCategory(cat); setStep(2); }}
-            >
-              <View style={styles.categoryItemIcon}>
-                <Ionicons name="folder-outline" size={20} color={colors.primary} />
-              </View>
-              <Text style={styles.categoryText}>{cat}</Text>
-              <Ionicons name="chevron-forward" size={18} color={colors.textDisabled} />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // ─── Step 2: Item Details ──────────────────────────
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
@@ -206,10 +158,10 @@ export default function PostAdScreen() {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => setStep(1)}>
-            <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Include some details</Text>
+          <Text style={styles.headerTitle}>Post an Item</Text>
           <View style={{ width: 24 }} />
         </View>
 
@@ -220,263 +172,272 @@ export default function PostAdScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Photo Upload */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Photos (up to 12)</Text>
+          <View>
+            <Text style={[styles.label, { marginBottom: 4, marginTop: 12 }]}>Add Photos</Text>
+            <Text style={{ fontSize: 12, color: '#8E8E93', marginBottom: 12 }}>Add up to 5 photos</Text>
+          </View>
+          <View style={styles.photoUploadContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageRow}>
-              {images.length < 12 && (
-                <TouchableOpacity style={styles.uploadBtn} onPress={handleImageSelect}>
-                  <Ionicons name="camera-outline" size={28} color={colors.primary} />
-                  <Text style={styles.uploadBtnText}>Add</Text>
-                </TouchableOpacity>
-              )}
               {images.map((uri, index) => (
                 <View key={index} style={styles.imagePreviewContainer}>
                   <Image source={{ uri }} style={styles.imagePreview} />
                   <TouchableOpacity style={styles.removeImageBtn} onPress={() => removeImage(index)}>
-                    <Ionicons name="close-circle" size={22} color={colors.error} />
+                    <Ionicons name="close-circle" size={22} color="#FF3B30" />
                   </TouchableOpacity>
                 </View>
               ))}
+              {images.length < 5 && (
+                <TouchableOpacity style={styles.addMoreBtn} onPress={handleImageSelect}>
+                  <Ionicons name="add" size={28} color="#1C1C1E" />
+                </TouchableOpacity>
+              )}
             </ScrollView>
           </View>
 
-          {/* Title */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Title *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="What are you giving away?"
-              placeholderTextColor={colors.textDisabled}
-              value={title}
-              onChangeText={setTitle}
-              maxLength={70}
-            />
-            <Text style={styles.charCount}>{title.length}/70</Text>
-          </View>
-
-          {/* Description */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Description</Text>
-            <TextInput
-              style={[styles.textInput, styles.textArea]}
-              placeholder="Share the story of this item. Why are you giving it away?"
-              placeholderTextColor={colors.textDisabled}
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              maxLength={4000}
-            />
-            <Text style={styles.charCount}>{description.length}/4000</Text>
-          </View>
-
-          {/* Condition */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Condition</Text>
-            <View style={styles.pillRow}>
-              {CONDITIONS.map(c => (
-                <TouchableOpacity
-                  key={c}
-                  style={[styles.pill, condition === c && styles.pillActive]}
-                  onPress={() => setCondition(c)}
-                >
-                  <Text style={[styles.pillText, condition === c && styles.pillTextActive]}>{c}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Transportation Tag */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Transportation Needed</Text>
-            <View style={styles.pillRow}>
-              {TRANSPORT_TAGS.map(t => (
-                <TouchableOpacity
-                  key={t}
-                  style={[styles.pill, transportTag === t && styles.pillActive]}
-                  onPress={() => setTransportTag(t)}
-                >
-                  <Text style={[styles.pillText, transportTag === t && styles.pillTextActive]}>{t}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Location */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Location *</Text>
-            <View style={styles.locationInput}>
-              <Ionicons name="location" size={18} color={colors.primary} />
+          {/* Form Fields */}
+          <View style={{ marginTop: 0 }}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Item Title <Text style={styles.asterisk}>*</Text></Text>
               <TextInput
-                style={styles.locationTextInput}
-                placeholder="e.g. Anna Nagar, Chennai"
-                placeholderTextColor={colors.textDisabled}
-                value={location}
-                onChangeText={setLocation}
+                style={styles.textInput}
+                placeholder="Ex: Study Table"
+                placeholderTextColor="#8E8E93"
+                value={title}
+                onChangeText={setTitle}
               />
             </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Category <Text style={styles.asterisk}>*</Text></Text>
+              <View style={styles.dropdownContainer}>
+                <TextInput
+                  style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
+                  placeholder="Select Category"
+                  placeholderTextColor="#8E8E93"
+                  value={category}
+                  onChangeText={setCategory}
+                />
+                <Ionicons name="chevron-down" size={20} color="#1C1C1E" />
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Description <Text style={styles.asterisk}>*</Text></Text>
+              <View style={[styles.textInput, styles.textAreaContainer]}>
+                <TextInput
+                  style={styles.textArea}
+                  placeholder="Describe your item.."
+                  placeholderTextColor="#8E8E93"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  maxLength={500}
+                />
+                <Text style={styles.charCount}>{description.length}/500</Text>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Condition</Text>
+              <View style={styles.pillRow}>
+                {CONDITIONS.map(c => (
+                  <TouchableOpacity
+                    key={c}
+                    style={[styles.pill, condition === c && styles.pillActive]}
+                    onPress={() => setCondition(c)}
+                  >
+                    <Text style={[styles.pillText, condition === c && styles.pillTextActive]}>{c}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Pickup Location <Text style={styles.asterisk}>*</Text></Text>
+              <View style={styles.dropdownContainer}>
+                <TextInput
+                  style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
+                  placeholder="Hyderabad, TS"
+                  placeholderTextColor="#8E8E93"
+                  value={location}
+                  onChangeText={setLocation}
+                />
+                <Ionicons name="location-outline" size={20} color="#1C1C1E" />
+              </View>
+            </View>
           </View>
+
         </ScrollView>
 
         {/* Bottom CTA */}
         <View style={styles.footer}>
-          <Button
-            title="Post Donation"
-            onPress={handlePost}
-            loading={isLoading}
+          <TouchableOpacity 
+            style={[styles.postBtn, isLoading && { opacity: 0.7 }]} 
+            onPress={handlePost} 
             disabled={isLoading}
-            icon={<Ionicons name="heart" size={20} color={colors.textOnPrimary} />}
-          />
+          >
+            <LinearGradient
+              colors={['#0066FF', '#34C759']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 28 }]}
+            />
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.postBtnText}>Post for FREE</Text>
+            )}
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-const getStyles = (colors: any) => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#F0F0F0',
   },
   headerTitle: {
     flex: 1,
     textAlign: 'center',
-    ...typography.h3,
-    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1C1C1E',
   },
   content: {
     flex: 1,
-    paddingHorizontal: spacing.medium,
-    paddingTop: spacing.medium,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
-
-  // ─── Categories ──────────────────────────────────
-  categoryItem: {
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1C1C1E',
+    marginBottom: 16,
+    marginTop: 8,
+  },
+  
+  // ─── Photos ────────────────────────────────────────
+  photoUploadContainer: {
+    marginBottom: 20,
+  },
+  imageRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.medium,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.divider,
   },
-  categoryItemIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.highlight,
+  addMoreBtn: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: spacing.small,
+    marginRight: 12,
+    backgroundColor: '#F5F5F5',
   },
-  categoryText: {
-    ...typography.body,
-    color: colors.textPrimary,
-    flex: 1,
+  imagePreviewContainer: {
+    marginRight: 12,
+    position: 'relative',
+  },
+  imagePreview: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
+  },
+  removeImageBtn: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
   },
 
   // ─── Form ────────────────────────────────────────
   inputGroup: {
-    marginBottom: spacing.large,
+    marginBottom: 20,
   },
-  inputLabel: {
-    ...typography.bodySmall,
-    color: colors.textPrimary,
+  label: {
+    fontSize: 14,
     fontWeight: '600',
-    marginBottom: spacing.tiny,
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  asterisk: {
+    color: '#FF3B30',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.medium,
-    ...typography.body,
-    color: colors.textPrimary,
-    backgroundColor: colors.background,
+    borderColor: '#E5E5EA',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: '#1C1C1E',
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  textAreaContainer: {
+    height: 120,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   textArea: {
-    height: 120,
+    flex: 1,
+    fontSize: 16,
+    color: '#1C1C1E',
+    paddingHorizontal: 16,
+    paddingTop: 16,
     textAlignVertical: 'top',
   },
   charCount: {
-    ...typography.caption,
-    color: colors.textDisabled,
-    alignSelf: 'flex-end',
-    marginTop: spacing.micro,
+    position: 'absolute',
+    bottom: 12,
+    right: 16,
+    fontSize: 12,
+    color: '#8E8E93',
   },
 
   // ─── Pills ───────────────────────────────────────
   pillRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.tiny,
+    gap: 8,
   },
   pill: {
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.tiny,
-    borderRadius: radius.full,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: '#E5E5EA',
+    backgroundColor: '#FFFFFF',
   },
   pillActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: '#34C759',
+    borderColor: '#34C759',
   },
   pillText: {
-    ...typography.bodySmall,
-    color: colors.textSecondary,
+    fontSize: 12,
+    color: '#8E8E93',
   },
   pillTextActive: {
-    color: colors.textOnPrimary,
-    fontWeight: '600',
-  },
-
-  // ─── Images ──────────────────────────────────────
-  imageRow: {
-    flexDirection: 'row',
-    marginTop: spacing.tiny,
-  },
-  uploadBtn: {
-    width: 90,
-    height: 90,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
-    borderRadius: radius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.small,
-    backgroundColor: colors.background,
-  },
-  uploadBtnText: {
-    ...typography.caption,
-    color: colors.primary,
-    fontWeight: '700',
-    marginTop: 2,
-  },
-  imagePreviewContainer: {
-    marginRight: spacing.small,
-    position: 'relative',
-  },
-  imagePreview: {
-    width: 90,
-    height: 90,
-    borderRadius: radius.md,
-    backgroundColor: colors.highlight,
-  },
-  removeImageBtn: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 
   // ─── Location ────────────────────────────────────
@@ -484,24 +445,40 @@ const getStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.medium,
-    backgroundColor: colors.background,
-    gap: spacing.tiny,
+    borderColor: '#E5E5EA',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 24,
   },
   locationTextInput: {
     flex: 1,
-    paddingVertical: spacing.medium,
-    ...typography.body,
-    color: colors.textPrimary,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    fontSize: 14,
+    color: '#1C1C1E',
+  },
+  useCurrentLocationBtn: {
+    padding: 4,
   },
 
   // ─── Footer ──────────────────────────────────────
   footer: {
-    padding: spacing.medium,
+    padding: 20,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
+    borderTopColor: '#F0F0F0',
+    backgroundColor: '#FFFFFF',
+  },
+  postBtn: {
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  postBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

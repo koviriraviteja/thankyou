@@ -59,47 +59,31 @@ export function DonationCard({
       {/* Image Section */}
       <View style={styles.imageContainer}>
         <Image source={{ uri: imageUrl }} style={styles.image} />
-
-        {/* Rating Badge */}
-        {rating && (
-          <View style={styles.ratingBadge}>
-            <Ionicons name="star" size={10} color={colors.surface} />
-            <Text style={styles.ratingText}>{rating}</Text>
-          </View>
-        )}
-
-        {/* Favorite Button */}
-        {onFavoritePress && (
-          <TouchableOpacity style={styles.favoriteBtn} onPress={onFavoritePress}>
-            <Ionicons
-              name="heart"
-              size={16}
-              color={isFavorite ? colors.coral : colors.textPrimary}
-            />
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* Content Section */}
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>{title}</Text>
-
-        <View style={styles.priceRow}>
-          <Text style={styles.priceText}>{price ? `₹ ${price.toLocaleString('en-IN')}` : 'Free'}</Text>
-          {originalPrice && (
-            <Text style={styles.originalPriceText}>₹{originalPrice.toLocaleString('en-IN')}</Text>
+        <View style={styles.titleRow}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title} numberOfLines={1}>{title}</Text>
+            {condition && <Text style={styles.conditionText} numberOfLines={1}>{condition}</Text>}
+          </View>
+          {onFavoritePress && (
+            <TouchableOpacity onPress={onFavoritePress}>
+              <Ionicons
+                name={isFavorite ? 'heart' : 'heart-outline'}
+                size={16}
+                color={isFavorite ? colors.coral : '#1C1C1E'}
+              />
+            </TouchableOpacity>
           )}
         </View>
-
-        <View style={styles.metaRow}>
-          <View style={styles.locationRow}>
-            <Ionicons name="location-outline" size={12} color={colors.textSecondary} />
-            <Text style={styles.metaText} numberOfLines={1}>
-              {distance ? distance : location?.split(',')[0]}
-            </Text>
-          </View>
-          <Text style={styles.metaText}>{timeStr}</Text>
-        </View>
+        <Text style={[styles.priceText, { color: '#34C759', fontWeight: 'bold' }]}>
+          {price ? `₹ ${price.toLocaleString('en-IN')}` : 'FREE'}
+        </Text>
+        <Text style={styles.distanceText} numberOfLines={1}>
+          {distance ? distance : '1.2 km away'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -126,41 +110,25 @@ const getStyles = (colors: any) => StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  favoriteBtn: {
-    position: 'absolute',
-    top: spacing.tiny,
-    right: spacing.tiny,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...shadows.sm,
-  },
-  ratingBadge: {
-    position: 'absolute',
-    top: spacing.tiny,
-    left: spacing.tiny,
-    backgroundColor: colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: radius.sm,
-    gap: 2,
-  },
-  ratingText: {
-    ...typography.caption,
-    color: colors.surface,
-    fontWeight: '700',
-    fontSize: 10,
-  },
   content: {
     padding: spacing.small,
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+  titleContainer: {
+    flex: 1,
+    paddingRight: 4,
+  },
+  conditionText: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
   title: {
-    ...typography.bodySmall,
     color: colors.textPrimary,
     marginBottom: spacing.micro,
     fontWeight: '600',
@@ -181,6 +149,11 @@ const getStyles = (colors: any) => StyleSheet.create({
     ...typography.caption,
     color: colors.textDisabled,
     textDecorationLine: 'line-through',
+  },
+  distanceText: {
+    fontSize: 10,
+    color: '#8E8E93',
+    marginTop: 4,
   },
   metaRow: {
     flexDirection: 'row',

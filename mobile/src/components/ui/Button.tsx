@@ -11,6 +11,7 @@ import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextS
 import { useTheme } from '../../context/ThemeContext';
 import { typography } from '../../theme/typography';
 import { radius } from '../../theme/radius';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -66,6 +67,14 @@ export function Button({
       disabled={isDisabled}
       activeOpacity={0.8}
     >
+      {variant === 'primary' ? (
+        <LinearGradient
+          colors={['#0066FF', '#34C759']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: radius.md }]}
+        />
+      ) : null}
       {loading ? (
         <ActivityIndicator
           color={variant === 'primary' || variant === 'danger' ? colors.surface : colors.primary}
@@ -84,7 +93,8 @@ export function Button({
 const getVariantStyles = (colors: any) => ({
   primary: {
     container: {
-      backgroundColor: colors.primary,
+      backgroundColor: 'transparent',
+      overflow: 'hidden',
     } as ViewStyle,
     text: {
       color: colors.textOnPrimary,

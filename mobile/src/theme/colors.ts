@@ -8,40 +8,40 @@
 
 export const colors = {
   // ─── Core Brand ───────────────────────────────────────
-  primary: '#0F172A',       // Luxury Midnight Slate — Primary buttons, active tabs
-  secondary: '#5ED6E3',     // Logo Cyan — Secondary accents, badges
-  accent: '#D4AF37',        // Champagne Gold — High-end accents
+  primary: '#0066FF',       // Bright Blue
+  secondary: '#34C759',     // Vibrant Green
+  accent: '#0052CC',        // Darker blue
 
   // ─── Semantic ─────────────────────────────────────────
-  success: '#059669',       // Deep Emerald
-  warning: '#D97706',       // Deep Amber
-  error: '#DC2626',         // Classic Red
-  info: '#2563EB',          // Royal Blue
+  success: '#34C759',
+  warning: '#FF9500',
+  error: '#FF3B30',
+  info: '#007AFF',
 
   // ─── Emotional / Brand Accent ─────────────────────────
-  gold: '#D4AF37',          // Champagne Gold
-  coral: '#E17055',         // Soft Terracotta
-  purple: '#6D28D9',        // Deep Royal Purple
+  gold: '#FFD60A',
+  coral: '#FF6B22',
+  purple: '#AF52DE',
 
   // ─── Surfaces ─────────────────────────────────────────
-  background: '#FAFAFA',    // Ultra-light Platinum Gray — High-end background
+  background: '#F5F7FA',    // Slightly off-white for app background
   surface: '#FFFFFF',       // Pure White — Cards, modals
-  highlight: '#F1F5F9',     // Slate 100 — Selected states
+  highlight: '#F0F4F8',     // Light grey-blue for selected states
 
   // ─── Text ─────────────────────────────────────────────
-  textPrimary: '#111827',   // Deep Slate — Headings, core body text
-  textSecondary: '#6B7280', // Cool Gray — Metadata, timestamps
-  textDisabled: '#9CA3AF',  // Light Gray — Disabled buttons
-  textOnPrimary: '#FFFFFF', // Pure White on Midnight Slate buttons
+  textPrimary: '#1C1C1E',   // Almost Black
+  textSecondary: '#8E8E93', // Cool Gray
+  textDisabled: '#C7C7CC',  // Light Gray
+  textOnPrimary: '#FFFFFF', // Pure White on Buttons
 
   // ─── Borders ──────────────────────────────────────────
-  border: '#E5E7EB',        // Crisp Platinum — Default card borders
-  borderStrong: '#D1D5DB',  // Slate 300
-  divider: '#F3F4F6',       // Section dividers
+  border: '#E5E5EA',        // Light Border
+  borderStrong: '#D1D1D6',  // Stronger Border
+  divider: '#E5E5EA',       // Section dividers
 
   // ─── Overlays ─────────────────────────────────────────
-  overlay: 'rgba(10, 12, 16, 0.6)',
-  overlayLight: 'rgba(10, 12, 16, 0.3)',
+  overlay: 'rgba(0, 0, 0, 0.6)',
+  overlayLight: 'rgba(0, 0, 0, 0.3)',
 } as const;
 
 // ─── Dark Mode Tokens (Linear Inspired) ───────────────────
