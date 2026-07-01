@@ -11,6 +11,16 @@ import { NotificationProvider } from '../src/context/NotificationContext';
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from '../src/context/ThemeContext';
+import { 
+  useFonts, 
+  PlusJakartaSans_400Regular, 
+  PlusJakartaSans_500Medium, 
+  PlusJakartaSans_600SemiBold, 
+  PlusJakartaSans_700Bold 
+} from '@expo-google-fonts/plus-jakarta-sans';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const { user, isLoading } = useAuth();
@@ -49,16 +59,31 @@ function RootLayoutNav() {
         <Stack.Screen name="safety" options={{ headerShown: false }} />
         <Stack.Screen name="impact" options={{ headerShown: false }} />
         <Stack.Screen name="leaderboard" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)/login" options={{ presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="(auth)/phone" options={{ presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="(auth)/verify" options={{ presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="create-request" options={{ presentation: 'modal', headerShown: false }} />
+        <Stack.Screen name="(auth)/login" options={{ presentation: 'fullScreenModal', headerShown: false }} />
+        <Stack.Screen name="(auth)/phone" options={{ presentation: 'fullScreenModal', headerShown: false }} />
+        <Stack.Screen name="(auth)/verify" options={{ presentation: 'fullScreenModal', headerShown: false }} />
+        <Stack.Screen name="create-request" options={{ presentation: 'fullScreenModal', headerShown: false }} />
       </Stack>
     </>
   );
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'PlusJakartaSans-Regular': PlusJakartaSans_400Regular,
+    'PlusJakartaSans-Medium': PlusJakartaSans_500Medium,
+    'PlusJakartaSans-SemiBold': PlusJakartaSans_600SemiBold,
+    'PlusJakartaSans-Bold': PlusJakartaSans_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+
   return (
     <ThemeProvider>
       <AuthProvider>

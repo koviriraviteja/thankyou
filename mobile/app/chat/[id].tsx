@@ -175,28 +175,33 @@ const getStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+    minHeight: 64,
   },
   backBtn: {
-    marginRight: spacing.small,
+    marginRight: spacing.medium,
+    padding: 4,
   },
   headerInfo: {
     flex: 1,
+    justifyContent: 'center',
   },
   headerName: {
-    ...typography.body,
+    ...typography.h3,
     color: colors.textPrimary,
-    fontWeight: '700',
   },
   headerProduct: {
-    ...typography.caption,
+    ...typography.bodySmall,
     color: colors.textSecondary,
+    marginTop: 2,
   },
   headerImage: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.sm,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: colors.highlight,
     marginLeft: spacing.small,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   // ─── Context Banner ──────────────────────────────

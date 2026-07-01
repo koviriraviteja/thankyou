@@ -5,25 +5,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { useTheme } from '../src/context/ThemeContext';
+
 const { width } = Dimensions.get('window');
 
 const CATEGORIES = [
-  { id: '1', name: 'Electronics', image: require('../assets/images/categories/electronics.png') },
-  { id: '2', name: 'Home & Kitchen', image: require('../assets/images/categories/kitchen.png') },
-  { id: '3', name: 'Books & Stationery', image: require('../assets/images/categories/books.png') },
-  { id: '4', name: 'Furniture', image: require('../assets/images/categories/furniture.png') },
-  { id: '5', name: 'Fashion & Accessories', image: require('../assets/images/categories/clothing.png') },
-  { id: '6', name: 'Sports & Fitness', image: require('../assets/images/categories/sports.png') },
-  { id: '7', name: 'Kids & Toys', image: require('../assets/images/categories/toys.png') },
-  { id: '8', name: 'Vehicles', image: require('../assets/images/categories/medical.png') }, 
-  { id: '9', name: 'Others', image: require('../assets/images/categories/misc.png') },
+  { id: '1', name: 'Furniture', image: require('../assets/images/categories/furniture.png') },
+  { id: '2', name: 'Electronics', image: require('../assets/images/categories/electronics.png') },
+  { id: '3', name: 'Books', image: require('../assets/images/categories/books.png') },
+  { id: '4', name: 'Clothing', image: require('../assets/images/categories/dress.png') },
+  { id: '5', name: 'Toys', image: require('../assets/images/categories/teddy.png') },
+  { id: '6', name: 'Kitchen', image: require('../assets/images/categories/kitchen.png') },
+  { id: '7', name: 'Sports', image: require('../assets/images/categories/dumbbell.png') },
+  { id: '8', name: 'Medical', image: require('../assets/images/categories/medical.png') },
+  { id: '9', name: 'Nature/Plants', image: require('../assets/images/categories/plant.png') },
+  { id: '10', name: 'Food', image: require('../assets/images/categories/food.png') },
+  { id: '11', name: 'Miscellaneous (Other)', image: require('../assets/images/categories/globe.png') },
 ];
 
 export default function CategoriesScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const handleCategoryPress = (categoryName: string) => {
-    router.navigate({
-      pathname: '/(tabs)/',
+    router.push({
+      pathname: '/search',
       params: { category: categoryName }
     });
   };
@@ -34,9 +40,9 @@ export default function CategoriesScreen() {
       <View style={styles.promoBanner}>
         <View style={styles.promoTextContainer}>
           <Text style={styles.promoTitle}>
-            <Text style={{color: '#1C1C1E'}}>Join the </Text>
-            <Text style={{color: '#34C759'}}>THANKQ</Text>
-            <Text style={{color: '#1C1C1E'}}> Community{'\n'}and make a difference.</Text>
+            <Text style={{color: colors.textPrimary}}>Join the </Text>
+            <Text style={{color: colors.secondary}}>THANKQ</Text>
+            <Text style={{color: colors.textPrimary}}> Community{'\n'}and make a difference.</Text>
           </Text>
           <TouchableOpacity style={styles.joinBtn}>
             <LinearGradient
@@ -90,12 +96,12 @@ export default function CategoriesScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+        <TouchableOpacity style={styles.backButton} onPress={() => router.canGoBack() ? router.back() : router.navigate('/(tabs)/')}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Browse Categories</Text>
         <TouchableOpacity onPress={() => router.push('/search')}>
-          <Ionicons name="search" size={24} color="#1C1C1E" />
+          <Ionicons name="search" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
 
@@ -125,10 +131,10 @@ export default function CategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -137,7 +143,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.border,
+    backgroundColor: colors.surface,
   },
   backButton: {
     padding: 4,
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
   },
   listContent: {
     padding: 20,

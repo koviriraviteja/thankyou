@@ -8,9 +8,10 @@
 
 export const colors = {
   // ─── Core Brand ───────────────────────────────────────
-  primary: '#0066FF',       // Bright Blue
+  primary: '#00BFA5',       // Vibrant Teal
+  primaryLight: '#E0F2F1',  // Light Teal for icon backgrounds
   secondary: '#34C759',     // Vibrant Green
-  accent: '#0052CC',        // Darker blue
+  accent: '#00A896',        // Darker Teal
 
   // ─── Semantic ─────────────────────────────────────────
   success: '#34C759',
@@ -47,9 +48,10 @@ export const colors = {
 // ─── Dark Mode Tokens (Linear Inspired) ───────────────────
 export const darkColors = {
   ...colors,
-  primary: '#00E5FF',       // Neon Cyan — High-contrast for dark mode
-  secondary: '#00B8D4',     // Deep Cyan
-  accent: '#1DE9B6',        // Vibrant Teal
+  primary: '#1DE9B6',       // Neon Teal — High-contrast for dark mode
+  primaryLight: '#004D40',  // Dark Teal for icon backgrounds in dark mode
+  secondary: '#00E676',     // Bright Green
+  accent: '#64FFDA',        // Lighter Teal
   background: '#0A0C10',    // Ultra Deep Slate / Midnight
   surface: '#111827',       // Dark Slate — Cards, modals
   highlight: '#1F2937',     // Elevated Slate

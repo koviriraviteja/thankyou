@@ -29,15 +29,17 @@ import { DonationCard } from '../../src/components/ui/Card';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 
 const CATEGORIES = [
-  { id: '1', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
-  { id: '2', name: 'Home & Kitchen', image: require('../../assets/images/categories/kitchen.png') },
-  { id: '3', name: 'Books & Stationery', image: require('../../assets/images/categories/books.png') },
-  { id: '5', name: 'Fashion & Accessories', image: require('../../assets/images/categories/clothing.png') },
-  { id: '4', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
-  { id: '6', name: 'Sports & Fitness', image: require('../../assets/images/categories/sports.png') },
-  { id: '7', name: 'Kids & Toys', image: require('../../assets/images/categories/toys.png') },
-  { id: '8', name: 'Vehicles', image: require('../../assets/images/categories/medical.png') },
-  { id: '9', name: 'Others', image: require('../../assets/images/categories/misc.png') },
+  { id: '1', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
+  { id: '2', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
+  { id: '3', name: 'Books', image: require('../../assets/images/categories/books.png') },
+  { id: '4', name: 'Clothing', image: require('../../assets/images/categories/dress.png') },
+  { id: '5', name: 'Toys', image: require('../../assets/images/categories/teddy.png') },
+  { id: '6', name: 'Kitchen', image: require('../../assets/images/categories/kitchen.png') },
+  { id: '7', name: 'Sports', image: require('../../assets/images/categories/dumbbell.png') },
+  { id: '8', name: 'Medical', image: require('../../assets/images/categories/medical.png') },
+  { id: '9', name: 'Nature/Plants', image: require('../../assets/images/categories/plant.png') },
+  { id: '10', name: 'Food', image: require('../../assets/images/categories/food.png') },
+  { id: '11', name: 'Miscellaneous (Other)', image: require('../../assets/images/categories/globe.png') },
 ];
 
 const DISTANCE_FILTERS = ['1 km', '5 km', '10 km', '20 km'];
@@ -162,30 +164,7 @@ export default function HomeFeedScreen() {
   const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'Neighbor';
 
   const renderHeader = () => (
-    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
-      {/* Top Bar: Menu | Logo | Notification */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.medium }}>
-        <TouchableOpacity>
-          <Ionicons name="menu" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontSize: 26, fontWeight: '900', color: '#4BC6D3', letterSpacing: -0.5 }}>
-            THANK<Text style={{ color: '#FEBA35' }}>U</Text>
-          </Text>
-        </View>
-
-        <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.notifBtn}>
-          <Ionicons name="notifications-outline" size={24} color={colors.textPrimary} />
-          {notifications.length > 0 && (
-            <View style={styles.notifBadge}>
-              <Text style={styles.notifBadgeText}>
-                {notifications.length > 9 ? '9+' : notifications.length}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
+    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
 
       {/* Greeting */}
       <View style={{ marginBottom: spacing.medium }}>
@@ -202,31 +181,46 @@ export default function HomeFeedScreen() {
       </View>
 
       {/* Promotional Banner */}
-      <ImageBackground
-        source={require('../../assets/images/banner-bg-v3.png')}
-        style={[styles.bannerContainer, { borderRadius: 24, marginBottom: 12, overflow: 'hidden' }]}
-        imageStyle={{ resizeMode: 'cover' }}
-      >
-        <View style={{ padding: 16, width: '65%', zIndex: 1, justifyContent: 'center' }}>
-          <Text style={[styles.bannerTitle, { fontSize: 18, color: '#1C1C1E', lineHeight: 26, fontWeight: '900', marginBottom: 8 }]}>
-            Give what you{'\n'}don't need.{'\n'}Get what you{'\n'}truly need. <Text style={{ color: '#34C759' }}>💚</Text>
-          </Text>
-          <TouchableOpacity style={[styles.bannerBtn, { backgroundColor: '#0066FF', width: 110, paddingVertical: 8, marginTop: 4, borderRadius: 20, alignItems: 'center' }]} onPress={() => router.push('/categories')}>
-            <Text style={[styles.bannerBtnText, { color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }]}>Explore Now</Text>
-          </TouchableOpacity>
+      <View style={{ ...shadows.sm, marginBottom: 12, borderRadius: 24 }}>
+        <View style={[styles.bannerContainer, { backgroundColor: colors.highlight, padding: 24, borderRadius: 24, flexDirection: 'row', overflow: 'hidden' }]}>
+          <View style={{ flex: 1, zIndex: 1, justifyContent: 'center' }}>
+            <Text style={[styles.bannerTitle, { ...typography.h1, fontSize: 24, lineHeight: 30, color: colors.textPrimary, marginBottom: 16 }]}>
+              Give what you{'\n'}don't need.{'\n'}Get what you{'\n'}truly need. <Text style={{ color: colors.secondary }}>💚</Text>
+            </Text>
+            <View style={{ alignSelf: 'flex-start', ...shadows.md, marginTop: 12, borderRadius: 999 }}>
+              <TouchableOpacity 
+                style={{ borderRadius: 999, overflow: 'hidden' }} 
+                onPress={() => router.push('/categories')}
+              >
+                <LinearGradient
+                  colors={['#00BFA5', '#00796B']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, paddingHorizontal: 24, gap: 8 }}
+                >
+                  <Text style={[{ ...typography.label, color: '#FFFFFF', fontSize: 15, letterSpacing: 0.5 }]}>Explore Now</Text>
+                  <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Image
+            source={require('../../assets/images/hands_holding_gift.png')}
+            style={{ width: 240, height: 250, position: 'absolute', right: 5, bottom: -55, transform: [{ scale: 1.2 }], resizeMode: 'contain' }}
+          />
         </View>
-      </ImageBackground>
+      </View>
 
       {/* Categories */}
       <View style={styles.section}>
         <View style={styles.categoriesRow}>
-          {CATEGORIES.slice(0, 4).map(cat => {
+          {CATEGORIES.slice(0, 7).map(cat => {
             const isSelected = selectedCategory === cat.name;
             return (
               <TouchableOpacity
                 key={cat.id}
                 style={styles.categoryItemFlex}
-                onPress={() => setSelectedCategory(isSelected ? null : cat.name)}
+                onPress={() => router.push({ pathname: '/search', params: { category: cat.name } })}
               >
                 <View style={[styles.categoryIcon, isSelected && styles.categoryIconActive]}>
                   <Image source={cat.image} style={styles.categoryImage as any} />
@@ -242,7 +236,7 @@ export default function HomeFeedScreen() {
             onPress={() => router.push('/categories')}
           >
             <View style={styles.categoryIcon}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="#1C1C1E" />
+              <Image source={require('../../assets/images/categories/four_dots.png')} style={styles.categoryImage as any} />
             </View>
             <Text style={styles.categoryName} numberOfLines={2}>
               More
@@ -345,10 +339,36 @@ export default function HomeFeedScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <Image
-        source={require('../../assets/logo.png')}
-        style={[styles.watermark as any, { opacity: isDark ? 0.05 : 0.25 }]}
-      />
+
+      {/* Sticky Top Header */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8, backgroundColor: colors.background, zIndex: 10 }}>
+        <TouchableOpacity 
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1, paddingRight: 16 }}
+          onPress={() => router.push('/location')}
+        >
+          <Ionicons name="location" size={22} color={colors.primary} />
+          <Text style={{ fontSize: 18, fontWeight: '700', color: colors.textPrimary }} numberOfLines={1}>
+            {locationName}
+          </Text>
+          <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <TouchableOpacity onPress={() => router.push('/search')} style={styles.notifBtn}>
+            <Ionicons name="search-outline" size={22} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.notifBtn}>
+            <Ionicons name="notifications-outline" size={24} color={colors.textPrimary} />
+            {notifications.length > 0 && (
+              <View style={styles.notifBadge}>
+                <Text style={styles.notifBadgeText}>
+                  {notifications.length > 9 ? '9+' : notifications.length}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
 
       {/* Feed */}
       {loading && !refreshing ? (
@@ -639,38 +659,33 @@ const getStyles = (colors: any) => StyleSheet.create({
   // ─── Categories ──────────────────────────────────
   categoriesRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     marginTop: spacing.tiny,
   },
   categoryItemFlex: {
     alignItems: 'center',
-    width: '19.5%',
+    width: '25%',
+    marginBottom: spacing.medium,
   },
   categoryIcon: {
     width: 60,
     height: 60,
-    borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    backgroundColor: colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.tiny,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
   },
   categoryIconActive: {
-    borderColor: colors.primary,
     borderWidth: 2,
+    borderColor: colors.primary,
   },
   categoryImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+    width: 44,
+    height: 44,
+    resizeMode: 'contain',
   },
   categoryName: {
     ...typography.caption,

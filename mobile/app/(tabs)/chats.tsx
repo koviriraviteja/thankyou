@@ -77,7 +77,12 @@ export default function ChatsScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Messages</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.navigate('/(tabs)')} style={{ padding: 4, marginLeft: -4 }}>
+            <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Messages</Text>
+        </View>
         <TouchableOpacity>
           <Ionicons name="search-outline" size={22} color={colors.textPrimary} />
         </TouchableOpacity>

@@ -67,14 +67,14 @@ export function Button({
       disabled={isDisabled}
       activeOpacity={0.8}
     >
-      {variant === 'primary' ? (
+      {variant === 'primary' && (
         <LinearGradient
-          colors={['#0066FF', '#34C759']}
+          colors={['#4BC6D3', colors.primary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radius.md }]}
+          style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
         />
-      ) : null}
+      )}
       {loading ? (
         <ActivityIndicator
           color={variant === 'primary' || variant === 'danger' ? colors.surface : colors.primary}
@@ -95,6 +95,7 @@ const getVariantStyles = (colors: any) => ({
     container: {
       backgroundColor: 'transparent',
       overflow: 'hidden',
+      borderWidth: 0,
     } as ViewStyle,
     text: {
       color: colors.textOnPrimary,
@@ -128,7 +129,8 @@ const getVariantStyles = (colors: any) => ({
 
 const getStyles = (colors: any) => StyleSheet.create({
   base: {
-    borderRadius: radius.md,
+    borderRadius: 999, // Fully rounded
+
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,

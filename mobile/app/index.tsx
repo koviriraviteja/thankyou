@@ -54,7 +54,7 @@ export default function RootIndex() {
     <View style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Image
-          source={require('../assets/logo.png')}
+          source={require('../assets/images/thankq_logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />

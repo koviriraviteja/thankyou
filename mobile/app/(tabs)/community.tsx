@@ -161,6 +161,14 @@ export default function CommunityScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Screen Title */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8, backgroundColor: colors.surface, gap: 12 }}>
+        <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.navigate('/(tabs)')} style={{ padding: 4, marginLeft: -4 }}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
+        </TouchableOpacity>
+        <Text style={{ fontSize: 26, fontWeight: '900', color: colors.textPrimary, letterSpacing: -0.5 }}>Community</Text>
+      </View>
+
       {/* Header with Mode Toggle */}
       <View style={styles.header}>
         <View style={styles.toggleContainer}>

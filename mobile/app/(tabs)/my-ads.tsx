@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { useAuth } from '../../src/context/AuthContext';
+import { useTheme } from '../../src/context/ThemeContext';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -14,6 +15,8 @@ type ActiveTab = 'ACTIVE' | 'SOLD' | 'EXPIRED';
 
 export default function MyAdsScreen() {
   const { user } = useAuth();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
   const [activeTab, setActiveTab] = useState<ActiveTab>('ACTIVE');
   const [activeAds, setActiveAds] = useState<any[]>([]);
   const [soldAds, setSoldAds] = useState<any[]>([]);
@@ -79,12 +82,12 @@ export default function MyAdsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={{ width: 40 }}>
-          <Ionicons name="menu" size={28} color="#1C1C1E" />
+          <Ionicons name="menu" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Listings</Text>
         <View style={styles.headerIcons}>
           <TouchableOpacity style={styles.headerIconBtn}>
-            <Ionicons name="reorder-four" size={28} color="#1C1C1E" />
+            <Ionicons name="reorder-four" size={28} color={colors.textPrimary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -151,10 +154,10 @@ export default function MyAdsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -162,12 +165,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
   },
   headerIcons: {
     flexDirection: 'row',

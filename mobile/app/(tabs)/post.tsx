@@ -12,20 +12,38 @@ import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../src/lib/supabase';
-import { LinearGradient } from 'expo-linear-gradient';
-import { spacing } from '../../src/theme/spacing';
-import { radius } from '../../src/theme/radius';
+import { useTheme } from '../../src/context/ThemeContext';
 
-const CATEGORIES = ['Furniture', 'Electronics', 'Books', 'Clothing', 'Toys', 'Kitchen', 'Sports', 'Medical', 'Nature/Plants', 'Food', 'Miscellaneous'];
+const CATEGORY_MAP: Record<string, string[]> = {
+  'Furniture': ['Seating (Sofas, Chairs, Recliners)', 'Tables (Dining, Coffee, Desks)', 'Storage (Wardrobes, Cabinets)', 'Beds & Mattresses'],
+  'Electronics': ['Mobile & Accessories', 'Computers & Laptops', 'Home Appliances (ACs, Washers)', 'Entertainment (TVs, Gaming)'],
+  'Books': ['Educational & Textbooks', 'Fiction', 'Non-Fiction', 'Children\'s Books & Comics'],
+  'Clothing': ['Men\'s Wear', 'Women\'s Wear', 'Kids & Babies', 'Accessories & Footwear'],
+  'Toys': ['Infant/Toddler Play', 'Action Figures & Dolls', 'Educational & Puzzles', 'Outdoor (Bicycles, Ride-ons)'],
+  'Kitchen': ['Cookware', 'Tableware', 'Storage Containers', 'Small Appliances'],
+  'Sports': ['Fitness Gear (Dumbbells, Mats)', 'Racket Sports', 'Team Sports', 'Outdoor & Camping Gear'],
+  'Medical': ['Monitoring Devices (Oximeters)', 'Mobility Aids (Wheelchairs)', 'Supplies (First Aid Kits)', 'Support & Braces'],
+  'Nature/Plants': ['Indoor Plants', 'Outdoor/Garden Plants', 'Supplies (Planters, Soil)', 'Seeds & Cuttings'],
+  'Food': ['Cooked/Event Leftovers (Time Sensitive)', 'Fresh Vegetables & Fruits', 'Non-Perishables (Canned, Grains)', 'Packaged Snacks', 'Beverages'],
+  'Miscellaneous (Other)': ['Art & Craft Supplies', 'Musical Instruments', 'Pet Supplies', 'Stationery']
+};
+
+const CATEGORIES = Object.keys(CATEGORY_MAP);
 const CONDITIONS = ['New', 'Like New', 'Good', 'Used'];
 
 export default function PostAdScreen() {
   const { user } = useAuth();
+  const { colors, isDark } = useTheme();
+  const styles = getStyles(colors, isDark);
+  
   const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [transportation, setTransportation] = useState('');
+  const [expiryTime, setExpiryTime] = useState('');
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [condition, setCondition] = useState('Good');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,8 +105,12 @@ export default function PostAdScreen() {
   const removeImage = (index: number) => setImages(images.filter((_, i) => i !== index));
 
   const handlePost = async () => {
-    if (!title || !location || !category) {
-      Alert.alert('Missing Details', 'Please fill in the title, category, and location to continue.');
+    if (!title || !location || !category || !subcategory || !transportation) {
+      Alert.alert('Missing Details', 'Please fill in all required fields (marked with *).');
+      return;
+    }
+    if (category === 'Food' && !expiryTime) {
+      Alert.alert('Missing Expiry', 'Food items require a specific consume-by or expiry time.');
       return;
     }
     if (!user) {
@@ -123,7 +145,10 @@ export default function PostAdScreen() {
         latitude: coords?.lat || null,
         longitude: coords?.lng || null,
         category,
+        subcategory,
         condition,
+        transportation,
+        expiry_time: expiryTime || null,
         image_url: mainImageUrl || 'https://via.placeholder.com/300',
         image_urls: uploadedUrls,
         seller_id: user.id,
@@ -139,6 +164,9 @@ export default function PostAdScreen() {
             setTitle('');
             setDescription('');
             setCategory('');
+            setSubcategory('');
+            setTransportation('');
+            setExpiryTime('');
             setCondition('Good');
             router.push('/(tabs)/my-ads');
           },
@@ -159,7 +187,7 @@ export default function PostAdScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+            <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Post an Item</Text>
           <View style={{ width: 24 }} />
@@ -174,7 +202,7 @@ export default function PostAdScreen() {
           {/* Photo Upload */}
           <View>
             <Text style={[styles.label, { marginBottom: 4, marginTop: 12 }]}>Add Photos</Text>
-            <Text style={{ fontSize: 12, color: '#8E8E93', marginBottom: 12 }}>Add up to 5 photos</Text>
+            <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 12 }}>Add up to 5 photos</Text>
           </View>
           <View style={styles.photoUploadContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageRow}>
@@ -182,13 +210,13 @@ export default function PostAdScreen() {
                 <View key={index} style={styles.imagePreviewContainer}>
                   <Image source={{ uri }} style={styles.imagePreview} />
                   <TouchableOpacity style={styles.removeImageBtn} onPress={() => removeImage(index)}>
-                    <Ionicons name="close-circle" size={22} color="#FF3B30" />
+                    <Ionicons name="close-circle" size={22} color={colors.error} />
                   </TouchableOpacity>
                 </View>
               ))}
               {images.length < 5 && (
                 <TouchableOpacity style={styles.addMoreBtn} onPress={handleImageSelect}>
-                  <Ionicons name="add" size={28} color="#1C1C1E" />
+                  <Ionicons name="add" size={28} color={colors.textPrimary} />
                 </TouchableOpacity>
               )}
             </ScrollView>
@@ -201,7 +229,7 @@ export default function PostAdScreen() {
               <TextInput
                 style={styles.textInput}
                 placeholder="Ex: Study Table"
-                placeholderTextColor="#8E8E93"
+                placeholderTextColor={colors.textSecondary}
                 value={title}
                 onChangeText={setTitle}
               />
@@ -212,14 +240,30 @@ export default function PostAdScreen() {
               <View style={styles.dropdownContainer}>
                 <TextInput
                   style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
-                  placeholder="Select Category"
-                  placeholderTextColor="#8E8E93"
+                  placeholder="Select Category (e.g. Furniture, Electronics)"
+                  placeholderTextColor={colors.textSecondary}
                   value={category}
-                  onChangeText={setCategory}
+                  onChangeText={(val) => { setCategory(val); setSubcategory(''); }}
                 />
-                <Ionicons name="chevron-down" size={20} color="#1C1C1E" />
+                <Ionicons name="chevron-down" size={20} color={colors.textPrimary} />
               </View>
             </View>
+
+            {category && CATEGORY_MAP[category] && (
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Subcategory <Text style={styles.asterisk}>*</Text></Text>
+                <View style={styles.dropdownContainer}>
+                  <TextInput
+                    style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
+                    placeholder="Select specific subtype"
+                    placeholderTextColor={colors.textSecondary}
+                    value={subcategory}
+                    onChangeText={setSubcategory}
+                  />
+                  <Ionicons name="chevron-down" size={20} color={colors.textPrimary} />
+                </View>
+              </View>
+            )}
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Description <Text style={styles.asterisk}>*</Text></Text>
@@ -227,7 +271,7 @@ export default function PostAdScreen() {
                 <TextInput
                   style={styles.textArea}
                   placeholder="Describe your item.."
-                  placeholderTextColor="#8E8E93"
+                  placeholderTextColor={colors.textSecondary}
                   value={description}
                   onChangeText={setDescription}
                   multiline
@@ -254,16 +298,49 @@ export default function PostAdScreen() {
             </View>
 
             <View style={styles.inputGroup}>
+              <Text style={styles.label}>Transportation / Logistics <Text style={styles.asterisk}>*</Text></Text>
+              <View style={styles.dropdownContainer}>
+                <TextInput
+                  style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
+                  placeholder="e.g. Fits in a car, Needs a truck"
+                  placeholderTextColor={colors.textSecondary}
+                  value={transportation}
+                  onChangeText={setTransportation}
+                />
+                <Ionicons name="car-outline" size={20} color={colors.textPrimary} />
+              </View>
+            </View>
+
+            {category === 'Food' && (
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Expiry Time / Consume By <Text style={styles.asterisk}>*</Text></Text>
+                <View style={styles.dropdownContainer}>
+                  <TextInput
+                    style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
+                    placeholder="e.g. Consume by 8:00 PM tonight"
+                    placeholderTextColor={colors.textSecondary}
+                    value={expiryTime}
+                    onChangeText={setExpiryTime}
+                  />
+                  <Ionicons name="time-outline" size={20} color={colors.textPrimary} />
+                </View>
+                <Text style={{ fontSize: 12, color: colors.error, marginTop: 6, fontStyle: 'italic' }}>
+                  Required for food safety. Please be specific.
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.inputGroup}>
               <Text style={styles.label}>Pickup Location <Text style={styles.asterisk}>*</Text></Text>
               <View style={styles.dropdownContainer}>
                 <TextInput
                   style={[styles.textInput, { flex: 1, borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}
                   placeholder="Hyderabad, TS"
-                  placeholderTextColor="#8E8E93"
+                  placeholderTextColor={colors.textSecondary}
                   value={location}
                   onChangeText={setLocation}
                 />
-                <Ionicons name="location-outline" size={20} color="#1C1C1E" />
+                <Ionicons name="location-outline" size={20} color={colors.textPrimary} />
               </View>
             </View>
           </View>
@@ -277,14 +354,8 @@ export default function PostAdScreen() {
             onPress={handlePost} 
             disabled={isLoading}
           >
-            <LinearGradient
-              colors={['#0066FF', '#34C759']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 28 }]}
-            />
             {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" />
+              <ActivityIndicator color={colors.textOnPrimary} />
             ) : (
               <Text style={styles.postBtnText}>Post for FREE</Text>
             )}
@@ -295,10 +366,10 @@ export default function PostAdScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -306,24 +377,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.border,
+    backgroundColor: colors.surface,
   },
   headerTitle: {
     flex: 1,
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
   },
   content: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
+    backgroundColor: colors.background,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
     marginBottom: 16,
     marginTop: 8,
   },
@@ -342,7 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: isDark ? colors.highlight : '#F5F5F5',
   },
   imagePreviewContainer: {
     marginRight: 12,
@@ -357,7 +430,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -6,
     right: -6,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
   },
 
@@ -368,29 +441,31 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
     marginBottom: 8,
   },
   asterisk: {
-    color: '#FF3B30',
+    color: colors.error,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: '#1C1C1E',
+    color: colors.textPrimary,
+    backgroundColor: colors.surface,
   },
   dropdownContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
+    backgroundColor: colors.surface,
   },
   textAreaContainer: {
     height: 120,
@@ -400,7 +475,7 @@ const styles = StyleSheet.create({
   textArea: {
     flex: 1,
     fontSize: 16,
-    color: '#1C1C1E',
+    color: colors.textPrimary,
     paddingHorizontal: 16,
     paddingTop: 16,
     textAlignVertical: 'top',
@@ -410,7 +485,7 @@ const styles = StyleSheet.create({
     bottom: 12,
     right: 16,
     fontSize: 12,
-    color: '#8E8E93',
+    color: colors.textSecondary,
   },
 
   // ─── Pills ───────────────────────────────────────
@@ -424,19 +499,19 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
-    backgroundColor: '#FFFFFF',
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
   pillActive: {
-    backgroundColor: '#34C759',
-    borderColor: '#34C759',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   pillText: {
     fontSize: 12,
-    color: '#8E8E93',
+    color: colors.textSecondary,
   },
   pillTextActive: {
-    color: '#FFFFFF',
+    color: colors.textOnPrimary,
     fontWeight: 'bold',
   },
 
@@ -445,10 +520,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     borderRadius: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     marginBottom: 24,
   },
   locationTextInput: {
@@ -456,7 +531,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 8,
     fontSize: 14,
-    color: '#1C1C1E',
+    color: colors.textPrimary,
   },
   useCurrentLocationBtn: {
     padding: 4,
@@ -466,18 +541,19 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-    backgroundColor: '#FFFFFF',
+    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
   },
   postBtn: {
     height: 56,
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.primary,
     overflow: 'hidden',
   },
   postBtnText: {
-    color: '#FFFFFF',
+    color: colors.textOnPrimary,
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -17,6 +17,7 @@ import { typography } from '../src/theme/typography';
 import { spacing } from '../src/theme/spacing';
 import { radius } from '../src/theme/radius';
 import { shadows } from '../src/theme/shadows';
+import { useLocalSearchParams } from 'expo-router';
 
 const RECENT_SEARCHES = ['Sofa', 'Study Table', 'Books', 'Cycle'];
 const TRENDING_TAGS = ['Furniture', 'Electronics', 'Books', 'Clothing', 'Kitchen'];
@@ -28,6 +29,14 @@ export default function SearchScreen() {
   const [results, setResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  const { category } = useLocalSearchParams<{ category?: string }>();
+
+  React.useEffect(() => {
+    if (category) {
+      handleSearch(category);
+    }
+  }, [category]);
+
   const handleSearch = async (searchText: string) => {
     setQuery(searchText);
     if (searchText.length < 2) { setResults([]); return; }
@@ -35,7 +44,7 @@ export default function SearchScreen() {
     const { data } = await supabase
       .from('products')
       .select('*')
-      .ilike('title', `%${searchText}%`)
+      .or(`title.ilike.%${searchText}%,category.ilike.%${searchText}%`)
       .eq('is_sold', false)
       .limit(20);
     if (data) setResults(data);
@@ -52,7 +61,7 @@ export default function SearchScreen() {
         <View style={styles.searchInputContainer}>
           <Ionicons name="search" size={18} color={colors.textSecondary} />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { outlineStyle: 'none' } as any]}
             placeholder="Search for items, categories..."
             placeholderTextColor={colors.textDisabled}
             value={query}
@@ -155,13 +164,13 @@ const getStyles = (colors: any) => StyleSheet.create({
     paddingVertical: spacing.tiny, borderRadius: radius.full, backgroundColor: colors.highlight,
   },
   trendingTagText: { ...typography.bodySmall, color: colors.primary, fontWeight: '600' },
-  resultsList: { padding: spacing.medium, gap: spacing.tiny },
+  resultsList: { padding: spacing.medium, gap: spacing.small },
   resultItem: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
-    padding: spacing.small, borderRadius: radius.md, ...shadows.sm, marginBottom: spacing.tiny,
+    padding: spacing.medium, borderRadius: radius.lg, ...shadows.md, marginBottom: spacing.medium,
   },
-  resultImage: { width: 56, height: 56, borderRadius: radius.sm, backgroundColor: colors.highlight, marginRight: spacing.small },
-  resultInfo: { flex: 1 },
-  resultTitle: { ...typography.bodySmall, color: colors.textPrimary, fontWeight: '600' },
-  resultLocation: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
+  resultImage: { width: 84, height: 84, borderRadius: radius.md, backgroundColor: colors.highlight, marginRight: spacing.medium },
+  resultInfo: { flex: 1, justifyContent: 'center' },
+  resultTitle: { ...typography.body, color: colors.textPrimary, fontWeight: '700', marginBottom: 4 },
+  resultLocation: { ...typography.bodySmall, color: colors.textSecondary, marginTop: 4 },
 });

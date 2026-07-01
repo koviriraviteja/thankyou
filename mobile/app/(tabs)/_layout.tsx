@@ -26,13 +26,13 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: '#0066FF',
+          tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: '#8E8E93',
           tabBarStyle: {
             height: tabHeight,
             paddingBottom: paddingBottom,
             paddingTop: 8,
-            backgroundColor: '#FFFFFF',
+            backgroundColor: colors.surface,
             borderTopWidth: 0,
             elevation: 20,
             shadowColor: '#000',
@@ -57,11 +57,11 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="browse"
+          name="community"
           options={{
-            title: 'Browse',
+            title: 'Community',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'search' : 'search-outline'} size={24} color={color} />
+              <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
             ),
           }}
         />
@@ -101,14 +101,14 @@ export default function TabLayout() {
           }}
         />
         {/* Hide old tabs from bar */}
-        <Tabs.Screen name="community" options={{ href: null }} />
+        <Tabs.Screen name="browse" options={{ href: null }} />
         <Tabs.Screen name="my-ads" options={{ href: null }} />
       </Tabs>
       
       {/* Center POST Button */}
       <View style={[styles.fabContainer, { bottom: paddingBottom + 5 }]} pointerEvents="box-none">
-        <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/post')}>
-          <View style={styles.fabBlue}>
+        <TouchableOpacity style={[styles.fab, { backgroundColor: colors.surface }]} onPress={() => router.push('/(tabs)/post')}>
+          <View style={[styles.fabBlue, { backgroundColor: colors.primary }]}>
             <Ionicons name="add" size={32} color="#FFFFFF" />
           </View>
         </TouchableOpacity>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   fabBlue: {
     flex: 1,
     borderRadius: 28,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#00BFA5', // colors.primary hardcoded since it's outside component
     justifyContent: 'center',
     alignItems: 'center',
   },

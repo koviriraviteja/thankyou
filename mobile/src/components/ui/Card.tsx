@@ -53,12 +53,21 @@ export function DonationCard({
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const timeStr = new Date(createdAt).toLocaleDateString();
+  const [imgError, setImgError] = React.useState(false);
+
+  const imageSource = (!imageUrl || imgError) 
+    ? require('../../../assets/images/empty-state.png') 
+    : { uri: imageUrl };
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.9}>
       {/* Image Section */}
       <View style={styles.imageContainer}>
-        <Image source={{ uri: imageUrl }} style={styles.image} />
+        <Image 
+          source={imageSource} 
+          style={styles.image} 
+          onError={() => setImgError(true)}
+        />
       </View>
 
       {/* Content Section */}
@@ -78,7 +87,7 @@ export function DonationCard({
             </TouchableOpacity>
           )}
         </View>
-        <Text style={[styles.priceText, { color: '#34C759', fontWeight: 'bold' }]}>
+        <Text style={[styles.priceText, { color: colors.primary, fontWeight: 'bold' }]}>
           {price ? `₹ ${price.toLocaleString('en-IN')}` : 'FREE'}
         </Text>
         <Text style={styles.distanceText} numberOfLines={1}>
@@ -92,16 +101,15 @@ export function DonationCard({
 const getStyles = (colors: any) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    borderRadius: 16,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 0,
     ...shadows.sm,
     marginBottom: spacing.small,
   },
   imageContainer: {
     width: '100%',
-    height: 160,
+    height: 140,
     backgroundColor: colors.highlight,
     position: 'relative',
   },
@@ -131,8 +139,8 @@ const getStyles = (colors: any) => StyleSheet.create({
   title: {
     color: colors.textPrimary,
     marginBottom: spacing.micro,
-    fontWeight: '600',
-    minHeight: 44, // 2 lines of bodySmall (lineHeight ~22.4)
+    fontWeight: '700',
+    fontSize: 14,
   },
   priceRow: {
     flexDirection: 'row',

@@ -49,16 +49,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginWithGoogle = async () => {
     let browserOpen = false;
     try {
-      // In Expo Go: generates exp://IP:PORT/--/auth/callback
-      // In standalone build: generates thanku://auth/callback
-      // Both must be registered in Supabase → Auth → URL Configuration → Redirect URLs
-      const isExpoGo = Constants.appOwnership === 'expo';
-      const redirectUrl = isExpoGo
-        ? makeRedirectUri({ path: 'auth/callback' })
-        : makeRedirectUri({ scheme: 'thanku', path: 'auth/callback' });
+      // Use Linking.createURL('') to match the exact base URL Supabase redirects to
+      // (e.g. exp://192.168.0.5:8081)
+      const redirectUrl = Linking.createURL('');
 
       console.log('Redirect URL:', redirectUrl);
-      console.log('Running in:', isExpoGo ? 'Expo Go' : 'Standalone Build');
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -110,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (freshSession.session) {
             setSession(freshSession.session);
             setUser(freshSession.session.user);
-            router.dismissAll();
+            router.replace('/(tabs)');
           }
         } else if (result.type === 'cancel' || result.type === 'dismiss') {
           // User closed the browser — this is expected, just do nothing

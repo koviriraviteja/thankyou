@@ -3,23 +3,27 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Dimensions }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../../src/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 const CATEGORIES = [
-  { id: '1', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
-  { id: '2', name: 'Home & Kitchen', image: require('../../assets/images/categories/kitchen.png') },
-  { id: '3', name: 'Books & Stationery', image: require('../../assets/images/categories/books.png') },
-  { id: '4', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
-  { id: '5', name: 'Fashion & Accessories', image: require('../../assets/images/categories/clothing.png') },
-  { id: '6', name: 'Sports & Fitness', image: require('../../assets/images/categories/sports.png') },
-  { id: '7', name: 'Kids & Toys', image: require('../../assets/images/categories/toys.png') },
-  { id: '8', name: 'Vehicles', image: require('../../assets/images/categories/medical.png') }, 
-  { id: '9', name: 'Others', image: require('../../assets/images/categories/misc.png') },
+  { id: '1', name: 'Furniture', image: require('../../assets/images/categories/furniture.png') },
+  { id: '2', name: 'Electronics', image: require('../../assets/images/categories/electronics.png') },
+  { id: '3', name: 'Books', image: require('../../assets/images/categories/books.png') },
+  { id: '4', name: 'Clothing', image: require('../../assets/images/categories/dress.png') },
+  { id: '5', name: 'Toys', image: require('../../assets/images/categories/teddy.png') },
+  { id: '6', name: 'Kitchen', image: require('../../assets/images/categories/kitchen.png') },
+  { id: '7', name: 'Sports', image: require('../../assets/images/categories/dumbbell.png') },
+  { id: '8', name: 'Medical', image: require('../../assets/images/categories/medical.png') },
+  { id: '9', name: 'Nature/Plants', image: require('../../assets/images/categories/plant.png') },
+  { id: '10', name: 'Food', image: require('../../assets/images/categories/food.png') },
+  { id: '11', name: 'Miscellaneous (Other)', image: require('../../assets/images/categories/globe.png') },
 ];
 
 export default function CategoriesScreen() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const handleCategoryPress = (categoryName: string) => {
     router.navigate({
@@ -38,19 +42,12 @@ export default function CategoriesScreen() {
             <Text style={{color: '#34C759'}}>THANKQ</Text>
             <Text style={{color: '#1C1C1E'}}> Community{'\n'}and make a difference.</Text>
           </Text>
-          <TouchableOpacity style={styles.joinBtn}>
-            <LinearGradient
-              colors={['#0066FF', '#34C759']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.joinBtnGradient}
-            >
-              <Text style={styles.joinBtnText}>Join Now</Text>
-            </LinearGradient>
+          <TouchableOpacity style={[styles.joinBtn, { backgroundColor: colors.primary, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999 }]}>
+            <Text style={styles.joinBtnText}>Join Now</Text>
           </TouchableOpacity>
         </View>
         <Image 
-          source={require('../../assets/images/onboarding-hero.png')} 
+          source={require('../../assets/images/family_illustration.png')} 
           style={styles.promoImage} 
           resizeMode="contain" 
         />
@@ -62,21 +59,21 @@ export default function CategoriesScreen() {
         <View style={styles.stepsRow}>
           <View style={styles.stepItem}>
             <View style={styles.stepIconCircle}>
-              <Ionicons name="add" size={24} color="#34C759" />
+              <Ionicons name="add" size={24} color={colors.secondary} />
             </View>
             <Text style={styles.stepTitle}>1. Post</Text>
             <Text style={styles.stepDesc}>Add item for free</Text>
           </View>
           <View style={styles.stepItem}>
             <View style={styles.stepIconCircle}>
-              <Ionicons name="people" size={24} color="#0066FF" />
+              <Ionicons name="people" size={24} color={colors.primary} />
             </View>
             <Text style={styles.stepTitle}>2. Connect</Text>
             <Text style={styles.stepDesc}>Chat with interested people</Text>
           </View>
           <View style={styles.stepItem}>
             <View style={styles.stepIconCircle}>
-              <Ionicons name="heart" size={24} color="#FF3B30" />
+              <Ionicons name="heart" size={24} color="#FF2D55" />
             </View>
             <Text style={styles.stepTitle}>3. Share</Text>
             <Text style={styles.stepDesc}>Give or receive happily</Text>
@@ -90,12 +87,12 @@ export default function CategoriesScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+        <TouchableOpacity style={styles.backButton} onPress={() => router.canGoBack() ? router.back() : router.navigate('/(tabs)/')}>
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Browse Categories</Text>
         <TouchableOpacity onPress={() => router.push('/search')}>
-          <Ionicons name="search" size={24} color="#1C1C1E" />
+          <Ionicons name="search" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
 
@@ -112,7 +109,7 @@ export default function CategoriesScreen() {
             style={styles.categoryCard} 
             onPress={() => handleCategoryPress(item.name)}
           >
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, { borderColor: 'transparent', backgroundColor: colors.primaryLight }]}>
               <Image source={item.image} style={styles.categoryImage as any} />
             </View>
             <Text style={styles.categoryName} numberOfLines={2}>
@@ -125,10 +122,10 @@ export default function CategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -137,7 +134,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.border,
+    backgroundColor: colors.surface,
   },
   backButton: {
     padding: 4,
@@ -146,7 +144,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1C1C1E',
+    color: colors.textPrimary,
   },
   listContent: {
     padding: 16,
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   promoBanner: {
-    backgroundColor: '#F5F9FF',
+    backgroundColor: '#F0FDF8',
     borderRadius: 16,
     padding: 20,
     flexDirection: 'row',

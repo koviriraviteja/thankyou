@@ -53,12 +53,15 @@ export default function ImpactScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
             <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Your Impact</Text>
-          <TouchableOpacity>
-            <Text style={styles.periodToggle}>This Month ▾</Text>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>Your Impact</Text>
+          </View>
+          <TouchableOpacity style={styles.periodDropdown}>
+            <Text style={styles.periodToggle}>This Month</Text>
+            <Ionicons name="chevron-down" size={14} color={colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -148,9 +151,23 @@ const getStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.medium, paddingVertical: spacing.small, backgroundColor: colors.surface,
     borderBottomWidth: 1, borderBottomColor: colors.border,
+    minHeight: 64,
+  },
+  headerBack: {
+    width: 40,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   headerTitle: { ...typography.h3, color: colors.textPrimary },
-  periodToggle: { ...typography.bodySmall, color: colors.primary, fontWeight: '600' },
+  periodDropdown: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.highlight,
+    paddingHorizontal: spacing.medium, paddingVertical: 8, borderRadius: radius.full, gap: 4,
+  },
+  periodToggle: { ...typography.caption, color: colors.primary, fontWeight: '700' },
 
   heroSection: {
     padding: spacing.large, backgroundColor: colors.surface,
